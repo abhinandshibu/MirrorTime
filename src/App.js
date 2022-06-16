@@ -2,6 +2,17 @@ import logo from './logo.svg';
 import './App.css';
 import { initializeApp } from "firebase/app";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// NORMAL IMPORTS
+import NavBar from './components/navbar';
+import Landing from './pages/landing';
+import Login from './pages/login';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// END OF NORMAL IMPORTS
+
+// FIREBASE AND AUTH SETUP
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth, EmailAuthProvider } from "firebase/auth";
@@ -48,14 +59,22 @@ var uiConfig = {
 
 ui.start('#firebaseui-auth-container', uiConfig);
 
+// END OF FIREBASE AND AUTH SETUP
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader">Loading...</div>
-        <p>hello world</p>
-      </header>
+      <NavBar/>
+      <body>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />}>
+              <Route index element={<Landing />} />
+              <Route path="login" element={<Login />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </body>
     </div>
   );
 }
