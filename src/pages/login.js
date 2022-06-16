@@ -1,9 +1,10 @@
 function Login() {
     return (
-        <>
-            <div id="firebaseui-auth-container"></div>
-            <div id="loader">Loading...</div>
-        </>
+        <p>THIS IS LOGIN</p>
+        // <>
+        //     <div id="firebaseui-auth-container"></div>
+        //     <div id="loader">Loading...</div>
+        // </>
     )
 }
 
