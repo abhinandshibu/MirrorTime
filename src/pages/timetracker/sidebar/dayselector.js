@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 
 import useCollapse from 'react-collapsed'
 
-function SideBar() {
+function DaySelector() {
     const { getCollapseProps, getToggleProps, isExpanded } = useCollapse()
 
     return (
@@ -20,4 +20,4 @@ function SideBar() {
     )
 }
 
-export default SideBar
+export default DaySelector
