@@ -1,0 +1,26 @@
+.timetable {
+    padding: 20px;
+    background: lightgrey;
+}
+
+.timetable-heading {
+    height: 50px;
+    display: grid;
+    grid-template-columns: 70px 5fr 3fr;
+}
+
+.timetable-body {
+    grid-area: timetable;
+    height: calc(90vh - 90px);
+    overflow-y: scroll;
+    display: grid;
+    grid-template-columns: 70px 5fr 3fr;
+    grid-template-rows: repeat(24, 50px);
+    grid-gap: 2px;
+    grid-auto-flow: column;
+}
+
+.timetable-body * {
+    background: lightcyan;
+
+}

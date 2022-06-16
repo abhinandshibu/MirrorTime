@@ -1,0 +1,36 @@
+.sidebar {
+    grid-area: sidebar;
+    background: pink;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.calendar {
+    background: darkblue;
+    color: white;
+    height: 20vh;
+}
+
+.categories {
+    background: lightblue;
+    height: 40vh;
+    overflow-y: scroll;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.categories * {
+    height: 10vh;
+    margin: 5px 0;
+    background: white;
+    text-align: center;
+}
+
+/* button {
+    width: 10%;
+} */

@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './components/navbar';
 import Landing from './pages/landing';
 import Login from './pages/login';
+import SideBar from './components/sidebar';
+import Timetable from './components/timetable';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // END OF NORMAL IMPORTS
 
@@ -64,17 +66,11 @@ ui.start('#firebaseui-auth-container', uiConfig);
 function App() {
   return (
     <div className="App">
-      <NavBar/>
-      <body>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />}>
-              <Route index element={<Landing />} />
-              <Route path="login" element={<Login />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </body>
+      <NavBar />
+      <div class="body">
+        <SideBar />
+        <Timetable />
+      </div>
     </div>
   );
 }
