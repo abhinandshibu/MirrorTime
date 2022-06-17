@@ -6,7 +6,7 @@ import { useState, useContext } from 'react';
 
 function Create({
         windowVisibility, setWindowVisibility, categories, setCategories,
-        eventList, setEventList, event, setEvent
+        planEventList, setPlanEventList, event, setEvent
 }) {
     const closeWindow = () => {
         setWindowVisibility(false);
@@ -14,8 +14,9 @@ function Create({
 
     const addEvent = () => {
         if (event.name !== "" && +event.end > +event.start) {
-            setEventList([...eventList, event]);
+            setPlanEventList([...planEventList, event]);
             setEvent({name: "", category: "", start: 0, end: 0});
+            console.log(`name: ${event.name} category: ${event.category} start: ${event.start} end: ${event.end} `);
         }
     }
 

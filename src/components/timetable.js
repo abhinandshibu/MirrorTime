@@ -1,9 +1,11 @@
 import './timetable.css';
 import { ColourContext } from '../App';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
-function Timetable({eventList, categories}) {
+function Timetable({planEventList, categories}) {
     const colours = useContext(ColourContext);
+
+    const [lifeEventList, setLifeEventList] = useState([]);
 
     const renderTimeSlots = () => {
         const array = [];
@@ -29,7 +31,6 @@ function Timetable({eventList, categories}) {
         return colours[nameAndColour[1]];
     }
 
-
     return (
         <div class="timetable">
             <div class="timetable-heading">
@@ -40,10 +41,23 @@ function Timetable({eventList, categories}) {
             <div class="timetable-body">
                 {renderTimeSlots()}
                 
-                {eventList.map((event) => (
+                {planEventList.map((event) => (
                     <div class="activity" 
                         style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
-                                background: '#' + getColour(event.category)}}>
+                                background: '#' + getColour(event.category)}}
+                    >
+                        {event.name}
+                        <button onClick={() => setLifeEventList([...lifeEventList, event])}>
+                            Copy to Life
+                        </button>
+                    </div>
+                ))}
+
+                {lifeEventList.map((event) => (
+                    <div class="activity" 
+                        style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
+                                background: '#' + getColour(event.category)}}
+                    >
                         {event.name}
                     </div>
                 ))}

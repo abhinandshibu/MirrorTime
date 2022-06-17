@@ -77,8 +77,8 @@ function App() {
 
   const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
-  const initEvent = {name: "", category: "", start: 0, end: 0};
-  const [eventList, setEventList] = useState([]);
+  const initEvent = {name: "", category: "Eating", start: 0, end: 0};
+  const [planEventList, setPlanEventList] = useState([]);
   const [event, setEvent] = useState(initEvent);
 
   return (
@@ -93,7 +93,7 @@ function App() {
             categories={categories}
           />
           <Timetable 
-            eventList={eventList}
+            planEventList={planEventList}
             categories={categories}
           />
         </div>
@@ -101,7 +101,7 @@ function App() {
         <Create 
           windowVisibility={windowVisibility} setWindowVisibility={setWindowVisibility}
           categories={categories} setCategories={setCategories}
-          eventList={eventList} setEventList={setEventList}
+          planEventList={planEventList} setPlanEventList={setPlanEventList}
           event={event} setEvent={setEvent}
         />
       </ColourContext.Provider>
