@@ -67,7 +67,7 @@ function App() {
   return (
     <div className="App">
       <NavBar />
-      <div class="body">
+      <div class="main">
         <SideBar />
         <Timetable />
       </div>

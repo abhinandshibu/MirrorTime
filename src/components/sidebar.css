@@ -1,6 +1,6 @@
 .sidebar {
     grid-area: sidebar;
-    background: pink;
+    background: lightgray;
     padding: 10px;
     display: flex;
     flex-direction: column;

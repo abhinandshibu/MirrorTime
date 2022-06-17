@@ -1,9 +1,10 @@
 import './sidebar.css'
+import Calendar from 'react-calendar';
 
 function SideBar() {
     return (
         <div class="sidebar">
-            <div class="calendar">calendar</div>
+            <Calendar />
             <div class="categories">
                 <div class="eating">Eating</div>
                 <div class="uni">University</div>
