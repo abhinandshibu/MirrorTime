@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import { initializeApp } from "firebase/app";
 import { useState, createContext } from 'react';
@@ -7,12 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // NORMAL IMPORTS
 import NavBar from './components/navbar';
-import Landing from './pages/landing';
-import Login from './pages/login';
+// import Landing from './pages/landing';
+// import Login from './pages/login';
 import SideBar from './components/sidebar';
 import Timetable from './components/timetable';
 import Create from './components/create';
-import { BrowserRouter, Routes, Route, UNSAFE_RouteContext } from "react-router-dom";
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
@@ -75,7 +75,7 @@ function App() {
     ["Eating", 0], ["University", 1], ["Commute", 2], ["Leisure", 3], ["Exercise", 4], ["Chores", 5], ["Social", 6]
   ]);
 
-  const colours = ["fc8b8b", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60"]
+  const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
   const initEvent = {name: "", category: "", start: 0, end: 0};
   const [eventList, setEventList] = useState([]);
