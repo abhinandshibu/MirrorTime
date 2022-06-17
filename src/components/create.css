@@ -1,0 +1,51 @@
+.window {
+    position: absolute;
+    height: 80vh;
+    width: 50vw;
+    top: 10%;
+    left: 25%;
+    border: 3px solid black;
+    background: white;
+    box-shadow: 20px 20px 20px gray;
+}
+
+.header {
+    font-size: 1.5em;
+    font-weight: 700;
+    background-color: gray;
+    padding: 15px;
+}
+
+#close {
+    float: right;
+}
+
+.form {
+    padding: 20px;
+}
+
+.my-row {
+    margin: 1em 0;
+}
+
+label {
+    margin-right: 20px;
+}
+
+#add-event {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.new-category-label {
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.colour {
+    height: 20px;
+    width: 20px;
+    margin: 0 5px;
+    display: inline-block;
+}

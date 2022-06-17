@@ -1,0 +1,37 @@
+.timetable {
+    padding: 20px;
+    background: lightgrey;
+    border-radius: 10px;
+}
+
+.timetable-heading {
+    height: 50px;
+    display: grid;
+    grid-template-columns: 70px 5fr 3fr;
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+.timetable-body {
+    grid-area: timetable;
+    height: calc(90vh - 90px);
+    overflow-y: scroll;
+    display: grid;
+    grid-template-columns: 70px 5fr 3fr;
+    grid-template-rows: repeat(24, 100px);
+    grid-gap: 2px;
+}
+
+.timetable-body * {
+    background: lightcyan;
+
+}
+
+.activity {
+    background: blue;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
