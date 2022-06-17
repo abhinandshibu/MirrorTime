@@ -82,6 +82,7 @@ function App() {
   const [event, setEvent] = useState(initEvent);
 
   return (
+
     <div class="App">
       <ColourContext.Provider value={colours}>
         <NavBar />
@@ -105,6 +106,20 @@ function App() {
         />
       </ColourContext.Provider>
     </div>
+
+      // <>
+      //   <p>hello world</p>
+      //   <BrowserRouter>
+      //   <Routes>
+      //     <Route exact path="/">
+      //       <p>IAM LANDING</p>
+      //     </Route>
+      //     <Route path="/login">
+      //       <p>hello world</p>
+      //     </Route>
+      //   </Routes>
+      //   </BrowserRouter>
+      // </>
   );
 }
 
