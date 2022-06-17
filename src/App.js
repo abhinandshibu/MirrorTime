@@ -68,14 +68,24 @@ ui.start('#firebaseui-auth-container', uiConfig);
 function App() {
   const [windowVisibility, setWindowVisibility] = useState(false);
 
+  const initEvent = {name: "", category: "", start: 0, end: 0};
+  const [eventList, setEventList] = useState([]);
+  const [event, setEvent] = useState(initEvent);
+
   return (
     <div className="App">
       <NavBar />
+      
       <div class="main">
         <SideBar setWindowVisibility={setWindowVisibility} />
-        <Timetable />
+        <Timetable eventList={eventList} event={event} />
       </div>
-      <Create vis={windowVisibility} setVis={setWindowVisibility} />
+
+      <Create 
+        vis={windowVisibility} setVis={setWindowVisibility}
+        eventList={eventList} setEventList={setEventList}
+        event={event} setEvent={setEvent}
+      />
     </div>
   );
 }
