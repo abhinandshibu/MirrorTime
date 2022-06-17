@@ -1,6 +1,7 @@
 .timetable {
     padding: 20px;
     background: lightgrey;
+    border-radius: 10px;
 }
 
 .timetable-heading {
@@ -28,7 +29,7 @@
 
 .activity {
     background: blue;
-    color: white;
+    color: black;
     display: flex;
     align-items: center;
     justify-content: center;

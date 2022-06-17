@@ -1,6 +1,7 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
-import { useState } from 'react';
+import { ColourContext } from '../App';
+import { useState, useContext } from 'react';
 
 
 function Create({
@@ -14,47 +15,49 @@ function Create({
     const addEvent = () => {
         setEventList([...eventList, event]);
         setEvent({name: "", category: "", start: 0, end: 0});
-        console.log(`name: ${event.name}, category: ${event.category}, start: ${event.start}, end: ${event.end}`);
     }
 
     const addNewCategory = () => {
         setCategories([...categories, newCategory]);
-        setNewCategory("");
+        setNewCategory(["", 0]);
     }
 
-    const [newCategory, setNewCategory] = useState("");
+    const [newCategory, setNewCategory] = useState(["", 0]);
+    const colours = useContext(ColourContext);
 
     return (
         <Modal show={windowVisibility} onHide={closeWindow}>
             <Modal.Header closeButton>
-                <Modal.Title>Add Activity</Modal.Title>
+                <Modal.Title>Create New Activity</Modal.Title>
             </Modal.Header>
 
             <div class="form">
-                <div class="field">
+                <div class="my-row">
                     <label>Name: </label>
                     <input type="text" id="name" value={event.name}
                         onChange={(e) => setEvent({...event, name: e.target.value}) } 
                     />
                 </div>
 
-                <div class="field">
+                <div class="my-row">
                     <label>Category: </label>
-                    <select id="category">
-                        {categories.map((name) => (
-                            <option value={name}>{name}</option>
+                    <select id="category"
+                        onChange={(e) => setEvent({...event, category: e.target.value})}
+                    >
+                        {categories.map((cat) => (
+                            <option value={cat[0]}>{cat[0]}</option>
                         ))}
                     </select>
                 </div>
 
-                <div class="field">
+                <div class="my-row">
                     <label>Start: </label>
                     <input type="number" id="start" value={event.start} min="0" max="23"
                         onChange={(e) => setEvent({...event, start: e.target.value}) } 
                     />
                 </div>
 
-                <div class="field">
+                <div class="my-row">
                     <label>End: </label>
                     <input type="number" id="end" value={event.end} min={+event.start + 1} max="24"
                         onChange={(e) => setEvent({...event,end: e.target.value}) } 
@@ -62,13 +65,24 @@ function Create({
                 </div>
                 
                 <button onClick={addEvent} id="add-event">Add Event</button>
-                
-                <div class="field">
-                    <input type="text" id="new-category" value={newCategory}
-                        onChange={(e) => setNewCategory(e.target.value) } 
-                    />
-                    <button onClick={addNewCategory}>Add New Category</button>
+
+                <hr />
+
+                <label class="new-category-label">Create New Category</label>
+
+                <div class="my-row">
+                    {colours.map((col, index) => (
+                        <div class="colour" style={{background: '#' + col}}
+                            onClick={() => setNewCategory([newCategory[0], index])}>
+                        </div>
+                    ))}
                 </div>
+                
+                <input class="my-row" type="text" value={newCategory[0]}
+                    onChange={(e) => setNewCategory([e.target.value, newCategory[1]]) } 
+                />
+                <button onClick={addNewCategory}>Add Category</button>
+                
             </div>
         </Modal>
     );

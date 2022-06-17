@@ -1,6 +1,10 @@
 import './timetable.css';
+import { ColourContext } from '../App';
+import { useContext } from 'react';
 
-function Timetable({eventList, event}) {
+function Timetable({eventList, categories}) {
+    const colours = useContext(ColourContext);
+
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<24; i++) {
@@ -20,14 +24,9 @@ function Timetable({eventList, event}) {
         return array;
     }
 
-    const renderPlanEvents = () => {
-        const array = [];
-        eventList.map((event) => (
-            array.push
-        ))
-        for (let i=0; i<24; i++) {
-            array.push(<div class="activity"></div>)
-        }
+    const getColour = (name) => {
+        const nameAndColour = categories.filter(cat => cat[0] === name)[0];
+        return colours[nameAndColour[1]];
     }
 
 
@@ -43,7 +42,8 @@ function Timetable({eventList, event}) {
                 
                 {eventList.map((event) => (
                     <div class="activity" 
-                        style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`}}>
+                        style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
+                                background: '#' + getColour(event.category)}}>
                         {event.name}
                     </div>
                 ))}
