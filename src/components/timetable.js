@@ -1,37 +1,35 @@
 import './timetable.css';
 
-function Timetable() {
+function Timetable({eventList, event}) {
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<24; i++) {
             array.push(
-                <div class={`time-slot ${i}`}>
+                <div class={`time-slot ${i}`}
+                    style={{gridArea: `${i+1} / 1 / ${i+2} / 2`}}>
                     <span>{i<10 ? `0${i}` : i} : 00</span>
+                </div>,
+                <div class={`life-slot ${i}`}
+                    style={{gridArea: `${i+1} / 2 / ${i+2} / 3`}}>
+                </div>,
+                <div class={`plan-slot ${i}`}
+                    style={{gridArea: `${i+1} / 3 / ${i+2} / 4`}}>
                 </div>
-            )
+            );
         }
         return array;
     }
 
-    const renderPlanSlots = () => {
+    const renderPlanEvents = () => {
         const array = [];
+        eventList.map((event) => (
+            array.push
+        ))
         for (let i=0; i<24; i++) {
-            array.push(
-                <div class={`plan-slot ${i}`} id={i}>plan slot {i}</div>
-            )
+            array.push(<div class="activity"></div>)
         }
-        return array;
     }
 
-    const renderLifeSlots = () => {
-        const array = [];
-        for (let i=0; i<24; i++) {
-            array.push(
-                <div class={`life-slot ${i}`} id={i}>life slot {i}</div>
-            )
-        }
-        return array;
-    }
 
     return (
         <div class="timetable">
@@ -43,9 +41,12 @@ function Timetable() {
             <div class="timetable-body">
                 {renderTimeSlots()}
                 
-                {renderLifeSlots()}
-                
-                {renderPlanSlots()}
+                {eventList.map((event) => (
+                    <div class="activity" 
+                        style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`}}>
+                        {event.name}
+                    </div>
+                ))}
             </div>
         </div>
     )

@@ -17,6 +17,11 @@ function Create({
         console.log(`name: ${event.name}, category: ${event.category}, start: ${event.start}, end: ${event.end}`);
     }
 
+    const addNewCategory = () => {
+        setCategories([...categories, newCategory]);
+        setNewCategory("");
+    }
+
     const [newCategory, setNewCategory] = useState("");
 
     return (
@@ -51,7 +56,7 @@ function Create({
 
                 <div class="field">
                     <label>End: </label>
-                    <input type="number" id="end" value={event.end} min={event.start + 1} max="24"
+                    <input type="number" id="end" value={event.end} min={+event.start + 1} max="24"
                         onChange={(e) => setEvent({...event,end: e.target.value}) } 
                     />
                 </div>
@@ -59,10 +64,10 @@ function Create({
                 <button onClick={addEvent} id="add-event">Add Event</button>
                 
                 <div class="field">
-                    <input type="text" id="new-category"
+                    <input type="text" id="new-category" value={newCategory}
                         onChange={(e) => setNewCategory(e.target.value) } 
                     />
-                    <button onClick={(e) => setCategories([...categories, newCategory])}>Add New Category</button>
+                    <button onClick={addNewCategory}>Add New Category</button>
                 </div>
             </div>
         </Modal>
