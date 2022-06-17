@@ -1,7 +1,11 @@
 import './sidebar.css'
 import Calendar from 'react-calendar';
 
-function SideBar() {
+function SideBar(props) {
+    const showWindow = () => {
+        props.setWindowVisibility(true);
+        console.log("it works")
+    }
     return (
         <div class="sidebar">
             <Calendar />
@@ -14,7 +18,7 @@ function SideBar() {
                 <div class="chores">Chores</div>
                 <div class="social">Social</div>
             </div>
-            <button id="new">Create New Activity</button>
+            <button id="new" onClick={showWindow}>Create New Activity</button>
             <button id="analytics">Analytics</button>
         </div>
     );

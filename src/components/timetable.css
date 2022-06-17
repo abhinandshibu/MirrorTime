@@ -7,6 +7,8 @@
     height: 50px;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
+    font-size: 1.5em;
+    font-weight: 700;
 }
 
 .timetable-body {
@@ -15,7 +17,7 @@
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
-    grid-template-rows: repeat(24, 50px);
+    grid-template-rows: repeat(24, 100px);
     grid-gap: 2px;
     grid-auto-flow: column;
 }

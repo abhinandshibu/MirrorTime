@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { initializeApp } from "firebase/app";
+import { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,6 +11,7 @@ import Landing from './pages/landing';
 import Login from './pages/login';
 import SideBar from './components/sidebar';
 import Timetable from './components/timetable';
+import Create from './components/create';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // END OF NORMAL IMPORTS
 
@@ -64,13 +66,16 @@ ui.start('#firebaseui-auth-container', uiConfig);
 // END OF FIREBASE AND AUTH SETUP
 
 function App() {
+  const [windowVisibility, setWindowVisibility] = useState(false);
+
   return (
     <div className="App">
       <NavBar />
       <div class="main">
-        <SideBar />
+        <SideBar setWindowVisibility={setWindowVisibility} />
         <Timetable />
       </div>
+      <Create vis={windowVisibility} setVis={setWindowVisibility} />
     </div>
   );
 }
