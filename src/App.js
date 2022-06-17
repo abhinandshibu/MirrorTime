@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import { initializeApp } from "firebase/app";
-import { createContext } from 'react';
+import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
+import { createContext, useEffect } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,6 +29,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 
 var auth = getAuth(app);
 var firebaseui = require('firebaseui');
@@ -65,12 +67,76 @@ ui.start('#firebaseui-auth-container', uiConfig);
 
 export const ColourContext = createContext();
 
+export const EventConverter = {
+  toFirestore(event) {
+    return {
+      index: event.index,
+      name: event.name, 
+      category: event.category, 
+      start: event.start, 
+      end: event.end
+    };
+  },
+
+  fromFirestore(snapshot, options) {
+    const data = snapshot.data(options);
+    return {
+      index: data.index,
+      name: data.name, 
+      category: data.category, 
+      start: data.start, 
+      end: data.end
+    };
+  }
+}
+
 function App() {
   const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
+  let initCount = 0;
+  let initPlanEvents = [];
+  let initLifeEvents = [];
+
+  // Runs once when page starts, pulls data from firebase
+  useEffect(() => {
+    const count = doc(collection(db, 'info'), 'count');
+
+    const checkDatabase = async () => {
+      const countSnap = await getDoc(count);
+
+      if (countSnap.exists()) { // User has used app before, load events (if any)
+        initCount = countSnap.data().count;
+        console.log(initCount);
+
+        const planSnap = await getDocs(collection(db, 'plan').withConverter(EventConverter));
+        planSnap.forEach((e) => {
+          initPlanEvents.push(e.data());
+          console.log(`event ${e.data().index} added`);
+        })
+        console.log(initPlanEvents);
+
+        const lifeSnap = await getDocs(collection(db, 'life').withConverter(EventConverter));
+        lifeSnap.forEach((e) => {
+          initLifeEvents.push(e.data());
+          console.log(`event ${e.data().index} added`);
+        })
+        console.log(initLifeEvents);
+
+      } else {
+        await setDoc(count, {count: 0});
+      }
+    }
+    
+    checkDatabase().catch(console.error);
+  }, []);
+
   return (
     <ColourContext.Provider value={colours}>
-      <Home />
+      <Home 
+        initCount={initCount}
+        initPlanEvents={initPlanEvents}
+        initLifeEvents={initLifeEvents}
+      />
     </ColourContext.Provider>
   );
 }

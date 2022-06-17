@@ -1,12 +1,13 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
-import { ColourContext } from '../App';
+import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
+import { ColourContext, EventConverter, db } from '../App';
 import { useState, useContext } from 'react';
 
 
 function Create({
         windowVisibility, setWindowVisibility, categories, setCategories,
-        planEventList, setPlanEventList, event, setEvent
+        planEvents, setPlanEvents, event, setEvent, count, setCount
 }) {
     const closeWindow = () => {
         setWindowVisibility(false);
@@ -14,9 +15,18 @@ function Create({
 
     const addEvent = () => {
         if (event.name !== "" && +event.end > +event.start) {
-            setPlanEventList([...planEventList, event]);
+            setPlanEvents([...planEvents, {...event, index: count}]);
             setEvent({name: "", category: "", start: 0, end: 0});
             console.log(`name: ${event.name} category: ${event.category} start: ${event.start} end: ${event.end} `);
+            setCount(count+1);
+            // write to database
+            let ref = doc(db, `plan/${count}`).withConverter(EventConverter);
+            const write = async () => {
+                setDoc(ref, {...event, index: count});
+                setDoc(doc(db, 'info/count'), {count: count+1});
+            }
+            write().catch(console.error);
+            
         }
     }
 

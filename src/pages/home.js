@@ -9,16 +9,19 @@ import Timetable from '../components/timetable';
 import Create from '../components/create';
 // END OF NORMAL IMPORTS
 
-function Home() {
+function Home({initCount, initPlanEvents, initLifeEvents}) {
   const [windowVisibility, setWindowVisibility] = useState(false);
 
-  // [[name, colour]]
+  // [[name, colour]]. sample values
   const [categories, setCategories] = useState([
     ["Eating", 0], ["University", 1], ["Commute", 2], ["Leisure", 3], ["Exercise", 4], ["Chores", 5], ["Social", 6]
   ]);
 
   const initEvent = {name: "", category: "Eating", start: 0, end: 0};
-  const [planEventList, setPlanEventList] = useState([]);
+
+  const [count, setCount] = useState(initCount);
+  const [planEvents, setPlanEvents] = useState(initPlanEvents);
+  const [lifeEvents, setLifeEvents] = useState(initLifeEvents);
   const [event, setEvent] = useState(initEvent);
 
   return (
@@ -33,7 +36,7 @@ function Home() {
           categories={categories}
         />
         <Timetable 
-          planEventList={planEventList}
+          planEvents={planEvents}
           categories={categories}
         />
       </div>
@@ -41,8 +44,9 @@ function Home() {
       <Create 
         windowVisibility={windowVisibility} setWindowVisibility={setWindowVisibility}
         categories={categories} setCategories={setCategories}
-        planEventList={planEventList} setPlanEventList={setPlanEventList}
+        planEvents={planEvents} setPlanEvents={setPlanEvents}
         event={event} setEvent={setEvent}
+        count={count} setCount={setCount}
       />
      
     </div>
