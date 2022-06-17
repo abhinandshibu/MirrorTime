@@ -1,12 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+// import logo from './logo.svg';
 import { initializeApp } from "firebase/app";
-import { useState, createContext } from 'react';
+import { createContext } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // NORMAL IMPORTS
-import Main from './pages/main';
+import Home from './pages/home';
 import Landing from './pages/landing';
 import Login from './pages/login';
 
@@ -63,13 +62,16 @@ ui.start('#firebaseui-auth-container', uiConfig);
 
 // END OF FIREBASE AND AUTH SETUP
 
+
 export const ColourContext = createContext();
 
 function App() {
+  const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
   return (
-
-    <Main />
+    <ColourContext.Provider value={colours}>
+      <Home />
+    </ColourContext.Provider>
   );
 }
 
