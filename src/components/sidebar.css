@@ -19,16 +19,14 @@
     height: 40vh;
     overflow-y: scroll;
     padding: 0 10px;
-    display: flex;
-    flex-direction: column;
     
 }
 
 .categories * {
-    height: 10vh;
-    margin: 5px 0;
+    height: 7vh;
+    width: 100%;
+    margin: 10px 0;
     background: white;
-    text-align: center;
 }
 
 /* button {
