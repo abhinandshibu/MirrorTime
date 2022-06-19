@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
 import { createContext, useEffect } from 'react';
@@ -7,9 +6,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // NORMAL IMPORTS
-import Home from './pages/home';
-import Landing from './pages/landing';
-import Login from './pages/login';
+import Home from './pages/home/home';
+import Landing from './pages/landing/landing';
+import Login from './pages/login/login';
 
 // END OF NORMAL IMPORTS
 
@@ -18,6 +17,7 @@ import Login from './pages/login';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth, EmailAuthProvider } from "firebase/auth";
+import NavBar from "./components/navbar/navbar";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAdsFECf-w0-CGJG3U7rKRkEWYUfTQ-Q0w",
@@ -31,36 +31,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-var auth = getAuth(app);
-// var firebaseui = require('firebaseui');
-// var ui = firebaseui.auth.AuthUI.getInstance();
-// if (!ui) {
-//   ui = new firebaseui.auth.AuthUI(auth);
-// }
-
-// var uiConfig = {
-//   callbacks: {
-//     signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-//       // User successfully signed in.
-//       // Return type determines whether we continue the redirect automatically
-//       // or whether we leave that to developer to handle.
-//       return true;
-//     },
-//     uiShown: function() {
-//       // The widget is rendered.
-//       // Hide the loader.
-//       document.getElementById('loader').style.display = 'none';
-//     }
-//   },
-//   // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-//   signInFlow: 'popup',
-//   signInSuccessUrl: 'https://www.google.com/', // url-to-redirect-to-on-success
-//   signInOptions: [
-//     EmailAuthProvider.PROVIDER_ID,
-//   ]
-// };
-
-// ui.start('#firebaseui-auth-container', uiConfig);
+export const auth = getAuth(app);
 
 // END OF FIREBASE AND AUTH SETUP
 
@@ -132,8 +103,16 @@ function App() {
 
   return (
     <Router>
+      <NavBar />
+
       <Switch>
-        <Route path="/">
+        <Route exact path="/">
+          <Landing />
+        </Route>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+        <Route exact path="/home">
           <ColourContext.Provider value={colours}>
             <Home 
               initCount={initCount}
@@ -142,9 +121,7 @@ function App() {
             />
           </ColourContext.Provider>
         </Route>
-        <Route path="/landing">
-          <Landing />
-        </Route>
+        
       </Switch>
     </Router>
   );

@@ -1,0 +1,20 @@
+#landing {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    height: 100vh;
+
+    background-image: url("assets/background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+#heading {
+    color: aliceblue;
+    font: helvetica-neue, sans-serif;
+    font-size: 6em;
+    justify-content: left;
+    padding: 2em;
+}

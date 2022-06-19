@@ -1,5 +1,5 @@
 import './timetable.css';
-import { ColourContext } from '../App';
+import { ColourContext } from '../../App';
 import { useContext, useState } from 'react';
 import React from 'react';
 

@@ -1,7 +1,7 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
-import { ColourContext, EventConverter, db } from '../App';
+import { ColourContext, EventConverter, db } from '../../App';
 import { useState, useContext } from 'react';
 import React from 'react';
 

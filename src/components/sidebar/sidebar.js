@@ -1,6 +1,6 @@
 import './sidebar.css'
 import Calendar from 'react-calendar';
-import { ColourContext } from '../App';
+import { ColourContext } from '../../App';
 import { useContext } from 'react';
 import React from 'react';
 

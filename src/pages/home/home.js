@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import NavBar from '../components/navbar';
-import SideBar from '../components/sidebar';
-import Timetable from '../components/timetable';
-import Create from '../components/create';
+import NavBar from '../../components/navbar/navbar';
+import SideBar from '../../components/sidebar/sidebar';
+import Timetable from '../../components/timetable/timetable';
+import Create from '../../components/create/create';
 // END OF NORMAL IMPORTS
 
 // Google Calendar API
@@ -42,10 +42,8 @@ function Home({initCount, initPlanEvents, initLifeEvents}) {
 
   return (
 
-    <div className="home">
-      
-      <NavBar />
-
+    <div className="home"> 
+ 
       <div className="main">
         <SideBar 
           setWindowVisibility={setWindowVisibility} 
