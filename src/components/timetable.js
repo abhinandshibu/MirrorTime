@@ -1,5 +1,6 @@
 import './timetable.css';
-import { ColourContext, EventConverter, db } from '../App';
+import { ColourContext, db } from '../App';
+import { EventConverter } from '../pages/home';
 import { useContext } from 'react';
 import { doc, setDoc } from "firebase/firestore";
 

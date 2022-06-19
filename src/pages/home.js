@@ -1,5 +1,7 @@
 import './home.css';
 import { useState, useEffect } from 'react';
+import { doc, collection, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { db } from '../App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,29 +27,78 @@ const apiCalendar = new ApiCalendar(config)
 // End Of Google Calendar API
 
 
-function Home({initCount, initPlanEvents, initLifeEvents, initCategories}) {
+
+export const EventConverter = {
+  toFirestore(event) {
+    return {
+      name: event.name, 
+      category: event.category, 
+      start: event.start, 
+      end: event.end
+    };
+  },
+
+  fromFirestore(snapshot, options) {
+    const data = snapshot.data(options);
+    return {
+      name: data.name, 
+      category: data.category, 
+      start: data.start, 
+      end: data.end
+    };
+  }
+}
+
+let fetched = false;
+
+async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
+  console.log("fetching...");
+  const countSnapshot = await getDoc(doc(collection(db, 'info'), 'count'));
+
+  if (countSnapshot.exists()) {
+    // User has used app before, load events and categories (if any)
+    setCount(countSnapshot.data().count);
+
+    const categorySnapshot = await getDocs(collection(db, 'categories'));
+    categorySnapshot.forEach((doc) => {
+      setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
+      console.log(`category ${doc.id} added`);
+    })
+
+    const planSnapshot = await getDocs(collection(db, 'plan').withConverter(EventConverter));
+    planSnapshot.forEach((e) => {
+      setPlanEvents( map => new Map ( map.set( e.id, e.data() ) ) );
+      console.log(`plan event ${e.id} added`);
+    })
+
+    const lifeSnapshot = await getDocs(collection(db, 'life').withConverter(EventConverter));
+    lifeSnapshot.forEach((e) => {
+      setLifeEvents( map => new Map ( map.set( e.id, e.data() ) ) );
+      console.log(`life event ${e.id} added`);
+    })
+  }
+  else {
+    await setDoc(doc(collection(db, 'info'), 'count'), {count: 0});
+  }
+}
+
+
+function Home() {
+
   const [windowVisibility, setWindowVisibility] = useState(false);
-
-  const initEvent = {name: "", category: initCategories.keys()[0], start: 0, end: 0};
-
-  const [categories, setCategories] = useState(initCategories);
-  
-  const [count, setCount] = useState(initCount);
-  const [planEvents, setPlanEvents] = useState(initPlanEvents);
-  const [lifeEvents, setLifeEvents] = useState(initLifeEvents);
+  const [categories, setCategories] = useState(new Map());
+  const [planEvents, setPlanEvents] = useState(new Map());
+  const [lifeEvents, setLifeEvents] = useState(new Map());
+  const initEvent = {name: "", category: "", start: 0, end: 0};
   const [event, setEvent] = useState(initEvent);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setPlanEvents(initPlanEvents);
-  }, [initPlanEvents]);
-
-  useEffect(() => {
-    setLifeEvents(initLifeEvents);
-  }, [initLifeEvents]);
-
-  useEffect(() => {
-    setCategories(initCategories);
-  }, [initCategories]);
+    if (!fetched) {
+      fetchData(setCount, setCategories, setPlanEvents, setLifeEvents).catch(console.error);
+      fetched = true;
+    }
+  }, []);
 
   return (
 

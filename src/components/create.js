@@ -1,7 +1,8 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { ColourContext, EventConverter, db } from '../App';
+import { ColourContext, db } from '../App';
+import { EventConverter } from '../pages/home';
 import { useState, useContext } from 'react';
 
 
@@ -14,7 +15,7 @@ function Create({
     }
 
     const addEvent = () => {
-        if (event.name !== "" && +event.end > +event.start) {
+        if (event.name !== "" && event.category !== "" && +event.end > +event.start) {
             setPlanEvents(map => new Map(map.set(count, event)));
             setEvent({name: "", category: "", start: 0, end: 0});
             console.log(`name: ${event.name} category: ${event.category} start: ${event.start} end: ${event.end} `);
@@ -34,6 +35,12 @@ function Create({
         if (newCategory[0] !== "") {
             setCategories(map => new Map(map.set(newCategory[0], newCategory[1])));
             setNewCategory(["", 0]);
+            // write to database
+            let ref = doc(db, `categories/${newCategory[0]}`);
+            const write = async () => {
+                setDoc(ref, {colour: newCategory[1]});
+            }
+            write().catch(console.error);
         }
     }
 
@@ -66,6 +73,8 @@ function Create({
                     <select id="category"
                         onChange={(e) => setEvent({...event, category: e.target.value})}
                     >
+                        <option value="" key="default">Choose a cateogry:</option>
+
                         {Array.from(categories.keys()).map((cat) => (
                             <option value={cat} key={cat}>{cat}</option>
                         ))}
