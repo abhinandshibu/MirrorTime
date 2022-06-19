@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
 import { createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/home/home';
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
-
+import Logout from './pages/logout/logout';
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
@@ -101,16 +102,21 @@ function App() {
     checkDatabase().catch(console.error);
   }, []);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <Router>
-      <NavBar />
+      <NavBar isLoggedIn={isLoggedIn}/>
 
       <Switch>
         <Route exact path="/">
           <Landing />
         </Route>
         <Route exact path="/login">
-          <Login />
+          <Login setIsLoggedIn={setIsLoggedIn}/>
+        </Route>
+        <Route exact path="/logout">
+          <Logout setIsLoggedIn={setIsLoggedIn}/>
         </Route>
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>

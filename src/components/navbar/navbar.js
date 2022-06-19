@@ -1,24 +1,7 @@
 import Navbar from 'react-bootstrap/Navbar'
-import { NavDropdown, Nav, Container } from 'react-bootstrap';
+import { Nav, Container } from 'react-bootstrap';
 
-function NavBar() {
-    const isLoggedIn = false;
-
-    var contents;
-
-    if (isLoggedIn) {
-        contents = (
-            <>
-                <Nav.Link href="/logout">Logout</Nav.Link>
-            </>   
-        )
-    } else {
-        contents = (
-            <>
-                <Nav.Link href="/login">Login</Nav.Link>
-            </>   
-        )
-    }
+function NavBar(props) {
 
     return (
         <Navbar bg="light" expand="lg">
@@ -27,7 +10,9 @@ function NavBar() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-                {contents}
+               {!props.isLoggedIn ? 
+               (<Nav.Link href="/login">Login</Nav.Link>) : 
+               (<Nav.Link href="/logout">Logout</Nav.Link>)} 
             </Nav>
             </Navbar.Collapse>
         </Container>
