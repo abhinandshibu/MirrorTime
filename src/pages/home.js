@@ -89,8 +89,6 @@ function Home() {
   const [categories, setCategories] = useState(new Map());
   const [planEvents, setPlanEvents] = useState(new Map());
   const [lifeEvents, setLifeEvents] = useState(new Map());
-  const initEvent = {name: "", category: "", start: 0, end: 0};
-  const [event, setEvent] = useState(initEvent);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -122,8 +120,7 @@ function Home() {
       <Create 
         windowVisibility={windowVisibility} setWindowVisibility={setWindowVisibility}
         categories={categories} setCategories={setCategories}
-        planEvents={planEvents} setPlanEvents={setPlanEvents}
-        event={event} setEvent={setEvent}
+        setPlanEvents={setPlanEvents}
         count={count} setCount={setCount}
       />
      

@@ -8,7 +8,7 @@ import { useState, useContext } from 'react';
 
 function Create({
         windowVisibility, setWindowVisibility, categories, setCategories,
-        planEvents, setPlanEvents, event, setEvent, count, setCount
+        setPlanEvents, count, setCount
 }) {
     const closeWindow = () => {
         setWindowVisibility(false);
@@ -32,27 +32,25 @@ function Create({
     }
 
     const addNewCategory = () => {
-        if (newCategory[0] !== "") {
-            setCategories(map => new Map(map.set(newCategory[0], newCategory[1])));
-            setNewCategory(["", 0]);
+        if (categoryName !== "") {
+            setCategories(map => new Map(map.set(categoryName, categoryColour)));
             // write to database
-            let ref = doc(db, `categories/${newCategory[0]}`);
+            let ref = doc(db, `categories/${categoryName}`);
             const write = async () => {
-                setDoc(ref, {colour: newCategory[1]});
+                setDoc(ref, {colour: categoryColour});
             }
             write().catch(console.error);
+            setCategoryName("");
+            setCategoryColour(0);
         }
     }
 
-    const selectColour = (index) => {
-        setNewCategory([newCategory[0], index]);
-        setActiveIndex(index);
-    }
-
-    const [newCategory, setNewCategory] = useState(["", 0]);
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
+    const [categoryName, setCategoryName] = useState("");
+    const [categoryColour, setCategoryColour] = useState(0);
 
     const colours = useContext(ColourContext);
+
 
     return (
         <Modal show={windowVisibility} onHide={closeWindow}>
@@ -104,9 +102,9 @@ function Create({
                 <div className="my-row colours">
                     <label>Colour: </label>
                     {colours.map((col, index) => (
-                        <div className={`colour ${activeIndex===index ? "selected" : ""}`} 
+                        <div className={`colour ${categoryColour===index ? "selected" : ""}`} 
                             style={{background: '#' + col}}
-                            onClick={() => selectColour(index)}
+                            onClick={() => setCategoryColour(index)}
                             key={index}>
                         </div>
                     ))}
@@ -114,8 +112,8 @@ function Create({
                 
                 <div className="my-row">
                     <label>Name: </label>
-                    <input type="text" value={newCategory[0]}
-                        onChange={(e) => setNewCategory([e.target.value, newCategory[1]]) } 
+                    <input type="text" value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value) } 
                     />
                 </div>
                 
