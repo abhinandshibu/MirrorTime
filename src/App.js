@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
 import { createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { useState } from 'react';
+import { useState } from "react";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,14 +10,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/home/home';
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
-import Logout from './pages/logout/logout';
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { getAuth, EmailAuthProvider } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import NavBar from "./components/navbar/navbar";
 
 const firebaseConfig = {
@@ -34,8 +33,8 @@ export const db = getFirestore(app);
 
 export const auth = getAuth(app);
 
-// END OF FIREBASE AND AUTH SETUP
 
+// END OF FIREBASE AND AUTH SETUP
 
 export const ColourContext = createContext();
 
@@ -68,6 +67,13 @@ function App() {
   let initCount = 0;
   let initPlanEvents = [];
   let initLifeEvents = [];
+
+  // Runs once when the page starts, links up the authentication to the isLoggedIn variable
+  useEffect(() => {
+    return () => onAuthStateChanged(auth, async (user) => {
+      setIsLoggedIn(user);
+    });
+  }, []);
 
   // Runs once when page starts, pulls data from firebase
   useEffect(() => {
@@ -114,9 +120,6 @@ function App() {
         </Route>
         <Route exact path="/login">
           <Login setIsLoggedIn={setIsLoggedIn}/>
-        </Route>
-        <Route exact path="/logout">
-          <Logout setIsLoggedIn={setIsLoggedIn}/>
         </Route>
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>
