@@ -1,5 +1,5 @@
 import './home.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,34 +25,45 @@ const apiCalendar = new ApiCalendar(config)
 // End Of Google Calendar API
 
 
-function Home({initCount, initPlanEvents, initLifeEvents}) {
+function Home({initCount, initPlanEvents, initLifeEvents, initCategories}) {
   const [windowVisibility, setWindowVisibility] = useState(false);
 
-  // [[name, colour]]. sample values
-  const [categories, setCategories] = useState([
-    ["Eating", 0], ["University", 1], ["Commute", 2], ["Leisure", 3], ["Exercise", 4], ["Chores", 5], ["Social", 6]
-  ]);
+  const initEvent = {name: "", category: initCategories.keys()[0], start: 0, end: 0};
 
-  const initEvent = {name: "", category: "Eating", start: 0, end: 0};
-
+  const [categories, setCategories] = useState(initCategories);
+  
   const [count, setCount] = useState(initCount);
   const [planEvents, setPlanEvents] = useState(initPlanEvents);
   const [lifeEvents, setLifeEvents] = useState(initLifeEvents);
   const [event, setEvent] = useState(initEvent);
 
+  useEffect(() => {
+    setPlanEvents(initPlanEvents);
+  }, [initPlanEvents]);
+
+  useEffect(() => {
+    setLifeEvents(initLifeEvents);
+  }, [initLifeEvents]);
+
+  useEffect(() => {
+    setCategories(initCategories);
+  }, [initCategories]);
+
   return (
 
-    <div class="home">
+    <div className="home">
       
       <NavBar />
 
-      <div class="main">
+      <div className="main">
         <SideBar 
           setWindowVisibility={setWindowVisibility} 
           categories={categories}
         />
         <Timetable 
           planEvents={planEvents}
+          lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+          count={count} setCount={setCount}
           categories={categories}
         />
       </div>

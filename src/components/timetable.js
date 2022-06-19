@@ -1,24 +1,23 @@
 import './timetable.css';
-import { ColourContext } from '../App';
-import { useContext, useState } from 'react';
+import { ColourContext, EventConverter, db } from '../App';
+import { useContext } from 'react';
+import { doc, setDoc } from "firebase/firestore";
 
-function Timetable({planEvents, categories}) {
+function Timetable({planEvents, lifeEvents, setLifeEvents, count, setCount, categories}) {
     const colours = useContext(ColourContext);
-
-    const [lifeEvents, setLifeEvents] = useState([]);
 
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<24; i++) {
             array.push(
-                <div class={`time-slot ${i}`}
+                <div className={`time-slot ${i}`} key={`t${i}`}
                     style={{gridArea: `${i+1} / 1 / ${i+2} / 2`}}>
                     <span>{i<10 ? `0${i}` : i} : 00</span>
                 </div>,
-                <div class={`life-slot ${i}`}
+                <div className={`life-slot ${i}`} key={`l${i}`}
                     style={{gridArea: `${i+1} / 2 / ${i+2} / 3`}}>
                 </div>,
-                <div class={`plan-slot ${i}`}
+                <div className={`plan-slot ${i}`} key={`p${i}`}
                     style={{gridArea: `${i+1} / 3 / ${i+2} / 4`}}>
                 </div>
             );
@@ -26,41 +25,61 @@ function Timetable({planEvents, categories}) {
         return array;
     }
 
-    const getColour = (name) => {
-        const nameAndColour = categories.filter(cat => cat[0] === name)[0];
-        return colours[nameAndColour[1]];
+    const renderEvents = () => {
+        const array = [];
+        for (const [index, event] of planEvents.entries()) {
+            console.log("plan event", event)
+            array.push(
+                <div className="activity" key={index}
+                    style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
+                            background: '#' + colours[categories.get(event.category)]}}
+                >
+                    {event.name}
+                    <button onClick={() => copyToLife(event)}>
+                        Copy to Life
+                    </button>
+                </div>
+            );
+        }
+        for (const [index, event] of lifeEvents.entries()) {console.log("life event", event);
+            array.push(
+                <div className="activity" key={index}
+                    style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
+                            background: '#' + getColour(event.category)}}
+                >
+                    {event.name}
+                </div>
+            );
+        }
+        return array;
+    }
+
+    const getColour = (name) => colours[categories.get(name)];
+
+    const copyToLife = (event) => {
+        setLifeEvents(map => new Map(map.set(count, event)));
+        setCount(count+1);
+
+        // write to database
+        let ref = doc(db, `life/${count}`).withConverter(EventConverter);
+        const write = async () => {
+            setDoc(ref, event);
+            setDoc(doc(db, 'info/count'), {count: count+1});
+        }
+        write().catch(console.error);
     }
 
     return (
-        <div class="timetable">
-            <div class="timetable-heading">
+        <div className="timetable">
+            <div className="timetable-heading">
                 <div></div>
                 <div>Your Life</div>
                 <div>Your Plan</div>
             </div>
-            <div class="timetable-body">
+            <div className="timetable-body">
                 {renderTimeSlots()}
                 
-                {planEvents.map((event) => (
-                    <div class="activity" 
-                        style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
-                                background: '#' + getColour(event.category)}}
-                    >
-                        {event.name}
-                        <button onClick={() => setLifeEvents([...lifeEvents, event])}>
-                            Copy to Life
-                        </button>
-                    </div>
-                ))}
-
-                {lifeEvents.map((event) => (
-                    <div class="activity" 
-                        style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
-                                background: '#' + getColour(event.category)}}
-                    >
-                        {event.name}
-                    </div>
-                ))}
+                {renderEvents()}
             </div>
         </div>
     )

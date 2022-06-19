@@ -11,13 +11,13 @@ function SideBar({setWindowVisibility, categories}) {
     const colours = useContext(ColourContext);
 
     return (
-        <div class="sidebar">
+        <div className="sidebar">
             <Calendar />
-            <div class="categories">
-                {categories.map((cat) => (
-                    <div class={cat[0]} 
-                    style={{background: '#' + colours[cat[1]]}}>
-                        {cat[0]}
+            <div className="categories">
+                {Array.from(categories).map(([name, colour]) => (
+                    <div key={name} 
+                    style={{background: '#' + colours[colour]}}>
+                        {name}
                     </div>
                 ))}
             </div>

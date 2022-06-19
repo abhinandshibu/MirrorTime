@@ -1,6 +1,6 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
-import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { ColourContext, EventConverter, db } from '../App';
 import { useState, useContext } from 'react';
 
@@ -15,14 +15,14 @@ function Create({
 
     const addEvent = () => {
         if (event.name !== "" && +event.end > +event.start) {
-            setPlanEvents([...planEvents, {...event, index: count}]);
+            setPlanEvents(map => new Map(map.set(count, event)));
             setEvent({name: "", category: "", start: 0, end: 0});
             console.log(`name: ${event.name} category: ${event.category} start: ${event.start} end: ${event.end} `);
             setCount(count+1);
             // write to database
             let ref = doc(db, `plan/${count}`).withConverter(EventConverter);
             const write = async () => {
-                setDoc(ref, {...event, index: count});
+                setDoc(ref, event);
                 setDoc(doc(db, 'info/count'), {count: count+1});
             }
             write().catch(console.error);
@@ -32,7 +32,7 @@ function Create({
 
     const addNewCategory = () => {
         if (newCategory[0] !== "") {
-            setCategories([...categories, newCategory]);
+            setCategories(map => new Map(map.set(newCategory[0], newCategory[1])));
             setNewCategory(["", 0]);
         }
     }
@@ -53,33 +53,33 @@ function Create({
                 <Modal.Title>Create New Activity</Modal.Title>
             </Modal.Header>
 
-            <div class="form">
-                <div class="my-row">
+            <div className="form">
+                <div className="my-row">
                     <label>Name: </label>
                     <input type="text" id="name" value={event.name}
                         onChange={(e) => setEvent({...event, name: e.target.value}) } 
                     />
                 </div>
 
-                <div class="my-row">
+                <div className="my-row">
                     <label>Category: </label>
                     <select id="category"
                         onChange={(e) => setEvent({...event, category: e.target.value})}
                     >
-                        {categories.map((cat) => (
-                            <option value={cat[0]}>{cat[0]}</option>
+                        {Array.from(categories.keys()).map((cat) => (
+                            <option value={cat} key={cat}>{cat}</option>
                         ))}
                     </select>
                 </div>
 
-                <div class="my-row">
+                <div className="my-row">
                     <label>Start: </label>
                     <input type="number" id="start" value={event.start} min="0" max="23"
                         onChange={(e) => setEvent({...event, start: e.target.value}) } 
                     />
                 </div>
 
-                <div class="my-row">
+                <div className="my-row">
                     <label>End: </label>
                     <input type="number" id="end" value={event.end} min={+event.start + 1} max="24"
                         onChange={(e) => setEvent({...event,end: e.target.value}) } 
@@ -90,19 +90,20 @@ function Create({
 
                 <hr />
 
-                <label class="new-category-label">Create New Category</label>
+                <label className="new-category-label">Create New Category</label>
 
-                <div class="my-row colours">
+                <div className="my-row colours">
                     <label>Colour: </label>
                     {colours.map((col, index) => (
-                        <div class={`colour ${activeIndex===index ? "selected" : ""}`} 
+                        <div className={`colour ${activeIndex===index ? "selected" : ""}`} 
                             style={{background: '#' + col}}
-                            onClick={() => selectColour(index)}>
+                            onClick={() => selectColour(index)}
+                            key={index}>
                         </div>
                     ))}
                 </div>
                 
-                <div class="my-row">
+                <div className="my-row">
                     <label>Name: </label>
                     <input type="text" value={newCategory[0]}
                         onChange={(e) => setNewCategory([e.target.value, newCategory[1]]) } 
