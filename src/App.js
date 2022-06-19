@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
 import { createContext, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,7 +11,6 @@ import Home from './pages/home';
 import Landing from './pages/landing';
 import Login from './pages/login';
 
-import { BrowserRouter, Routes, Route, UNSAFE_RouteContext } from "react-router-dom";
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
@@ -32,35 +32,35 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 var auth = getAuth(app);
-var firebaseui = require('firebaseui');
-var ui = firebaseui.auth.AuthUI.getInstance();
-if (!ui) {
-  ui = new firebaseui.auth.AuthUI(auth);
-}
+// var firebaseui = require('firebaseui');
+// var ui = firebaseui.auth.AuthUI.getInstance();
+// if (!ui) {
+//   ui = new firebaseui.auth.AuthUI(auth);
+// }
 
-var uiConfig = {
-  callbacks: {
-    signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-      // User successfully signed in.
-      // Return type determines whether we continue the redirect automatically
-      // or whether we leave that to developer to handle.
-      return true;
-    },
-    uiShown: function() {
-      // The widget is rendered.
-      // Hide the loader.
-      document.getElementById('loader').style.display = 'none';
-    }
-  },
-  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-  signInFlow: 'popup',
-  signInSuccessUrl: 'https://www.google.com/', // url-to-redirect-to-on-success
-  signInOptions: [
-    EmailAuthProvider.PROVIDER_ID,
-  ]
-};
+// var uiConfig = {
+//   callbacks: {
+//     signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+//       // User successfully signed in.
+//       // Return type determines whether we continue the redirect automatically
+//       // or whether we leave that to developer to handle.
+//       return true;
+//     },
+//     uiShown: function() {
+//       // The widget is rendered.
+//       // Hide the loader.
+//       document.getElementById('loader').style.display = 'none';
+//     }
+//   },
+//   // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+//   signInFlow: 'popup',
+//   signInSuccessUrl: 'https://www.google.com/', // url-to-redirect-to-on-success
+//   signInOptions: [
+//     EmailAuthProvider.PROVIDER_ID,
+//   ]
+// };
 
-ui.start('#firebaseui-auth-container', uiConfig);
+// ui.start('#firebaseui-auth-container', uiConfig);
 
 // END OF FIREBASE AND AUTH SETUP
 
@@ -131,13 +131,22 @@ function App() {
   }, []);
 
   return (
-    <ColourContext.Provider value={colours}>
-      <Home 
-        initCount={initCount}
-        initPlanEvents={initPlanEvents}
-        initLifeEvents={initLifeEvents}
-      />
-    </ColourContext.Provider>
+    <Router>
+      <Switch>
+        <Route path="/">
+          <ColourContext.Provider value={colours}>
+            <Home 
+              initCount={initCount}
+              initPlanEvents={initPlanEvents}
+              initLifeEvents={initLifeEvents}
+            />
+          </ColourContext.Provider>
+        </Route>
+        <Route path="/landing">
+          <Landing />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

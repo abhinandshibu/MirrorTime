@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { getFirestore, doc, collection, setDoc, deleteDoc, getDoc, getDocs } from "firebase/firestore";
 import { ColourContext, EventConverter, db } from '../App';
 import { useState, useContext } from 'react';
-
+import React from 'react';
 
 function Create({
         windowVisibility, setWindowVisibility, categories, setCategories,
@@ -53,33 +53,33 @@ function Create({
                 <Modal.Title>Create New Activity</Modal.Title>
             </Modal.Header>
 
-            <div class="form">
-                <div class="my-row">
+            <div className="form">
+                <div className="my-row" key="name">
                     <label>Name: </label>
                     <input type="text" id="name" value={event.name}
                         onChange={(e) => setEvent({...event, name: e.target.value}) } 
                     />
                 </div>
 
-                <div class="my-row">
+                <div className="my-row" key="category">
                     <label>Category: </label>
                     <select id="category"
                         onChange={(e) => setEvent({...event, category: e.target.value})}
                     >
-                        {categories.map((cat) => (
+                        {React.Children.toArray(categories.map((cat) => (
                             <option value={cat[0]}>{cat[0]}</option>
-                        ))}
+                        )))}
                     </select>
                 </div>
 
-                <div class="my-row">
+                <div className="my-row" key="start">
                     <label>Start: </label>
                     <input type="number" id="start" value={event.start} min="0" max="23"
                         onChange={(e) => setEvent({...event, start: e.target.value}) } 
                     />
                 </div>
 
-                <div class="my-row">
+                <div className="my-row" key="end">
                     <label>End: </label>
                     <input type="number" id="end" value={event.end} min={+event.start + 1} max="24"
                         onChange={(e) => setEvent({...event,end: e.target.value}) } 
@@ -90,19 +90,19 @@ function Create({
 
                 <hr />
 
-                <label class="new-category-label">Create New Category</label>
+                <label className="new-category-label">Create New Category</label>
 
-                <div class="my-row colours">
+                <div className="my-row colours" key="colors">
                     <label>Colour: </label>
-                    {colours.map((col, index) => (
-                        <div class={`colour ${activeIndex===index ? "selected" : ""}`} 
+                    {React.Children.toArray(colours.map((col, index) => (
+                        <div className={`colour ${activeIndex===index ? "selected" : ""}`} 
                             style={{background: '#' + col}}
                             onClick={() => selectColour(index)}>
                         </div>
-                    ))}
+                    )))}
                 </div>
                 
-                <div class="my-row">
+                <div className="my-row" key="new_name">
                     <label>Name: </label>
                     <input type="text" value={newCategory[0]}
                         onChange={(e) => setNewCategory([e.target.value, newCategory[1]]) } 

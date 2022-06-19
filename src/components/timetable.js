@@ -1,6 +1,7 @@
 import './timetable.css';
 import { ColourContext } from '../App';
 import { useContext, useState } from 'react';
+import React from 'react';
 
 function Timetable({planEvents, categories}) {
     const colours = useContext(ColourContext);
@@ -11,14 +12,14 @@ function Timetable({planEvents, categories}) {
         const array = [];
         for (let i=0; i<24; i++) {
             array.push(
-                <div class={`time-slot ${i}`}
+                <div className={`time-slot ${i}`} key={`time-slot ${i}`}
                     style={{gridArea: `${i+1} / 1 / ${i+2} / 2`}}>
                     <span>{i<10 ? `0${i}` : i} : 00</span>
                 </div>,
-                <div class={`life-slot ${i}`}
+                <div className={`life-slot ${i}`} key={`life-slot ${i}`}
                     style={{gridArea: `${i+1} / 2 / ${i+2} / 3`}}>
                 </div>,
-                <div class={`plan-slot ${i}`}
+                <div className={`plan-slot ${i}`} key={`plan-slot ${i}`}
                     style={{gridArea: `${i+1} / 3 / ${i+2} / 4`}}>
                 </div>
             );
@@ -32,17 +33,17 @@ function Timetable({planEvents, categories}) {
     }
 
     return (
-        <div class="timetable">
-            <div class="timetable-heading">
+        <div className="timetable">
+            <div className="timetable-heading">
                 <div></div>
                 <div>Your Life</div>
                 <div>Your Plan</div>
             </div>
-            <div class="timetable-body">
+            <div className="timetable-body">
                 {renderTimeSlots()}
                 
-                {planEvents.map((event) => (
-                    <div class="activity" 
+                {React.Children.toArray(planEvents.map((event) => (
+                    <div className="activity" 
                         style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
                                 background: '#' + getColour(event.category)}}
                     >
@@ -51,16 +52,16 @@ function Timetable({planEvents, categories}) {
                             Copy to Life
                         </button>
                     </div>
-                ))}
+                )))}
 
-                {lifeEvents.map((event) => (
-                    <div class="activity" 
+                {React.Children.toArray(lifeEvents.map((event) => (
+                    <div className="activity" 
                         style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
                                 background: '#' + getColour(event.category)}}
                     >
                         {event.name}
                     </div>
-                ))}
+                )))}
             </div>
         </div>
     )

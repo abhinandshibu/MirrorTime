@@ -42,11 +42,11 @@ function Home({initCount, initPlanEvents, initLifeEvents}) {
 
   return (
 
-    <div class="home">
+    <div className="home">
       
       <NavBar />
 
-      <div class="main">
+      <div className="main">
         <SideBar 
           setWindowVisibility={setWindowVisibility} 
           categories={categories}
