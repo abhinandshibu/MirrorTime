@@ -1,12 +1,9 @@
 import './timetable.css';
-import { ColourContext, db } from '../App';
+import { db } from '../App';
 import { EventConverter } from '../pages/home';
-import { useContext } from 'react';
 import { doc, setDoc } from "firebase/firestore";
 
 function Timetable({planEvents, lifeEvents, setLifeEvents, count, setCount, categories}) {
-    const colours = useContext(ColourContext);
-
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<24; i++) {
@@ -29,11 +26,10 @@ function Timetable({planEvents, lifeEvents, setLifeEvents, count, setCount, cate
     const renderEvents = () => {
         const array = [];
         for (const [index, event] of planEvents.entries()) {
-            console.log("plan event", event)
             array.push(
                 <div className="activity" key={index}
                     style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
-                            background: '#' + colours[categories.get(event.category)]}}
+                            background: '#' + categories.get(event.category)}}
                 >
                     {event.name}
                     <button onClick={() => copyToLife(event)}>
@@ -42,11 +38,11 @@ function Timetable({planEvents, lifeEvents, setLifeEvents, count, setCount, cate
                 </div>
             );
         }
-        for (const [index, event] of lifeEvents.entries()) {console.log("life event", event);
+        for (const [index, event] of lifeEvents.entries()) {
             array.push(
                 <div className="activity" key={index}
                     style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
-                            background: '#' + getColour(event.category)}}
+                            background: '#' + categories.get(event.category)}}
                 >
                     {event.name}
                 </div>
@@ -54,8 +50,6 @@ function Timetable({planEvents, lifeEvents, setLifeEvents, count, setCount, cate
         }
         return array;
     }
-
-    const getColour = (name) => colours[categories.get(name)];
 
     const copyToLife = (event) => {
         setLifeEvents(map => new Map(map.set(count, event)));

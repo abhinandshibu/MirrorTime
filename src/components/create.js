@@ -18,7 +18,6 @@ function Create({
         if (event.name !== "" && event.category !== "" && +event.end > +event.start) {
             setPlanEvents(map => new Map(map.set(count, event)));
             setEvent({name: "", category: "", start: 0, end: 0});
-            console.log(`name: ${event.name} category: ${event.category} start: ${event.start} end: ${event.end} `);
             setCount(count+1);
             // write to database
             let ref = doc(db, `plan/${count}`).withConverter(EventConverter);
@@ -41,15 +40,14 @@ function Create({
             }
             write().catch(console.error);
             setCategoryName("");
-            setCategoryColour(0);
+            setCategoryColour(colours[0]);
         }
     }
 
+    const colours = useContext(ColourContext);
     const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
     const [categoryName, setCategoryName] = useState("");
-    const [categoryColour, setCategoryColour] = useState(0);
-
-    const colours = useContext(ColourContext);
+    const [categoryColour, setCategoryColour] = useState(colours[0]);
 
 
     return (
@@ -101,11 +99,11 @@ function Create({
 
                 <div className="my-row colours">
                     <label>Colour: </label>
-                    {colours.map((col, index) => (
-                        <div className={`colour ${categoryColour===index ? "selected" : ""}`} 
+                    {colours.map(col => (
+                        <div className={`colour ${categoryColour === col ? "selected" : ""}`} 
                             style={{background: '#' + col}}
-                            onClick={() => setCategoryColour(index)}
-                            key={index}>
+                            onClick={() => setCategoryColour(col)}
+                            key={col}>
                         </div>
                     ))}
                 </div>

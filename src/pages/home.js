@@ -52,7 +52,6 @@ export const EventConverter = {
 let fetched = false;
 
 async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
-  console.log("fetching...");
   const countSnapshot = await getDoc(doc(collection(db, 'info'), 'count'));
 
   if (countSnapshot.exists()) {
@@ -62,19 +61,16 @@ async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) 
     const categorySnapshot = await getDocs(collection(db, 'categories'));
     categorySnapshot.forEach((doc) => {
       setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
-      console.log(`category ${doc.id} added`);
     })
 
     const planSnapshot = await getDocs(collection(db, 'plan').withConverter(EventConverter));
     planSnapshot.forEach((e) => {
       setPlanEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-      console.log(`plan event ${e.id} added`);
     })
 
     const lifeSnapshot = await getDocs(collection(db, 'life').withConverter(EventConverter));
     lifeSnapshot.forEach((e) => {
       setLifeEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-      console.log(`life event ${e.id} added`);
     })
   }
   else {
