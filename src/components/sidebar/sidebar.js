@@ -1,8 +1,13 @@
 import './sidebar.css'
 import Calendar from 'react-calendar';
+import { ColourContext } from '../../App';
+import { useContext } from 'react';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 function SideBar({setPlanWindowShow, setCategoryWindowShow, categories}) {
-
+    let history = useHistory();
+    
     return (
         <div className="sidebar">
             <Calendar />
@@ -17,7 +22,7 @@ function SideBar({setPlanWindowShow, setCategoryWindowShow, categories}) {
                     ))}
                 </div>
             </div>
-            <button id="analytics">Analytics</button>
+            <button id="analytics" onClick={()=>history.push('/analytics')}>Analytics</button>
         </div>
     );
 }
