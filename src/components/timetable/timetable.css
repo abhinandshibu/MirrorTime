@@ -58,6 +58,10 @@
     font-size: 0.75em;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 /* .activity button {
     display: block;
 } */

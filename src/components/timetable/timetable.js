@@ -1,7 +1,6 @@
 import './timetable.css';
 import { db } from '../../App';
-import { EventConverter } from '../../pages/home/home';
-import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
 function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count, setCount, categories}) {
     const renderTimeSlots = () => {
@@ -32,10 +31,12 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
-                        onClick={() => deleteEvent(index, true)} 
+                        onClick={() => deletePlanEvent(index)} 
                     />
                     {event.name}
-                    <button className="copy" onClick={() => copyToLife(event)}>
+                    <button className={`copy ${event.copied ? "hidden" : ""}`} 
+                        onClick={() => copyToLife(index, event)}
+                    >
                         Copy to Life
                     </button>
                 </div>
@@ -48,7 +49,7 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
-                        onClick={() => deleteEvent(index, false)} 
+                        onClick={() => deleteLifeEvent(index, event)} 
                     />
                     {event.name}
                 </div>
@@ -57,22 +58,40 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
         return array;
     }
 
-    const deleteEvent = async (index, isPlan) => {
-        const [setter, collection] = isPlan ? [setPlanEvents, "plan"] : [setLifeEvents, "life"]; 
-        setter(map => {
+    const deletePlanEvent = async (index) => {
+        setPlanEvents(map => {
             map.delete(index);
             return new Map(map);
         });
-        await deleteDoc(doc(db, collection, index.toString()));
+        await deleteDoc(doc(db, "plan", index.toString()));
     }
 
-    const copyToLife = async (event) => {
-        setLifeEvents(map => new Map(map.set(count, event)));
+    const deleteLifeEvent = async (index, event) => {
+        setLifeEvents(map => {
+            map.delete(index);
+            return new Map(map);
+        });
+        await deleteDoc(doc(db, "life", index.toString()));
+
+        if (event.hasOwnProperty("parent")) {
+            const id = event.parent;
+            const parentEvent = planEvents.get(id);
+            setPlanEvents( map => new Map(map.set(id, {...parentEvent, copied: false})) );
+            await updateDoc(doc(db, "plan", id.toString()), {copied: false});
+        }
+    }
+
+    const copyToLife = async (index, event) => {
+        event.copied = true;
+
+        const lifeEvent = {name: event.name, category: event.category, 
+            start: event.start, end: event.end, parent: index};
+        setLifeEvents(map => new Map(map.set(count, lifeEvent)));
         setCount(count+1);
 
         // write to database
-        let ref = doc(db, `life/${count}`).withConverter(EventConverter);
-        await setDoc(ref, event);
+        await updateDoc(doc(db, "plan", index.toString()), {copied: true});
+        await setDoc(doc(db, `life/${count}`), lifeEvent);
         await setDoc(doc(db, 'info/count'), {count: count+1});
     }
 

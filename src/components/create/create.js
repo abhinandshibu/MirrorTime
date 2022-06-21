@@ -2,7 +2,6 @@ import './create.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
 import { ColourContext, db } from '../../App';
-import { EventConverter } from '../../pages/home/home';
 import { useState, useContext } from 'react';
 import React from 'react';
 
@@ -10,17 +9,23 @@ function Create({
         windowVisibility, setWindowVisibility, categories, setCategories,
         setPlanEvents, count, setCount
 }) {
+
+    const colours = useContext(ColourContext);
+    const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
+    const [categoryName, setCategoryName] = useState("");
+    const [categoryColour, setCategoryColour] = useState(colours[0]);
+
     const closeWindow = () => {
         setWindowVisibility(false);
     }
 
     const addEvent = () => {
         if (event.name !== "" && event.category !== "" && +event.end > +event.start) {
-            setPlanEvents(map => new Map(map.set(count, event)));
+            setPlanEvents(map => new Map( map.set(count, {...event, copied: false}) ));
             setEvent({name: "", category: "", start: 0, end: 0});
             setCount(count+1);
             // write to database
-            let ref = doc(db, `plan/${count}`).withConverter(EventConverter);
+            let ref = doc(db, `plan/${count}`);
             const write = async () => {
                 setDoc(ref, event);
                 setDoc(doc(db, 'info/count'), {count: count+1});
@@ -43,11 +48,6 @@ function Create({
             setCategoryColour(colours[0]);
         }
     }
-
-    const colours = useContext(ColourContext);
-    const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
-    const [categoryName, setCategoryName] = useState("");
-    const [categoryColour, setCategoryColour] = useState(colours[0]);
 
 
     return (

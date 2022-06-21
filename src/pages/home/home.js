@@ -10,44 +10,6 @@ import Timetable from '../../components/timetable/timetable';
 import Create from '../../components/create/create';
 // END OF NORMAL IMPORTS
 
-// Google Calendar API
-import ApiCalendar from 'react-google-calendar-api';
-
-const config = {
-  "clientId": "1076991918940-nfgjkcmen5rocbd5p87ai8um6okbss20.apps.googleusercontent.com",
-  "apiKey": "AIzaSyAdsFECf-w0-CGJG3U7rKRkEWYUfTQ-Q0w",
-  "scope": "https://www.googleapis.com/auth/calendar",
-  "discoveryDocs": [
-    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
-  ]
-}
-
-const apiCalendar = new ApiCalendar(config)
-// End Of Google Calendar API
-
-
-
-export const EventConverter = {
-  toFirestore(event) {
-    return {
-      name: event.name, 
-      category: event.category, 
-      start: event.start, 
-      end: event.end
-    };
-  },
-
-  fromFirestore(snapshot, options) {
-    const data = snapshot.data(options);
-    return {
-      name: data.name, 
-      category: data.category, 
-      start: data.start, 
-      end: data.end
-    };
-  }
-}
-
 let fetched = false;
 
 async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
@@ -62,12 +24,12 @@ async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) 
       setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
     })
 
-    const planSnapshot = await getDocs(collection(db, 'plan').withConverter(EventConverter));
+    const planSnapshot = await getDocs(collection(db, 'plan'));
     planSnapshot.forEach((e) => {
       setPlanEvents( map => new Map ( map.set( e.id, e.data() ) ) );
     })
 
-    const lifeSnapshot = await getDocs(collection(db, 'life').withConverter(EventConverter));
+    const lifeSnapshot = await getDocs(collection(db, 'life'));
     lifeSnapshot.forEach((e) => {
       setLifeEvents( map => new Map ( map.set( e.id, e.data() ) ) );
     })
