@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/home/home';
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
+import Analytics from './pages/analytics/analytics'
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
@@ -64,6 +65,11 @@ function App() {
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>
             <Home />
+          </ColourContext.Provider>
+        </Route>
+        <Route exact path="/analytics">
+          <ColourContext.Provider value={colours}>
+            <Analytics />
           </ColourContext.Provider>
         </Route>
         
