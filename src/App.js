@@ -33,7 +33,6 @@ export const db = getFirestore(app);
 
 export const auth = getAuth(app);
 
-
 // END OF FIREBASE AND AUTH SETUP
 
 export const ColourContext = createContext();
@@ -70,6 +69,9 @@ function App() {
 
   // Runs once when the page starts, links up the authentication to the isLoggedIn variable
   useEffect(() => {
+    console.log("AUTH")
+    console.log(auth);
+
     return () => onAuthStateChanged(auth, async (user) => {
       setIsLoggedIn(user);
     });

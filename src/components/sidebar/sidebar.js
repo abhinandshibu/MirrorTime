@@ -3,12 +3,15 @@ import Calendar from 'react-calendar';
 import { ColourContext } from '../../App';
 import { useContext } from 'react';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 function SideBar({setWindowVisibility, categories}) {
     const showWindow = () => {
         setWindowVisibility(true);
     }
 
+    let history = useHistory();
+    
     const colours = useContext(ColourContext);
 
     return (
@@ -23,7 +26,7 @@ function SideBar({setWindowVisibility, categories}) {
                 )))}
             </div>
             <button id="new" onClick={showWindow}>Create New Activity</button>
-            <button id="analytics">Analytics</button>
+            <button id="analytics" onClick={()=>history.push('/analytics')}>Analytics</button>
         </div>
     );
 }
