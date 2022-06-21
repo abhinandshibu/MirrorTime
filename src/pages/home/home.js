@@ -7,8 +7,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import SideBar from '../../components/sidebar/sidebar';
 import Timetable from '../../components/timetable/timetable';
-import Create from '../../components/create/create';
-import NewCategory from '../../components/new-category/new-category';
+import NewPlan from '../../components/create/new-plan';
+import NewLife from '../../components/create/new-life';
+import NewCategory from '../../components/create/new-category';
 // END OF NORMAL IMPORTS
 
 let fetched = false;
@@ -43,7 +44,8 @@ async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) 
 
 function Home() {
 
-  const [eventWindowShow, setEventWindowShow] = useState(false);
+  const [planWindowShow, setPlanWindowShow] = useState(false);
+  const [lifeWindowShow, setLifeWindowShow] = useState(false);
   const [categoryWindowShow, setCategoryWindowShow] = useState(false);
   const [categories, setCategories] = useState(new Map());
   const [planEvents, setPlanEvents] = useState(new Map());
@@ -63,12 +65,13 @@ function Home() {
  
       <div className="main">
         <SideBar 
-          setEventWindowShow={setEventWindowShow} 
           setCategoryWindowShow={setCategoryWindowShow}
           categories={categories}
         />
 
         <Timetable 
+          setPlanWindowShow={setPlanWindowShow} 
+          setLifeWindowShow={setLifeWindowShow} 
           planEvents={planEvents} setPlanEvents={setPlanEvents}
           lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
           count={count} setCount={setCount}
@@ -76,10 +79,17 @@ function Home() {
         />
       </div>
 
-      <Create 
-        eventWindowShow={eventWindowShow} setEventWindowShow={setEventWindowShow}
+      <NewPlan 
+        planWindowShow={planWindowShow} setPlanWindowShow={setPlanWindowShow}
         categories={categories}
         setPlanEvents={setPlanEvents}
+        count={count} setCount={setCount}
+      />
+
+      <NewLife 
+        lifeWindowShow={lifeWindowShow} setLifeWindowShow={setLifeWindowShow}
+        categories={categories}
+        setLifeEvents={setLifeEvents}
         count={count} setCount={setCount}
       />
 

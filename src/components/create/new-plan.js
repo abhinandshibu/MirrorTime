@@ -1,20 +1,20 @@
-import './create.css';
+import './new-plan.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
 import { db } from '../../App';
 import { useState } from 'react';
 import React from 'react';
 
-function Create({
-        eventWindowShow, setEventWindowShow, categories,
+function NewPlan({
+        planWindowShow, setPlanWindowShow, categories,
         setPlanEvents, count, setCount
 }) {
 
-    const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
+    const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0, copied: false});
 
     const addEvent = () => {
         if (event.name !== "" && event.category !== "" && +event.end > +event.start) {
-            setPlanEvents(map => new Map( map.set(count, {...event, copied: false}) ));
+            setPlanEvents(map => new Map( map.set(count, event) ));
             setEvent({name: "", category: "", start: 0, end: 0});
             setCount(count+1);
             // write to database
@@ -29,9 +29,9 @@ function Create({
     }
 
     return (
-        <Modal show={eventWindowShow} onHide={() => setEventWindowShow(false)}>
+        <Modal show={planWindowShow} onHide={() => setPlanWindowShow(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Create New Activity</Modal.Title>
+                <Modal.Title>Add a new event to your plan...</Modal.Title>
             </Modal.Header>
 
             <div className="form">
@@ -76,4 +76,4 @@ function Create({
     );
 }
 
-export default Create;
+export default NewPlan;

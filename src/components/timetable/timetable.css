@@ -12,6 +12,21 @@
     font-weight: 700;
 }
 
+.add {
+    position: relative;
+    bottom: 4px;
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    border-radius: 50%;
+}
+.add:hover {
+    opacity: 1;
+    box-shadow: 0 0 20px 0 white;
+}
+
 .timetable-body {
     grid-area: timetable;
     height: calc(90vh - 90px);
@@ -48,7 +63,6 @@
     cursor: pointer;
     opacity: 0.5;
 }
-
 .delete:hover {
     opacity: 1;
 }

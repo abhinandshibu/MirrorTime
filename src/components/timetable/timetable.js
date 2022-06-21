@@ -2,7 +2,11 @@ import './timetable.css';
 import { db } from '../../App';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
-function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count, setCount, categories}) {
+function Timetable({
+    setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
+    lifeEvents, setLifeEvents, count, setCount, categories
+}) {
+    
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<24; i++) {
@@ -99,8 +103,18 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
         <div className="timetable">
             <div className="timetable-heading">
                 <div></div>
-                <div>Your Life</div>
-                <div>Your Plan</div>
+                <div>
+                    Your Life
+                    <img className="add" src={require("./plus.png")} alt="log a real event"
+                        onClick={() => setLifeWindowShow(true)} 
+                    />
+                </div>
+                <div>
+                    Your Plan
+                    <img className="add" src={require("./plus.png")} alt="plan an event"
+                        onClick={() => setPlanWindowShow(true)} 
+                    />
+                </div>
             </div>
             <div className="timetable-body">
                 {renderTimeSlots()}

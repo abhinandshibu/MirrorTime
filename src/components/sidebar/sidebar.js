@@ -1,7 +1,7 @@
 import './sidebar.css'
 import Calendar from 'react-calendar';
 
-function SideBar({setEventWindowShow, setCategoryWindowShow, categories}) {
+function SideBar({setPlanWindowShow, setCategoryWindowShow, categories}) {
 
     return (
         <div className="sidebar">
@@ -17,7 +17,6 @@ function SideBar({setEventWindowShow, setCategoryWindowShow, categories}) {
                     ))}
                 </div>
             </div>
-            <button id="new" onClick={() => setEventWindowShow(true)}>Create New Activity</button>
             <button id="analytics">Analytics</button>
         </div>
     );
