@@ -1,23 +1,16 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { ColourContext, db } from '../../App';
-import { useState, useContext } from 'react';
+import { db } from '../../App';
+import { useState } from 'react';
 import React from 'react';
 
 function Create({
-        windowVisibility, setWindowVisibility, categories, setCategories,
+        eventWindowShow, setEventWindowShow, categories,
         setPlanEvents, count, setCount
 }) {
 
-    const colours = useContext(ColourContext);
     const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
-    const [categoryName, setCategoryName] = useState("");
-    const [categoryColour, setCategoryColour] = useState(colours[0]);
-
-    const closeWindow = () => {
-        setWindowVisibility(false);
-    }
 
     const addEvent = () => {
         if (event.name !== "" && event.category !== "" && +event.end > +event.start) {
@@ -35,23 +28,8 @@ function Create({
         }
     }
 
-    const addNewCategory = () => {
-        if (categoryName !== "") {
-            setCategories(map => new Map(map.set(categoryName, categoryColour)));
-            // write to database
-            let ref = doc(db, `categories/${categoryName}`);
-            const write = async () => {
-                setDoc(ref, {colour: categoryColour});
-            }
-            write().catch(console.error);
-            setCategoryName("");
-            setCategoryColour(colours[0]);
-        }
-    }
-
-
     return (
-        <Modal show={windowVisibility} onHide={closeWindow}>
+        <Modal show={eventWindowShow} onHide={() => setEventWindowShow(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>Create New Activity</Modal.Title>
             </Modal.Header>
@@ -93,30 +71,6 @@ function Create({
                 
                 <button onClick={addEvent} id="add-event">Add Event</button>
 
-                <hr />
-
-                <label className="new-category-label">Create New Category</label>
-
-                <div className="my-row colours">
-                    <label>Colour: </label>
-                    {colours.map(col => (
-                        <div className={`colour ${categoryColour === col ? "selected" : ""}`} 
-                            style={{background: '#' + col}}
-                            onClick={() => setCategoryColour(col)}
-                            key={col}>
-                        </div>
-                    ))}
-                </div>
-                
-                <div className="my-row">
-                    <label>Name: </label>
-                    <input type="text" value={categoryName}
-                        onChange={(e) => setCategoryName(e.target.value) } 
-                    />
-                </div>
-                
-                <button onClick={addNewCategory}>Add Category</button>
-                
             </div>
         </Modal>
     );

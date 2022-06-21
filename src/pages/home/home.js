@@ -8,21 +8,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import SideBar from '../../components/sidebar/sidebar';
 import Timetable from '../../components/timetable/timetable';
 import Create from '../../components/create/create';
+import NewCategory from '../../components/new-category/new-category';
 // END OF NORMAL IMPORTS
 
 let fetched = false;
 
 async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
-  const countSnapshot = await getDoc(doc(collection(db, 'info'), 'count'));
+  const countSnapshot = await getDoc(doc(db, 'info', 'count'));
 
   if (countSnapshot.exists()) {
-    // User has used app before, load events and categories (if any)
+    // User has used app before, set current event index and load events (if any)
     setCount(countSnapshot.data().count);
-
-    const categorySnapshot = await getDocs(collection(db, 'categories'));
-    categorySnapshot.forEach((doc) => {
-      setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
-    })
 
     const planSnapshot = await getDocs(collection(db, 'plan'));
     planSnapshot.forEach((e) => {
@@ -35,14 +31,20 @@ async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) 
     })
   }
   else {
-    await setDoc(doc(collection(db, 'info'), 'count'), {count: 0});
+    await setDoc(doc(db, 'info', 'count'), {count: 0});
   }
+
+  const categorySnapshot = await getDocs(collection(db, 'categories'));
+    categorySnapshot.forEach((doc) => {
+      setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
+    })
 }
 
 
 function Home() {
 
-  const [windowVisibility, setWindowVisibility] = useState(false);
+  const [eventWindowShow, setEventWindowShow] = useState(false);
+  const [categoryWindowShow, setCategoryWindowShow] = useState(false);
   const [categories, setCategories] = useState(new Map());
   const [planEvents, setPlanEvents] = useState(new Map());
   const [lifeEvents, setLifeEvents] = useState(new Map());
@@ -61,9 +63,11 @@ function Home() {
  
       <div className="main">
         <SideBar 
-          setWindowVisibility={setWindowVisibility} 
+          setEventWindowShow={setEventWindowShow} 
+          setCategoryWindowShow={setCategoryWindowShow}
           categories={categories}
         />
+
         <Timetable 
           planEvents={planEvents} setPlanEvents={setPlanEvents}
           lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
@@ -73,10 +77,15 @@ function Home() {
       </div>
 
       <Create 
-        windowVisibility={windowVisibility} setWindowVisibility={setWindowVisibility}
-        categories={categories} setCategories={setCategories}
+        eventWindowShow={eventWindowShow} setEventWindowShow={setEventWindowShow}
+        categories={categories}
         setPlanEvents={setPlanEvents}
         count={count} setCount={setCount}
+      />
+
+      <NewCategory
+        categoryWindowShow={categoryWindowShow} setCategoryWindowShow={setCategoryWindowShow}
+        setCategories={setCategories}
       />
      
     </div>

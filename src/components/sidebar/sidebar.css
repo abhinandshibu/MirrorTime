@@ -12,15 +12,25 @@
 .categories {
     background: white;
     height: 40vh;
-    overflow-y: scroll;
-    padding: 0 10px;
     border-radius: 10px;
+    padding: 10px;
 }
 
-.categories * {
-    height: 7vh;
+#new-category {
+    height: 10%;
+}
+
+.category-list {
+    background: white;
+    height: calc(90% - 10px);
+    overflow-y: scroll;
+    margin-top: 10px;
+}
+
+.category {
+    height: 6vh;
     width: 100%;
-    margin: 10px 0;
+    margin-bottom: 10px;
     border-radius: 5px;
     background: white;
     display: flex;
