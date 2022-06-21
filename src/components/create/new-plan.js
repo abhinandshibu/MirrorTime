@@ -25,7 +25,7 @@ function NewPlan({
             }
             write().catch(console.error);
             
-        }
+        } else {console.log("fail", event.start, event.end)}
     }
 
     return (
@@ -57,16 +57,26 @@ function NewPlan({
 
                 <div className="my-row">
                     <label>Start: </label>
-                    <input type="number" id="start" value={event.start} min="0" max="23"
-                        onChange={(e) => setEvent({...event, start: e.target.value}) } 
-                    />
+                    <select id="start"
+                        onChange={(e) => {console.log(+e.target.value);setEvent({...event, start: +e.target.value})}}
+                    >
+                        <option value={0} key={0}>0</option>
+                        {[...Array(23).keys()].map(i => (
+                            <option value={i+1} key={i+1}>{i+1}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="my-row">
                     <label>End: </label>
-                    <input type="number" id="end" value={event.end} min={+event.start + 1} max="24"
-                        onChange={(e) => setEvent({...event,end: e.target.value}) } 
-                    />
+                    <select id="end"
+                        onChange={(e) => {console.log(+e.target.value);setEvent({...event, end: +e.target.value})}}
+                    >
+                        <option value={+event.start + 1} key={0}>{+event.start + 1}</option>
+                        {[...Array(23 - event.start).keys()].map(i => (
+                            <option value={+event.start + i + 2} key={i}>{+event.start + i + 2}</option>
+                        ))}
+                    </select>
                 </div>
                 
                 <button onClick={addEvent} id="add-event">Add Event</button>
