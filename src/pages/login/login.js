@@ -12,6 +12,7 @@ function Login(props) {
     var uiConfig = {
     callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            console.log("AUTH RESULT: " + authResult);
             // User successfully signed in.
             // Return type determines whether we continue the redirect automatically
             // or whether we leave that to developer to handle.
