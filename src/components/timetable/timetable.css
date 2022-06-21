@@ -42,8 +42,8 @@
     position: absolute;
     right: 10px;
     top: 10px;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     background-color: inherit;
     cursor: pointer;
     opacity: 0.5;
@@ -51,6 +51,11 @@
 
 .delete:hover {
     opacity: 1;
+}
+
+.copy {
+    background-color: rgba(255, 255, 255, 0.3);
+    font-size: 0.75em;
 }
 
 /* .activity button {

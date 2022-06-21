@@ -31,11 +31,11 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
                     style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
                             background: '#' + categories.get(event.category)}}
                 >
-                    <img class="delete" src={require("./delete.png")} alt="delete event"
+                    <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deleteEvent(index, true)} 
                     />
                     {event.name}
-                    <button onClick={() => copyToLife(event)}>
+                    <button className="copy" onClick={() => copyToLife(event)}>
                         Copy to Life
                     </button>
                 </div>
@@ -47,7 +47,7 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
                     style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
                             background: '#' + categories.get(event.category)}}
                 >
-                    <img class="delete" src={require("./delete.png")} alt="delete event"
+                    <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deleteEvent(index, false)} 
                     />
                     {event.name}
@@ -59,8 +59,11 @@ function Timetable({planEvents, setPlanEvents, lifeEvents, setLifeEvents, count,
 
     const deleteEvent = async (index, isPlan) => {
         const [setter, collection] = isPlan ? [setPlanEvents, "plan"] : [setLifeEvents, "life"]; 
-        setter(map => new Map(map.delete(index)));
-        await deleteDoc(doc(db, collection, index));
+        setter(map => {
+            map.delete(index);
+            return new Map(map);
+        });
+        await deleteDoc(doc(db, collection, index.toString()));
     }
 
     const copyToLife = async (event) => {
