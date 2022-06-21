@@ -14,6 +14,7 @@
     "bower": "^1.8.14",
     "firebase": "^9.8.3",
     "firebaseui": "^6.0.1",
+    "googleapis": "^103.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-calendar": "^3.7.0",

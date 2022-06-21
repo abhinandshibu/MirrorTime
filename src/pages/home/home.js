@@ -103,7 +103,7 @@ function Home() {
           categories={categories}
         />
         <Timetable 
-          planEvents={planEvents}
+          planEvents={planEvents} setPlanEvents={setPlanEvents}
           lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
           count={count} setCount={setCount}
           categories={categories}
