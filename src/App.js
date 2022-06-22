@@ -37,6 +37,13 @@ export const auth = getAuth(app);
 export const ColourContext = createContext();
 const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
+export const toYmd = (date) => {
+  return {year: date.getFullYear(), month: date.getMonth(), date: date.getDate()};
+};
+
+export const months = ["January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"];
+
 function App() {
   // Runs once when the page starts, links up the authentication to the isLoggedIn variable
   useEffect(() => {

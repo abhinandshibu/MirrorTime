@@ -4,20 +4,26 @@
     border-radius: 10px;
 }
 
+.today {
+    margin-bottom: 5px;
+    font-size: 2em;
+    font-weight: 200;
+}
+
 .timetable-heading {
-    height: 50px;
+    margin: 5px 0;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
-    font-size: 1.5em;
+    font-size: 1.3em;
     font-weight: 700;
 }
 
 .add {
     position: relative;
-    bottom: 4px;
-    width: 40px;
-    height: 40px;
-    margin-left: 20px;
+    bottom: 3px;
+    width: 30px;
+    height: 30px;
+    margin-left: 15px;
     cursor: pointer;
     opacity: 0.7;
     border-radius: 50%;
@@ -29,7 +35,7 @@
 
 .timetable-body {
     grid-area: timetable;
-    height: calc(90vh - 90px);
+    height: 75vh;
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;

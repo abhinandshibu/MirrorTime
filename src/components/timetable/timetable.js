@@ -1,10 +1,10 @@
 import './timetable.css';
-import { db } from '../../App';
+import { db, months } from '../../App';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
-    lifeEvents, setLifeEvents, count, setCount, categories
+    lifeEvents, setLifeEvents, count, setCount, categories, date
 }) {
     
     const renderTimeSlots = () => {
@@ -95,12 +95,13 @@ function Timetable({
 
         // write to database
         await updateDoc(doc(db, "plan", index.toString()), {copied: true});
-        await setDoc(doc(db, `life/${count}`), lifeEvent);
+        await setDoc(doc(db, `life/${count}`), {...lifeEvent, date: date});
         await setDoc(doc(db, 'info/count'), {count: count+1});
     }
 
     return (
         <div className="timetable">
+            <div className="today">{date.date} {months[date.month]} {date.year}</div>
             <div className="timetable-heading">
                 <div></div>
                 <div>

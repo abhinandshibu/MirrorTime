@@ -9,6 +9,20 @@
     align-items: stretch;
 }
 
+.react-datepicker__day, .react-datepicker__day-name {
+    line-height: 1.2rem !important;
+}
+
+.react-datepicker__day--today {
+    border-radius: 0.3rem; 
+    font-weight: 900 !important;
+}
+
+.react-datepicker__day--selected {
+    background-color: #8282b9 !important;
+    font-weight: 900;
+}
+
 .categories {
     background: white;
     height: 40vh;

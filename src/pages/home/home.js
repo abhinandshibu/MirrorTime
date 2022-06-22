@@ -1,7 +1,7 @@
 import './home.css';
 import { useState, useEffect } from 'react';
-import { doc, collection, setDoc, getDoc, getDocs } from "firebase/firestore";
-import { db } from '../../App';
+import { doc, collection, setDoc, getDoc, getDocs, where, query } from "firebase/firestore";
+import { db, toYmd } from '../../App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,31 +14,20 @@ import NewCategory from '../../components/create/new-category';
 
 let fetched = false;
 
-async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
+async function fetchData(setCount, setCategories) {
   const countSnapshot = await getDoc(doc(db, 'info', 'count'));
-
   if (countSnapshot.exists()) {
-    // User has used app before, set current event index and load events (if any)
     setCount(countSnapshot.data().count);
-
-    const planSnapshot = await getDocs(collection(db, 'plan'));
-    planSnapshot.forEach((e) => {
-      setPlanEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-    })
-
-    const lifeSnapshot = await getDocs(collection(db, 'life'));
-    lifeSnapshot.forEach((e) => {
-      setLifeEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-    })
-  }
-  else {
+  } else {
     await setDoc(doc(db, 'info', 'count'), {count: 0});
   }
 
+  let temp = new Map();
   const categorySnapshot = await getDocs(collection(db, 'categories'));
-    categorySnapshot.forEach((doc) => {
-      setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
-    })
+  categorySnapshot.forEach((doc) => {
+    temp.set(doc.id, doc.data().colour);
+  });
+  setCategories(new Map(temp));
 }
 
 
@@ -51,14 +40,33 @@ function Home() {
   const [planEvents, setPlanEvents] = useState(new Map());
   const [lifeEvents, setLifeEvents] = useState(new Map());
   const [count, setCount] = useState(0);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(toYmd(new Date()));
 
-  useEffect(() => {
+  useEffect(() => {console.log("useeffect 1");
     if (!fetched) {
-      fetchData(setCount, setCategories, setPlanEvents, setLifeEvents).catch(console.error);
+      fetchData(setCount, setCategories).catch(console.error);
       fetched = true;
     }
   }, []);
+
+  useEffect(() => {console.log("useeffect 2");
+    const fetchData = async () => {
+      let temp = new Map();
+      const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date", "==", date)));
+      planSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setPlanEvents(new Map(temp));
+
+      temp.clear();
+      const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date", "==", date)));
+      lifeSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setLifeEvents(new Map(temp));
+    };
+    fetchData().catch(console.error);
+  }, [date]);
 
   return (
 
@@ -68,6 +76,7 @@ function Home() {
         <SideBar 
           setCategoryWindowShow={setCategoryWindowShow}
           categories={categories}
+          date={date} setDate={setDate}
         />
 
         <Timetable 
@@ -77,6 +86,7 @@ function Home() {
           lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
           count={count} setCount={setCount}
           categories={categories}
+          date={date}
         />
       </div>
 
@@ -85,6 +95,7 @@ function Home() {
         categories={categories}
         setPlanEvents={setPlanEvents}
         count={count} setCount={setCount}
+        date={date}
       />
 
       <NewLife 
@@ -92,6 +103,7 @@ function Home() {
         categories={categories}
         setLifeEvents={setLifeEvents}
         count={count} setCount={setCount}
+        date={date}
       />
 
       <NewCategory
