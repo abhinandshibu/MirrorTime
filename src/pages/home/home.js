@@ -1,5 +1,7 @@
 import './home.css';
 import { useState, useEffect } from 'react';
+import { doc, collection, setDoc, getDoc, getDocs, where, query } from "firebase/firestore";
+import { db, toYmd } from '../../App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,18 +12,11 @@ import NewLife from '../../components/create/new-life';
 import NewCategory from '../../components/create/new-category';
 // END OF NORMAL IMPORTS
 
-
-
-
 function Home(props) {
 
   const [planWindowShow, setPlanWindowShow] = useState(false);
   const [lifeWindowShow, setLifeWindowShow] = useState(false);
   const [categoryWindowShow, setCategoryWindowShow] = useState(false);
-
-  // const [categories, setCategories] = useState(new Map());
-  // const [planEvents, setPlanEvents] = useState(new Map());
-  // const [lifeEvents, setLifeEvents] = useState(new Map());
   
   const categories = props.categories
   const setCategories = props.setCategories
@@ -29,8 +24,28 @@ function Home(props) {
   const setPlanEvents = props.setPlanEvents
   const lifeEvents = props.lifeEvents
   const setLifeEvents = props.setLifeEvents
-  const count = props.count
-  const setCount = props.setCount   
+
+  const [count, setCount] = useState(0);
+  const [date, setDate] = useState(toYmd(new Date()));
+
+  useEffect(() => {console.log("useeffect 2");
+    const fetchData = async () => {
+      let temp = new Map();
+      const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date", "==", date)));
+      planSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setPlanEvents(new Map(temp));
+
+      temp.clear();
+      const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date", "==", date)));
+      lifeSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setLifeEvents(new Map(temp));
+    };
+    fetchData().catch(console.error);
+  }, [date]);
 
   return (
 
@@ -40,6 +55,7 @@ function Home(props) {
         <SideBar 
           setCategoryWindowShow={setCategoryWindowShow}
           categories={categories}
+          date={date} setDate={setDate}
         />
 
         <Timetable 
@@ -49,6 +65,7 @@ function Home(props) {
           lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
           count={count} setCount={setCount}
           categories={categories}
+          date={date}
         />
       </div>
 
@@ -57,6 +74,7 @@ function Home(props) {
         categories={categories}
         setPlanEvents={setPlanEvents}
         count={count} setCount={setCount}
+        date={date}
       />
 
       <NewLife 
@@ -64,6 +82,7 @@ function Home(props) {
         categories={categories}
         setLifeEvents={setLifeEvents}
         count={count} setCount={setCount}
+        date={date}
       />
 
       <NewCategory

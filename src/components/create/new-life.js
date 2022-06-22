@@ -7,7 +7,7 @@ import React from 'react';
 
 function NewLife({
         lifeWindowShow, setLifeWindowShow, categories,
-        setLifeEvents, count, setCount
+        setLifeEvents, count, setCount, date
 }) {
 
     const [event, setEvent] = useState({name: "", category: "", start: 0, end: 0});
@@ -20,11 +20,11 @@ function NewLife({
             // write to database
             let ref = doc(db, `life/${count}`);
             const write = async () => {
-                setDoc(ref, event);
+                setDoc(ref, {...event, date: date});
                 setDoc(doc(db, 'info/count'), {count: count+1});
             }
             write().catch(console.error);
-            
+            setLifeWindowShow(false);
         }
     }
 
@@ -58,7 +58,9 @@ function NewLife({
                 <div className="my-row">
                     <label>Start: </label>
                     <select id="start"
-                        onChange={(e) => setEvent({...event, start: e.target.value})}
+                        onChange={(e) => {
+                            setEvent({...event, start: +e.target.value, end: +e.target.value + 1})
+                        }}
                     >
                         <option value={0} key={0}>0</option>
                         {[...Array(23).keys()].map(i => (
@@ -70,7 +72,7 @@ function NewLife({
                 <div className="my-row">
                     <label>End: </label>
                     <select id="end"
-                        onChange={(e) => setEvent({...event, end: e.target.value})}
+                        onChange={(e) => setEvent({...event, end: +e.target.value})}
                     >
                         <option value={+event.start + 1} key={0}>{+event.start + 1}</option>
                         {[...Array(23 - event.start).keys()].map(i => (

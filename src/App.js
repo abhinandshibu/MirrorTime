@@ -72,6 +72,12 @@ async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) 
 
 // END OF FUNCTION FOR FETCHING DATA
 
+export const toYmd = (date) => {
+  return {year: date.getFullYear(), month: date.getMonth(), date: date.getDate()};
+};
+
+export const months = ["January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"];
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

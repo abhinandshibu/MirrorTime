@@ -21,6 +21,7 @@
     "react-calendar": "^3.7.0",
     "react-chartjs-2": "^4.2.0",
     "react-collapsed": "^3.3.2",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
     "react-google-calendar-api": "^2.0.3",
     "react-router-dom": "^5.3.3",
