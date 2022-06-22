@@ -18,6 +18,7 @@ function Analytics(props) {
     const propLifeEvents = props.lifeEvents
     
     const categories = Array.from(props.categories.keys())
+    const categoriesColors = Array.from(props.categories.values()).map(color => '#' + color)
     
     const planEvents = Array.from(propPlanEvents.values())
     const planData = new Map()
@@ -40,7 +41,7 @@ function Analytics(props) {
     if (analytic === "bar-chart") {
         analyticComponent = <BarChart categories={categories} planData={planData} lifeData={lifeData}/>
     } else if (analytic === "pie-chart") {
-        analyticComponent = <PieChart categories={categories} planData={planData} lifeData={lifeData}/>
+        analyticComponent = <PieChart categories={categories} categoriesColors={categoriesColors} planData={planData} lifeData={lifeData}/>
     } else {
         analyticComponent = <></>
     }
