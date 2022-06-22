@@ -31,14 +31,23 @@ async function fetchData(setCount, setCategories) {
 }
 
 
-function Home() {
+function Home(props) {
 
   const [planWindowShow, setPlanWindowShow] = useState(false);
   const [lifeWindowShow, setLifeWindowShow] = useState(false);
   const [categoryWindowShow, setCategoryWindowShow] = useState(false);
+
   const [categories, setCategories] = useState(new Map());
   const [planEvents, setPlanEvents] = useState(new Map());
   const [lifeEvents, setLifeEvents] = useState(new Map());
+  
+  // const categories = props.categories
+  // const setCategories = props.setCategories
+  // const planEvents = props.planEvents
+  // const setPlanEvents = props.setPlanEvents
+  // const lifeEvents = props.lifeEvents
+  // const setLifeEvents = props.setLifeEvents
+
   const [count, setCount] = useState(0);
   const [date, setDate] = useState(toYmd(new Date()));
 

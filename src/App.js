@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './pages/home/home';
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
+import Analytics from './pages/analytics/analytics'
 // END OF NORMAL IMPORTS
 
 // FIREBASE AND AUTH SETUP
@@ -57,6 +58,10 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // const [categories, setCategories] = useState(new Map());
+  // const [planEvents, setPlanEvents] = useState(new Map());
+  // const [lifeEvents, setLifeEvents] = useState(new Map());
+
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn}/>
@@ -71,6 +76,14 @@ function App() {
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>
             <Home />
+            {/* <Home categories={categories} setCategories={setCategories} 
+              planEvents={planEvents} setPlanEvents={setPlanEvents}
+              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}/> */}
+          </ColourContext.Provider>
+        </Route>
+        <Route exact path="/analytics">
+          <ColourContext.Provider value={colours}>
+            <Analytics />
           </ColourContext.Provider>
         </Route>
         
