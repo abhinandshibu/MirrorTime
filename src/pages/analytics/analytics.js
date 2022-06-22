@@ -10,24 +10,43 @@ const options = [
     { value: 'pie-chart', label: 'Pie Chart' },
 ]
 
-function Analytics() {
+function Analytics(props) {
     const [analytic, setAnalytic] = useState("");
+
+    const categoriesMap = props.categories
+    const propPlanEvents = props.planEvents
+    const propLifeEvents = props.lifeEvents
+    
+    const categories = Array.from(props.categories.keys())
+    
+    const planEvents = Array.from(propPlanEvents.values())
+    const planData = new Map()
+    categories.forEach(category => planData.set(category, 0))
+    planEvents.forEach(obj => {
+        planData.set(obj.category, (planData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start));
+    })
+    const objPlanData = Object.fromEntries(planData)
+
+    const lifeEvents = Array.from(propLifeEvents.values())
+    const lifeData = new Map()
+    categories.forEach(category => lifeData.set(category, 0))
+    lifeEvents.forEach(obj => {
+        lifeData.set(obj.category, (lifeData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start));
+    })
+    const objLifeData = Object.fromEntries(lifeData)
 
     let analyticComponent = <></>
 
     if (analytic === "bar-chart") {
-        console.log(analytic)
-        analyticComponent = <BarChart />
+        analyticComponent = <BarChart categories={categories} planData={planData} lifeData={lifeData}/>
     } else if (analytic === "pie-chart") {
-        console.log(analytic)
-        analyticComponent = <PieChart />
+        analyticComponent = <PieChart categories={categories} planData={planData} lifeData={lifeData}/>
     } else {
-        console.log(analytic)
         analyticComponent = <></>
     }
-   
+
     return (
-        <div id="analytics">
+        <div id="analytics-page">
             <Select options={options} onChange={(option) => setAnalytic(option.value)} placeholder="Please select an analytic to view."/>
             {analyticComponent}
         </div>

@@ -1,38 +1,58 @@
 import { Bar } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 
-// const options = {
-//     responsive: true,
-//     plugins: {
-//         legend: {
-//         position: 'top',
-//         },
-//         title: {
-//         display: true,
-//         text: 'How you planned your life, and how you spend it.',
-//         },
-//     },
-// };
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
-// const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-// export const data = {
-//   labels,
-//   datasets: [
-//     {
-//       label: 'Dataset 1',
-//       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-//       backgroundColor: 'rgba(255, 99, 132, 0.5)',
-//     },
-//     {
-//       label: 'Dataset 2',
-//       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-//       backgroundColor: 'rgba(53, 162, 235, 0.5)',
-//     },
-//   ],
-// };
 
-function BarChart() {
-    return <p>this is a bar chart</p>
+function BarChart(props) {
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+            position: 'top',
+            },
+            title: {
+            display: true,
+            text: 'How you planned your life, and how you spend it.',
+            },
+        },
+    };
+        
+    const datasets = [
+        {
+            label: 'Your Plan',
+            data: Array.from(props.planData.values()),
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+        {
+            label: 'Your Life',
+            data: Array.from(props.lifeData.values()),
+            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        },
+    ]
+
+    const data = {
+        labels: props.categories,
+        datasets: datasets,
+    }
+
+    return <Bar options={options} data={data} />
 }
 
 export default BarChart;
