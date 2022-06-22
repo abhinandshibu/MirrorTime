@@ -51,6 +51,10 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // const [categories, setCategories] = useState(new Map());
+  // const [planEvents, setPlanEvents] = useState(new Map());
+  // const [lifeEvents, setLifeEvents] = useState(new Map());
+
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn}/>
@@ -65,6 +69,9 @@ function App() {
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>
             <Home />
+            {/* <Home categories={categories} setCategories={setCategories} 
+              planEvents={planEvents} setPlanEvents={setPlanEvents}
+              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}/> */}
           </ColourContext.Provider>
         </Route>
         <Route exact path="/analytics">
