@@ -39,13 +39,8 @@
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
-    grid-template-rows: repeat(24, 80px);
-    grid-gap: 2px;
-}
-
-.timetable-body * {
-    background: lightcyan;
-
+    grid-template-rows: repeat(288, 8px);
+    grid-gap: 0.5px;
 }
 
 .event {

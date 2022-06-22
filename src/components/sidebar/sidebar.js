@@ -27,7 +27,7 @@ function SideBar({setCategoryWindowShow, categories, date, setDate }) {
                     ))}
                 </div>
             </div>
-            <button id="analytics" onClick={()=>history.push('/analytics')}>Analytics</button>
+            <button id="analytics-button" onClick={()=>history.push('/analytics')}>Analytics</button>
         </div>
     );
 }

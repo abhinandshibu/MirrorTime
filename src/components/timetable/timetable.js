@@ -9,17 +9,18 @@ function Timetable({
     
     const renderTimeSlots = () => {
         const array = [];
-        for (let i=0; i<24; i++) {
+        for (let i=0; i<96; i++) {
+            let colour = (i%8 > 3) ? "white" : "#f0ffff";
             array.push(
                 <div className={`time-slot ${i}`} key={`t${i}`}
-                    style={{gridArea: `${i+1} / 1 / ${i+2} / 2`}}>
-                    <span>{i<10 ? `0${i}` : i} : 00</span>
+                    style={{gridArea: `${3*i+1} / 1 / ${3*i+4} / 2`, background: colour}}>
+                    <span>{i%4===0 ? (i<40 ? `0${i/4} : 00` : `${i/4} : 00`) : ""}</span>
                 </div>,
                 <div className={`life-slot ${i}`} key={`l${i}`}
-                    style={{gridArea: `${i+1} / 2 / ${i+2} / 3`}}>
+                    style={{gridArea: `${3*i+1} / 2 / ${3*i+4} / 3`, background: colour}}>
                 </div>,
                 <div className={`plan-slot ${i}`} key={`p${i}`}
-                    style={{gridArea: `${i+1} / 3 / ${i+2} / 4`}}>
+                    style={{gridArea: `${3*i+1} / 3 / ${3*i+4} / 4`, background: colour}}>
                 </div>
             );
         }
@@ -88,14 +89,14 @@ function Timetable({
     const copyToLife = async (index, event) => {
         event.copied = true;
 
-        const lifeEvent = {name: event.name, category: event.category, 
+        const lifeEvent = {name: event.name, category: event.category, date: date,
             start: event.start, end: event.end, parent: index};
         setLifeEvents(map => new Map(map.set(count, lifeEvent)));
         setCount(count+1);
 
         // write to database
         await updateDoc(doc(db, "plan", index.toString()), {copied: true});
-        await setDoc(doc(db, `life/${count}`), {...lifeEvent, date: date});
+        await setDoc(doc(db, `life/${count}`), lifeEvent);
         await setDoc(doc(db, 'info/count'), {count: count+1});
     }
 
@@ -120,7 +121,7 @@ function Timetable({
             <div className="timetable-body">
                 {renderTimeSlots()}
                 
-                {renderEvents()}
+                {/* {renderEvents()} */}
             </div>
         </div>
     )
