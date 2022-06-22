@@ -1,16 +1,21 @@
 import './sidebar.css'
-import Calendar from 'react-calendar';
-import { ColourContext } from '../../App';
-import { useContext } from 'react';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { toYmd } from '../../App';
 
-function SideBar({setPlanWindowShow, setCategoryWindowShow, categories}) {
+function SideBar({setCategoryWindowShow, categories, date, setDate }) {
     let history = useHistory();
     
     return (
         <div className="sidebar">
-            <Calendar />
+            <DatePicker 
+                selected={new Date(date.year, date.month, date.date)} 
+                onChange={d => setDate(toYmd(d))}
+                inline fixedHeight
+            />
+
             <div className="categories">
                 <button id="new-category" onClick={() => setCategoryWindowShow(true)}>New Category</button>
                 <div className="category-list">

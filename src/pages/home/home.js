@@ -51,6 +51,7 @@ function Home() {
   const [planEvents, setPlanEvents] = useState(new Map());
   const [lifeEvents, setLifeEvents] = useState(new Map());
   const [count, setCount] = useState(0);
+  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     if (!fetched) {
