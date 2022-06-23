@@ -75,9 +75,6 @@
 .delete:hover, .edit:hover {
     opacity: 1;
 }
-.event:hover * {
-    visibility: visible;
-}
 
 .delete {
     right: 10px;
@@ -92,11 +89,13 @@
 .copy {
     background-color: rgba(255, 255, 255, 0.3);
     font-size: 0.625em;
-}
-
-.hidden {
     visibility: hidden;
 }
+
+.event:hover * {
+    visibility: visible;
+}
+
 
 .hour-line {
     background-color: gray;

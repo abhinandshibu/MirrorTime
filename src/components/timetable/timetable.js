@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
-    lifeEvents, setLifeEvents, count, setCount, categories, date
+    lifeEvents, setLifeEvents, count, setCount, categories, date, current, isActive
 }) {
 
     const [editWindowShow, setEditWindowShow] = useState(false);

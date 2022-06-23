@@ -53,17 +53,40 @@
     border-radius: 5px;
     padding-right: 10px;
     display: grid;
-    grid-template-columns: 1fr 40px 40px;
+    grid-template-columns: 2fr 1fr 1fr;
     justify-items: center;
     align-items: center;
+} 
+
+.box1 {
+    width: 25px;
+    height: 25px;
+    position: relative;
 }
 
-.play, .timer {
+.box2 {
+    width: 60px;
+    height: 25px;
+    position: relative;
+}
+
+.play, .stop, .timer {
     width: 25px;
     height: 25px;
     opacity: 0.3;
     cursor: pointer;
 } 
-.play:hover, .timer:hover {
+
+.play, .stop, .timer, .time {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.play:hover, .stop:hover, .timer:hover {
     opacity: 1;
+}
+
+.time {
+
 }
