@@ -51,8 +51,19 @@
     width: 100%;
     margin-bottom: 10px;
     border-radius: 5px;
-    background: white;
-    display: flex;
+    padding-right: 10px;
+    display: grid;
+    grid-template-columns: 1fr 40px 40px;
+    justify-items: center;
     align-items: center;
-    justify-content: center;
+}
+
+.play, .timer {
+    width: 25px;
+    height: 25px;
+    opacity: 0.3;
+    cursor: pointer;
+} 
+.play:hover, .timer:hover {
+    opacity: 1;
 }

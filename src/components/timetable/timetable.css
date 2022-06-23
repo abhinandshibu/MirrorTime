@@ -63,32 +63,30 @@
     border-radius: 10px;
 }
 
-.delete {
+.delete, .edit {
     position: absolute;
-    right: 10px;
-    top: 10px;
     width: 15px;
     height: 15px;
     background-color: inherit;
     cursor: pointer;
     opacity: 0.5;
+    visibility: hidden;
 }
-.delete:hover {
+.delete:hover, .edit:hover {
     opacity: 1;
+}
+.event:hover * {
+    visibility: visible;
+}
+
+.delete {
+    right: 10px;
+    top: 10px;
 }
 
 .edit {
-    position: absolute;
     right: 30px;
     top: 10px;
-    width: 15px;
-    height: 15px;
-    background-color: inherit;
-    cursor: pointer;
-    opacity: 0.5;
-}
-.edit:hover {
-    opacity: 1;
 }
 
 .copy {

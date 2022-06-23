@@ -7,6 +7,14 @@ import { toYmd } from '../../App';
 
 function SideBar({setCategoryWindowShow, categories, date, setDate }) {
     let history = useHistory();
+
+    const play = (category) => {
+
+    }
+
+    const countdown = (category) => {
+        
+    }
     
     return (
         <div className="sidebar">
@@ -21,8 +29,17 @@ function SideBar({setCategoryWindowShow, categories, date, setDate }) {
                 <div className="category-list">
                     {Array.from(categories).map(([name, colour]) => (
                         <div key={name} className="category"
-                        style={{background: '#' + colour}}>
-                            {name}
+                            style={{background: '#' + colour}}
+                        >
+                            <span>{name}</span>
+                            <img className="play" src={require("./play.png")} 
+                                alt="start an event in this category"
+                                onClick={() => play(name)} 
+                            />
+                            <img className="timer" src={require("./timer.png")} 
+                                alt="start a countdown timer for an activity in this category"
+                                onClick={() => countdown(name)} 
+                            />
                         </div>
                     ))}
                 </div>
