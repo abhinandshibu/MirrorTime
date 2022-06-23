@@ -1,10 +1,18 @@
 .timetable {
+    position: relative;
     padding: 20px;
     background: lightgrey;
     border-radius: 10px;
 }
 
-.today {
+#toggle-lines {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    font-size: 0.75em;
+}
+
+#today {
     margin-bottom: 5px;
     font-size: 2em;
     font-weight: 200;
@@ -35,17 +43,13 @@
 
 .timetable-body {
     grid-area: timetable;
+    position: relative;
     height: 75vh;
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
-    grid-template-rows: repeat(24, 80px);
-    grid-gap: 2px;
-}
-
-.timetable-body * {
-    background: lightcyan;
-
+    grid-template-rows: repeat(288, 8px);
+    grid-gap: 0.5px;
 }
 
 .event {
@@ -73,13 +77,41 @@
     opacity: 1;
 }
 
+.edit {
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    width: 15px;
+    height: 15px;
+    background-color: inherit;
+    cursor: pointer;
+    opacity: 0.5;
+}
+.edit:hover {
+    opacity: 1;
+}
+
 .copy {
     background-color: rgba(255, 255, 255, 0.3);
-    font-size: 0.75em;
+    font-size: 0.625em;
 }
 
 .hidden {
     visibility: hidden;
+}
+
+.hour-line {
+    background-color: gray;
+    height: 1px;
+    z-index: 1000;
+}
+
+#now {
+    position: absolute;
+    background-color: red;
+    height: 2px;
+    width: 100%;
+    z-index: 1001;
 }
 
 /* .activity button {

@@ -23,6 +23,11 @@
     font-weight: 900;
 }
 
+.react-datepicker__day--keyboard-selected {
+    background-color: white !important;
+    color: black !important;
+}
+
 .categories {
     background: white;
     height: 40vh;
