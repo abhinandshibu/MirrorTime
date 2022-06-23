@@ -35,6 +35,7 @@
 
 .timetable-body {
     grid-area: timetable;
+    position: relative;
     height: 75vh;
     overflow-y: scroll;
     display: grid;
@@ -75,6 +76,12 @@
 
 .hidden {
     visibility: hidden;
+}
+
+.hour-line {
+    background-color: gray;
+    height: 1px;
+    z-index: 1000;
 }
 
 /* .activity button {

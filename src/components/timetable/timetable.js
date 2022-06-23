@@ -39,11 +39,11 @@ function Timetable({
                         onClick={() => deletePlanEvent(index)} 
                     />
                     {event.name}
-                    <button className={`copy ${event.copied ? "hidden" : ""}`} 
-                        onClick={() => copyToLife(index, event)}
-                    >
-                        Copy to Life
-                    </button>
+                    {event.copied ? "" : 
+                        <button className="copy" onClick={() => copyToLife(index, event)}>
+                            Copy to Life
+                        </button>
+                    }
                 </div>
             );
         }
@@ -58,6 +58,18 @@ function Timetable({
                     />
                     {event.name}
                 </div>
+            );
+        }
+        return array;
+    }
+
+    const renderLines = () => {
+        const array = [];
+        for (let i=0; i<23; i++) {
+            array.push(
+                <div className="hour-line" key={i}
+                    style={{gridArea: `${i*12 + 1} / 1 / ${i*12 + 2} / 4`}}
+                ></div>
             );
         }
         return array;
@@ -122,6 +134,8 @@ function Timetable({
                 {renderTimeSlots()}
                 
                 {renderEvents()}
+
+                {renderLines()}
             </div>
         </div>
     )
