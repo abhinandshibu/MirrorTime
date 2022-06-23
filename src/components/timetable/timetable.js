@@ -14,13 +14,18 @@ function Timetable({
     const [index, setIndex] = useState(0);
     const [times, setTimes] = useState([0, 3600]);
     const [lines, setLines] = useState(true);
-    const [timeNow, setTimeNow] = useState(0);
+    const [barProgress, setBarProgress] = useState(0);
+    const timetableHeight = 288 * 8.5;
 
     useEffect(() => {
         const date = new Date();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        setTimeNow((hour/24 + minute/1440) * 2448);
+        setBarProgress((date.getHours()/24 + date.getMinutes()/1440) * timetableHeight);
+
+        const updateTime = setInterval(() => {
+            const date = new Date();
+            setBarProgress((date.getHours()/24 + date.getMinutes()/1440) * timetableHeight);
+        }, 60000);
+        return () => clearInterval(updateTime);
     }, []);
     
     const renderTimeSlots = () => {
@@ -168,7 +173,7 @@ function Timetable({
 
                 {lines ? renderLines() : ""}
 
-                <div id="now" style={{top: timeNow + 'px'}}></div>
+                <div id="now" style={{top: barProgress + 'px'}}></div>
             </div>
 
             <Edit 
