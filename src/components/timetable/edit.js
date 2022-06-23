@@ -88,7 +88,7 @@ function Edit({editWindowShow, setEditWindowShow, events, setEvents, isPlan, ind
                     <span onClick={startEarlier}>&#9664;</span>
                     <span onClick={startLater}>&#9654;</span>
                 </div>
-                    <span></span>
+                <span></span>
                 <div className="buttons">
                     <span onClick={endEarlier}>&#9664;</span>
                     <span onClick={endLater}>&#9654;</span>

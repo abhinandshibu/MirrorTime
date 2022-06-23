@@ -1,10 +1,18 @@
 .timetable {
+    position: relative;
     padding: 20px;
     background: lightgrey;
     border-radius: 10px;
 }
 
-.today {
+#toggle-lines {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    font-size: 0.75em;
+}
+
+#today {
     margin-bottom: 5px;
     font-size: 2em;
     font-weight: 200;

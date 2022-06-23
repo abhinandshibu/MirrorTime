@@ -13,6 +13,7 @@ function Timetable({
     const [isPlan, setIsPlan] = useState(true);
     const [index, setIndex] = useState(0);
     const [times, setTimes] = useState([0, 3600]);
+    const [lines, setLines] = useState(true);
     
     const renderTimeSlots = () => {
         const array = [];
@@ -135,9 +136,10 @@ function Timetable({
 
     return (
         <div className="timetable">
-            <div className="today">{date.date} {months[date.month]} {date.year}</div>
+            <button id="toggle-lines" onClick={() => setLines(!lines)}>Toggle lines</button>
+            <div id="today">{date.date} {months[date.month]} {date.year}</div>
             <div className="timetable-heading">
-                <div></div>
+                <div> </div>
                 <div>
                     Your Life
                     <img className="add" src={require("./plus.png")} alt="log a real event"
@@ -156,7 +158,7 @@ function Timetable({
                 
                 {renderEvents()}
 
-                {renderLines()}
+                {lines ? renderLines() : ""}
             </div>
 
             <Edit 
