@@ -32,7 +32,7 @@ function Timetable({
         for (const [index, event] of planEvents.entries()) {
             array.push(
                 <div className="event" key={index}
-                    style={{gridArea: `${+event.start+1} / 3 / ${+event.end+1} / 4`, 
+                    style={{gridArea: `${event.start/300 + 1} / 3 / ${event.end/300 + 1} / 4`, 
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
@@ -50,7 +50,7 @@ function Timetable({
         for (const [index, event] of lifeEvents.entries()) {
             array.push(
                 <div className="event" key={index}
-                    style={{gridArea: `${+event.start+1} / 2 / ${+event.end+1} / 3`, 
+                    style={{gridArea: `${event.start/300 + 1} / 2 / ${event.end/300 + 1} / 3`, 
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
@@ -121,7 +121,7 @@ function Timetable({
             <div className="timetable-body">
                 {renderTimeSlots()}
                 
-                {/* {renderEvents()} */}
+                {renderEvents()}
             </div>
         </div>
     )
