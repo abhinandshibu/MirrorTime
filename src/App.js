@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { createContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { doc, collection, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { doc, collection, setDoc, getDoc, getDocs, query, where } from "firebase/firestore";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -39,38 +39,7 @@ export const auth = getAuth(app);
 export const ColourContext = createContext();
 const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
 
-// FUNCTION FOR FETCHING DATA
-
 let fetched = false;
-
-async function fetchData(setCount, setCategories, setPlanEvents, setLifeEvents) {
-  const countSnapshot = await getDoc(doc(db, 'info', 'count'));
-
-  if (countSnapshot.exists()) {
-    // User has used app before, set current event index and load events (if any)
-    setCount(countSnapshot.data().count);
-
-    const planSnapshot = await getDocs(collection(db, 'plan'));
-    planSnapshot.forEach((e) => {
-      setPlanEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-    })
-
-    const lifeSnapshot = await getDocs(collection(db, 'life'));
-    lifeSnapshot.forEach((e) => {
-      setLifeEvents( map => new Map ( map.set( e.id, e.data() ) ) );
-    })
-  }
-  else {
-    await setDoc(doc(db, 'info', 'count'), {count: 0});
-  }
-
-  const categorySnapshot = await getDocs(collection(db, 'categories'));
-    categorySnapshot.forEach((doc) => {
-      setCategories( map => new Map( map.set( doc.id, doc.data().colour ) ) );
-    })
-}
-
-// END OF FUNCTION FOR FETCHING DATA
 
 export const toYmd = (date) => {
   return {year: date.getFullYear(), month: date.getMonth(), date: date.getDate()};
@@ -81,7 +50,8 @@ export const months = ["January", "February", "March", "April", "May", "June",
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // Runs once when the page starts, links up the authentication to the isLoggedIn variable
+
+  // Runs once when the app starts, links up the authentication to the isLoggedIn variable
   useEffect(() => {
     console.log("AUTH")
     console.log(auth);
@@ -96,12 +66,52 @@ function App() {
   const [lifeEvents, setLifeEvents] = useState(new Map());
   const [count, setCount] = useState(0);
 
+  // Runs once the app starts, fetches data on categories and current event index
   useEffect(() => {
     if (!fetched) {
-      fetchData(setCount, setCategories, setPlanEvents, setLifeEvents).catch(console.error);
+      const fetchData = async () => {
+        const countSnapshot = await getDoc(doc(db, 'info', 'count'));
+        if (countSnapshot.exists()) {
+          setCount(countSnapshot.data().count);
+        } else {
+          await setDoc(doc(db, 'info', 'count'), {count: 0});
+        }
+
+        const categorySnapshot = await getDocs(collection(db, 'categories'));
+        const temp = new Map();
+        categorySnapshot.forEach((doc) => {
+          temp.set( doc.id, doc.data().colour );
+        })
+        setCategories(new Map(temp));
+      }
+
+      fetchData().catch(console.error);
       fetched = true;
     }
   }, []);
+
+  const [date, setDate] = useState(toYmd(new Date()));
+
+  // Runs every time user selects a date, fetches plan and life events for that day
+  useEffect(() => {
+    const fetchData = async () => {
+      let temp = new Map();
+      const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date", "==", date)));
+      planSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setPlanEvents(new Map(temp));
+
+      temp.clear();
+      const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date", "==", date)));
+      lifeSnapshot.forEach((e) => {
+        temp.set(e.id, e.data());
+      })
+      setLifeEvents(new Map(temp));
+    };
+
+    fetchData().catch(console.error);
+  }, [date]);
 
   return (
     <Router>
@@ -117,17 +127,23 @@ function App() {
         <Route exact path="/home">
           <ColourContext.Provider value={colours}>
             {/* <Home /> */}
-            <Home categories={categories} setCategories={setCategories} 
+            <Home 
+              categories={categories} setCategories={setCategories} 
               planEvents={planEvents} setPlanEvents={setPlanEvents}
-              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}/>
+              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+              count={count} setCount={setCount}
+              date={date} setDate={setDate}
+            />
           </ColourContext.Provider>
         </Route>
         <Route exact path="/analytics">
           <ColourContext.Provider value={colours}>
-            <Analytics categories={categories} setCategories={setCategories} 
+            <Analytics 
+              categories={categories} setCategories={setCategories} 
               planEvents={planEvents} setPlanEvents={setPlanEvents}
               lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-              count={count} setCount={setCount}/>
+              count={count} setCount={setCount}
+            />
           </ColourContext.Provider>
         </Route>
         
