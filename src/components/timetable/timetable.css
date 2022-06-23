@@ -106,6 +106,14 @@
     z-index: 1000;
 }
 
+#now {
+    position: absolute;
+    background-color: red;
+    height: 2px;
+    width: 100%;
+    z-index: 1001;
+}
+
 /* .activity button {
     display: block;
 } */

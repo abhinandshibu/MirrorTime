@@ -2,7 +2,7 @@ import './timetable.css';
 import { db, months } from '../../App';
 import Edit from './edit';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
@@ -14,6 +14,14 @@ function Timetable({
     const [index, setIndex] = useState(0);
     const [times, setTimes] = useState([0, 3600]);
     const [lines, setLines] = useState(true);
+    const [timeNow, setTimeNow] = useState(0);
+
+    useEffect(() => {
+        const date = new Date();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        setTimeNow((hour/24 + minute/1440) * 2448);
+    }, []);
     
     const renderTimeSlots = () => {
         const array = [];
@@ -79,7 +87,7 @@ function Timetable({
 
     const renderLines = () => {
         const array = [];
-        for (let i=0; i<23; i++) {
+        for (let i=0; i<24; i++) {
             array.push(
                 <div className="hour-line" key={i}
                     style={{gridArea: `${i*12 + 1} / 1 / ${i*12 + 2} / 4`}}
@@ -159,6 +167,8 @@ function Timetable({
                 {renderEvents()}
 
                 {lines ? renderLines() : ""}
+
+                <div id="now" style={{top: timeNow + 'px'}}></div>
             </div>
 
             <Edit 
