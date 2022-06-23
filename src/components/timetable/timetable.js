@@ -1,11 +1,18 @@
 import './timetable.css';
 import { db, months } from '../../App';
+import Edit from './edit';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { useState } from 'react';
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
     lifeEvents, setLifeEvents, count, setCount, categories, date
 }) {
+
+    const [editWindowShow, setEditWindowShow] = useState(false);
+    const [isPlan, setIsPlan] = useState(true);
+    const [index, setIndex] = useState(0);
+    const [times, setTimes] = useState([0, 3600]);
     
     const renderTimeSlots = () => {
         const array = [];
@@ -38,6 +45,9 @@ function Timetable({
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deletePlanEvent(index)} 
                     />
+                    <img className="edit" src={require("./edit.png")} alt="edit event"
+                        onClick={() => editEvent(index, true)} 
+                    />
                     {event.name}
                     {event.copied ? "" : 
                         <button className="copy" onClick={() => copyToLife(index, event)}>
@@ -55,6 +65,9 @@ function Timetable({
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deleteLifeEvent(index, event)} 
+                    />
+                    <img className="edit" src={require("./edit.png")} alt="edit event"
+                        onClick={() => editEvent(index, false)} 
                     />
                     {event.name}
                 </div>
@@ -98,6 +111,14 @@ function Timetable({
         }
     }
 
+    const editEvent = (index, isPlanEvent) => {
+        setIndex(index);
+        setIsPlan(isPlanEvent);
+        const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
+        setTimes([event.start, event.end]); console.log(event.start, event.end);
+        setEditWindowShow(true);
+    }
+
     const copyToLife = async (index, event) => {
         event.copied = true;
 
@@ -137,6 +158,14 @@ function Timetable({
 
                 {renderLines()}
             </div>
+
+            <Edit 
+                editWindowShow={editWindowShow} setEditWindowShow={setEditWindowShow}
+                events={isPlan ? planEvents : lifeEvents} 
+                setEvents={isPlan ? setPlanEvents : setLifeEvents}
+                isPlan={isPlan}
+                index={index} times={times}
+            />
         </div>
     )
 }

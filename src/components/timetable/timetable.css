@@ -69,6 +69,20 @@
     opacity: 1;
 }
 
+.edit {
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    width: 15px;
+    height: 15px;
+    background-color: inherit;
+    cursor: pointer;
+    opacity: 0.5;
+}
+.edit:hover {
+    opacity: 1;
+}
+
 .copy {
     background-color: rgba(255, 255, 255, 0.3);
     font-size: 0.75em;
