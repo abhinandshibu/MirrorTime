@@ -34,7 +34,7 @@ function SideBar({
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
         const newEvent = {name: `${currentEvent.category} activity`, category: currentEvent.category,
-            date: date, start: currentEvent.start, end: timeNow};
+            date: toYmd(date), start: currentEvent.start, end: timeNow};
         setLifeEvents(map => new Map( map.set(count, newEvent) ));
         setCount(count + 1);
         setIsRunning(false);

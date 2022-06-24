@@ -57,10 +57,16 @@ function Timetable({
     const renderEvents = () => {
         const array = [];
         for (const [index, event] of planEvents.entries()) {
+            const timeNow = barProgress / timetableHeight * 86400;
+            let active = false;
+            if (event.start <= timeNow && event.end >= timeNow) {
+                active = true;
+            }
             array.push(
                 <div className="event" key={index}
                     style={{gridArea: `${Math.round(event.start/300) + 1} / 3 / ${Math.round(event.end/300) + 1} / 4`, 
-                            background: '#' + categories.get(event.category)}}
+                            background: '#' + categories.get(event.category),
+                            border: active ? "3px solid black" : "none"}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deletePlanEvent(index)} 
