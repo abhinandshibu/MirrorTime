@@ -2,12 +2,13 @@ import './sidebar.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from 'react';
+import { doc, setDoc } from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
-import { toYmd } from '../../App';
+import { toYmd, db } from '../../App';
 
 function SideBar({
-    setCategoryWindowShow, categories, date, setDate, currentEvent, setCurrentEvent, 
-    isRunning, setIsRunning
+    setCategoryWindowShow, setLifeEvents, count, setCount, categories, date, setDate, 
+    currentEvent, setCurrentEvent, isRunning, setIsRunning
 }) {
     let history = useHistory();
 
@@ -24,14 +25,23 @@ function SideBar({
 
     const play = (category) => {
         const date = new Date();
-        const time = date.getHours() * 3600 + date.getMinutes() * 60;
+        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
         setIsRunning(true);
-        setCurrentEvent({category: category, start: time});
+        setCurrentEvent({category: category, start: timeNow});
     }
 
-    const stop = (category) => {
+    const stop = async () => {
+        const date = new Date();
+        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+        const newEvent = {name: `${currentEvent.category} activity`, category: currentEvent.category,
+            date: date, start: currentEvent.start, end: timeNow};
+        setLifeEvents(map => new Map( map.set(count, newEvent) ));
+        setCount(count + 1);
         setIsRunning(false);
         setTime([0, 0]);
+
+        await setDoc(doc(db, `life/${count}`), newEvent);
+        await setDoc(doc(db, 'info/count'), {count: count+1});
     }
 
     const countdown = (category) => {
@@ -64,7 +74,7 @@ function SideBar({
                                 <img className="stop" src={require("./stop.png")} 
                                     alt="end the current event"
                                     style={{visibility: isRunning && currentEvent.category===name ? "visible" : "hidden"}}
-                                    onClick={() => stop(name)} 
+                                    onClick={stop} 
                                 />
                             </div>
                             <div className="box2">

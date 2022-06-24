@@ -30,6 +30,8 @@ function Home({
       <div className="main">
         <SideBar 
           setCategoryWindowShow={setCategoryWindowShow}
+          setLifeEvents={setLifeEvents}
+          count={count} setCount={setCount}
           categories={categories}
           date={date} setDate={setDate}
           currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}

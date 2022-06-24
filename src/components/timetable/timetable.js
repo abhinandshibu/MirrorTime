@@ -29,17 +29,10 @@ function Timetable({
     }, []);
 
     useEffect(() => {
+        if (!isRunning) {
 
+        }
     }, [isRunning])
-
-    // useEffect(() => {
-    //     if (isRunning) {
-    //         const id = setInterval(() => {
-    //             setEventHeight();
-    //         }, 60000);
-    //         return () => clearInterval(id);
-    //     }
-    // }, [isRunning]);
     
     const renderTimeSlots = () => {
         const array = [];
@@ -66,7 +59,7 @@ function Timetable({
         for (const [index, event] of planEvents.entries()) {
             array.push(
                 <div className="event" key={index}
-                    style={{gridArea: `${event.start/300 + 1} / 3 / ${event.end/300 + 1} / 4`, 
+                    style={{gridArea: `${Math.round(event.start/300) + 1} / 3 / ${Math.round(event.end/300) + 1} / 4`, 
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
@@ -87,7 +80,7 @@ function Timetable({
         for (const [index, event] of lifeEvents.entries()) {
             array.push(
                 <div className="event" key={index}
-                    style={{gridArea: `${event.start/300 + 1} / 2 / ${event.end/300 + 1} / 3`, 
+                    style={{gridArea: `${Math.round(event.start/300) + 1} / 2 / ${Math.round(event.end/300) + 1} / 3`, 
                             background: '#' + categories.get(event.category)}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
@@ -104,11 +97,13 @@ function Timetable({
     }
 
     const renderCurrentEvent = () => {
-        const gridRowStart = Math.round(currentEvent.start / 300) + 1;
-        const roundedTime = Math.round(currentEvent.start / 300) * 300;
+        const nearestSlot = Math.round(currentEvent.start / 300);
+        const error = currentEvent.start - nearestSlot * 300;
         return <div id="current"
-            style={{gridRowStart: gridRowStart,
-                height: barProgress - roundedTime / 86400 * timetableHeight}}
+            style={{gridRowStart: nearestSlot + 1,
+                top: error / 86400 * timetableHeight,
+                height: barProgress - currentEvent.start / 86400 * timetableHeight,
+                background: '#' + categories.get(currentEvent.category)}}
         ></div>
     }
 

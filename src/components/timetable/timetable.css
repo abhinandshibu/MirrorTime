@@ -53,7 +53,6 @@
 }
 
 .event {
-    background: blue;
     color: black;
     position: relative;
     display: flex;
@@ -114,5 +113,6 @@
 #current {
     grid-column-start: 2;
     grid-column-end: 3;
-    background-color: blue;
+    border-radius: 10px;
+    position: relative;
 }
