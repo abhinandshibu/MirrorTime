@@ -20,8 +20,8 @@ function Home({
   const [planWindowShow, setPlanWindowShow] = useState(false);
   const [lifeWindowShow, setLifeWindowShow] = useState(false);
   const [categoryWindowShow, setCategoryWindowShow] = useState(false);
-  const [current, setCurrent] = useState();
-  const [isActive, setIsActive] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState();
+  const [isRunning, setIsRunning] = useState(false);
 
   return (
 
@@ -32,8 +32,8 @@ function Home({
           setCategoryWindowShow={setCategoryWindowShow}
           categories={categories}
           date={date} setDate={setDate}
-          current={current} setCurrent={setCurrent}
-          isActive={isActive} setIsActive={setIsActive}
+          currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}
+          isRunning={isRunning} setIsRunning={setIsRunning}
         />
 
         <Timetable 
@@ -44,7 +44,7 @@ function Home({
           count={count} setCount={setCount}
           categories={categories}
           date={date}
-          current={current} isActive={isActive}
+          currentEvent={currentEvent} isRunning={isRunning}
         />
       </div>
 

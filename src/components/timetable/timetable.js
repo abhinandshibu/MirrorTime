@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
-    lifeEvents, setLifeEvents, count, setCount, categories, date, current, isActive
+    lifeEvents, setLifeEvents, count, setCount, categories, date, currentEvent, isRunning
 }) {
 
     const [editWindowShow, setEditWindowShow] = useState(false);
@@ -15,7 +15,7 @@ function Timetable({
     const [times, setTimes] = useState([0, 3600]);
     const [lines, setLines] = useState(true);
     const [barProgress, setBarProgress] = useState(0);
-    const timetableHeight = 288 * 8.5;
+    const timetableHeight = 288 * 8 + 287 * 0.5;
 
     useEffect(() => {
         const date = new Date();
@@ -27,6 +27,19 @@ function Timetable({
         }, 60000);
         return () => clearInterval(updateTime);
     }, []);
+
+    useEffect(() => {
+
+    }, [isRunning])
+
+    // useEffect(() => {
+    //     if (isRunning) {
+    //         const id = setInterval(() => {
+    //             setEventHeight();
+    //         }, 60000);
+    //         return () => clearInterval(id);
+    //     }
+    // }, [isRunning]);
     
     const renderTimeSlots = () => {
         const array = [];
@@ -88,6 +101,15 @@ function Timetable({
             );
         }
         return array;
+    }
+
+    const renderCurrentEvent = () => {
+        const gridRowStart = Math.round(currentEvent.start / 300) + 1;
+        const roundedTime = Math.round(currentEvent.start / 300) * 300;
+        return <div id="current"
+            style={{gridRowStart: gridRowStart,
+                height: barProgress - roundedTime / 86400 * timetableHeight}}
+        ></div>
     }
 
     const renderLines = () => {
@@ -170,6 +192,8 @@ function Timetable({
                 {renderTimeSlots()}
                 
                 {renderEvents()}
+
+                {isRunning ? renderCurrentEvent() : ""}
 
                 {lines ? renderLines() : ""}
 

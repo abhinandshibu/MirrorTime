@@ -111,6 +111,8 @@
     z-index: 1001;
 }
 
-/* .activity button {
-    display: block;
-} */
+#current {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    background-color: blue;
+}
