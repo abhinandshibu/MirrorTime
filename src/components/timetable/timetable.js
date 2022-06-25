@@ -62,11 +62,14 @@ function Timetable({
             if (event.start <= timeNow && event.end >= timeNow) {
                 active = true;
             }
+            const colour = categories.get(event.category);
+
             array.push(
                 <div className="event" key={index}
                     style={{gridArea: `${Math.round(event.start/300) + 1} / 3 / ${Math.round(event.end/300) + 1} / 4`, 
-                            background: '#' + categories.get(event.category),
-                            border: active ? "3px solid black" : "none"}}
+                            background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
+                                : '#' + colour,
+                            border: active ? `2px solid black` : "none"}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deletePlanEvent(index)} 
@@ -74,12 +77,14 @@ function Timetable({
                     <img className="edit" src={require("./edit.png")} alt="edit event"
                         onClick={() => editEvent(index, true)} 
                     />
-                    {event.name}
-                    {event.copied ? "" : 
-                        <button className="copy" onClick={() => copyToLife(index, event)}>
-                            Copy to Life
-                        </button>
+                    {event.copied ? 
+                        <img className="copied" src={require("./ticked.png")} alt="event copied to life"/>
+                        : 
+                        <img className="copy" src={require("./unticked.png")} alt="delete event"
+                        onClick={() => copyToLife(index, event)} 
+                        />
                     }
+                    <span className="title">{event.name}</span>
                 </div>
             );
         }

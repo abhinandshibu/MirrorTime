@@ -56,7 +56,6 @@
     color: black;
     position: relative;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
@@ -64,35 +63,41 @@
 
 .delete, .edit {
     position: absolute;
+    top: calc(50%-15px);
     width: 15px;
     height: 15px;
-    background-color: inherit;
     cursor: pointer;
-    opacity: 0.5;
     visibility: hidden;
-}
-.delete:hover, .edit:hover {
-    opacity: 1;
 }
 
 .delete {
     right: 10px;
-    top: 10px;
 }
 
 .edit {
     right: 30px;
-    top: 10px;
+}
+
+.copy, .copied {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
 }
 
 .copy {
-    background-color: rgba(255, 255, 255, 0.3);
-    font-size: 0.625em;
-    visibility: hidden;
+    opacity: 0.5;
+    cursor: pointer;
 }
 
 .event:hover * {
     visibility: visible;
+    opacity: 1;
+}
+
+.title {
+    max-width: 60%;
+    
 }
 
 
