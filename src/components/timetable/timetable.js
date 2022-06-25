@@ -2,7 +2,9 @@ import './timetable.css';
 import { db, months } from '../../App';
 import Edit from './edit';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from 'react';
+import { React, useEffect, useState } from 'react';
+import { EditText } from 'react-edit-text';
+import 'react-edit-text/dist/index.css';
 
 function Timetable({
     setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
@@ -27,12 +29,6 @@ function Timetable({
         }, 60000);
         return () => clearInterval(updateTime);
     }, []);
-
-    useEffect(() => {
-        if (!isRunning) {
-
-        }
-    }, [isRunning])
     
     const renderTimeSlots = () => {
         const array = [];
@@ -84,7 +80,10 @@ function Timetable({
                         onClick={() => copyToLife(index, event)} 
                         />
                     }
-                    <span className="title">{event.name}</span>
+                    <EditText 
+                        name={index} defaultValue={event.name} 
+                        inputClassName="title" onSave={editName}
+                    />
                 </div>
             );
         }
@@ -100,7 +99,10 @@ function Timetable({
                     <img className="edit" src={require("./edit.png")} alt="edit event"
                         onClick={() => editEvent(index, false)} 
                     />
-                    {event.name}
+                    <EditText 
+                        name={index} defaultValue={event.name} 
+                        inputClassName="title" onSave={editName}
+                    />
                 </div>
             );
         }
@@ -113,7 +115,7 @@ function Timetable({
         return <div id="current"
             style={{gridRowStart: nearestSlot + 1,
                 top: error / 86400 * timetableHeight,
-                height: barProgress - currentEvent.start / 86400 * timetableHeight,
+                height: Math.max(0, barProgress - currentEvent.start / 86400 * timetableHeight),
                 background: '#' + categories.get(currentEvent.category)}}
         ></div>
     }
@@ -159,6 +161,18 @@ function Timetable({
         const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
         setTimes([event.start, event.end]); console.log(event.start, event.end);
         setEditWindowShow(true);
+    }
+
+    const editName = async ({name, value, previousValue}) => {
+        if (planEvents.has(name)) {
+            const event = planEvents.get(name);
+            setPlanEvents(map => new Map( map.set(name, {...event, name: value}) ));
+            await updateDoc(doc(db, "plan", name), {name: value});
+        } else {
+            const event = lifeEvents.get(name);
+            setLifeEvents(map => new Map( map.set(name, {...event, name: value}) ));
+            await updateDoc(doc(db, "life", name), {name: value});
+        }
     }
 
     const copyToLife = async (index, event) => {

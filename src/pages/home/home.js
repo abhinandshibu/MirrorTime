@@ -1,7 +1,5 @@
 import './home.css';
-import { useState, useEffect } from 'react';
-// import { doc, collection, setDoc, getDoc, getDocs, where, query } from "firebase/firestore";
-// import { db, toYmd } from '../../App';
+import { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 

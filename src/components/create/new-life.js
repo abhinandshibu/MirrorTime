@@ -99,7 +99,7 @@ function NewLife({
                         onChange={(e) => {setEvent({...event, endMin: +e.target.value})}}
                     >
                         <option value={-10000} key="default">Min</option>
-                        {event.endHour==24 ? <option value={0}>00</option> :
+                        {event.endHour===24 ? <option value={0}>00</option> :
                             [...Array(12).keys()].map(i => (
                                 <option value={i*5} key={i*5}>{i<2 ? '0' + i*5 : i*5}</option>
                             ))
