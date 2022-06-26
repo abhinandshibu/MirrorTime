@@ -4,6 +4,22 @@
     height: 120vh;
 }
 
-/* #analytics-select {
+#analytics-select {
+    display: flex;
+    justify-content: space-right;
+}
+
+#analytics-date-picker {
     display: inline-block;
+    padding: 2rem;
+}
+
+#analytics-view-picker {
+    display: inline-block;
+    padding: 2rem;
+    width: 50vw;
+}
+
+/* #analytics-component {
+
 } */

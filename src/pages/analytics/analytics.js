@@ -12,8 +12,15 @@ const analyticOptions = [
     { value: 'pie-chart', label: 'Pie Chart' },
 ]
 
+const timelineOptions = [
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' },
+    { value: 'month', label: 'Month' },
+]
+
 function Analytics(props) {
     const [analytic, setAnalytic] = useState("pie-chart");
+    const [analyticTimeline, setAnalyticTimeline] = useState("day");
 
     // ORGANISING DATA FOR GRAPH JS
     const categoriesMap = props.categories
@@ -48,30 +55,34 @@ function Analytics(props) {
     let analyticComponent = <></>
 
     if (analytic === "bar-chart") {
-        analyticComponent = <BarChart categories={categories} planData={planData} lifeData={lifeData}/>
+        analyticComponent = <BarChart id="analytics-component" categories={categories} planData={planData} lifeData={lifeData}/>
     } else if (analytic === "pie-chart") {
-        analyticComponent = <PieChart categories={categories} categoriesColors={categoriesColors} planData={planData} lifeData={lifeData}/>
+        analyticComponent = <PieChart id="analytics-component" categories={categories} categoriesColors={categoriesColors} planData={planData} lifeData={lifeData}/>
     } else {
         analyticComponent = <></>
     }
 
-
     return (
         <div id="analytics-page">
             <div id="analytics-select">
-                <DatePicker 
-                    selected={new Date(date.year, date.month, date.date)} 
-                    onChange={d => setDate(toYmd(d))}
-                    inline fixedHeight
-                />
-                <>
-                    <h5>How would you like your data presented?</h5>
-                    <Select options={analyticOptions} onChange={(option) => setAnalytic(option.value)}/>
-                </>
-                <>  
-                    <h5>Pick your timeline: (day/week/month)</h5>
-                    {/* <Select options={options} onChange={(option) => setAnalytic(option.value)}/> */}
-                </>
+                <div id="analytics-date-picker">
+                    <DatePicker 
+                        selected={new Date(date.year, date.month, date.date)} 
+                        onChange={d => setDate(toYmd(d))}
+                        inline fixedHeight
+                        />
+                </div>
+                <div id="analytics-view-picker">
+                    <>
+                        <h5>How would you like your data presented?</h5>
+                        <Select options={analyticOptions} onChange={(option) => setAnalytic(option.value)}/>
+                    </>
+                    <>  
+                        <p></p>
+                        <h5>Pick your timeline: (day/week/month)</h5>
+                        <Select options={timelineOptions} onChange={(option) => setAnalyticTimeline(option.value)}/>
+                    </>
+                </div>
             </div>
             {analyticComponent}
         </div>

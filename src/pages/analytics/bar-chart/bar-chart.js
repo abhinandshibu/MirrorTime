@@ -18,8 +18,6 @@ ChartJS.register(
     Legend
 );
 
-
-
 function BarChart(props) {
     const options = {
         responsive: true,
