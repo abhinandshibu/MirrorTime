@@ -25,11 +25,17 @@ function BarChart(props) {
         responsive: true,
         plugins: {
             legend: {
-            position: 'top',
+                position: 'top',
             },
             title: {
-            display: true,
-            text: 'How you planned your life, and how you spend it.',
+                display: true,
+                text: 'How you planned your life, and how you spend it.',
+            },
+            tooltip: {
+                callbacks: {
+                    label: (item) =>
+                        `${item.dataset.label}: ${item.formattedValue} hours`,
+                },
             },
         },
     };

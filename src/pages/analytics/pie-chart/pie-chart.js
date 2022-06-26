@@ -11,11 +11,17 @@ function PieChart(props) {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-            position: 'top',
+                position: 'top',
             },
             title: {
-            display: true,
-            text: 'How you planned your day.',
+                display: true,
+                text: 'Your Plan',
+            },
+            tooltip: {
+                callbacks: {
+                    label: (item) => 
+                        `${item.label}: ${item.formattedValue} hours`,
+                },
             },
         },
     };
@@ -35,13 +41,20 @@ function PieChart(props) {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-            position: 'top',
+                position: 'top',
             },
             title: {
-            display: true,
-            text: 'How your day went.',
+                display: true,
+                text: 'Your Life',
+            },
+            tooltip: {
+                callbacks: {
+                    label: (item) => 
+                        `${item.label}: ${item.formattedValue} hours`,
+                }, 
             },
         },
+        
     };
     
     const lifePieData = {
@@ -54,10 +67,6 @@ function PieChart(props) {
         ]
     }
 
-    // const lifePieData = {
-
-    // }
-    console.log(props.categoriesColors)
     return (
         <>
             <div id="plan-pie"><Pie data={planPieData} options={planOptions} /></div>

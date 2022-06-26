@@ -4,15 +4,18 @@ import Select from 'react-select'
 import { useState } from 'react';
 import BarChart from './bar-chart/bar-chart';
 import PieChart from './pie-chart/pie-chart';
+import DatePicker from 'react-datepicker';
+import { toYmd, db } from '../../App';
 
-const options = [
+const analyticOptions = [
     { value: 'bar-chart', label: 'Bar Chart' },
     { value: 'pie-chart', label: 'Pie Chart' },
 ]
 
 function Analytics(props) {
-    const [analytic, setAnalytic] = useState("");
+    const [analytic, setAnalytic] = useState("pie-chart");
 
+    // ORGANISING DATA FOR GRAPH JS
     const categoriesMap = props.categories
     const propPlanEvents = props.planEvents
     const propLifeEvents = props.lifeEvents
@@ -24,7 +27,7 @@ function Analytics(props) {
     const planData = new Map()
     categories.forEach(category => planData.set(category, 0))
     planEvents.forEach(obj => {
-        planData.set(obj.category, (planData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start));
+        planData.set(obj.category, ((planData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start)) / 3600);
     })
     const objPlanData = Object.fromEntries(planData)
 
@@ -32,9 +35,15 @@ function Analytics(props) {
     const lifeData = new Map()
     categories.forEach(category => lifeData.set(category, 0))
     lifeEvents.forEach(obj => {
-        lifeData.set(obj.category, (lifeData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start));
+        lifeData.set(obj.category, ((lifeData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start)) / 3600);
     })
     const objLifeData = Object.fromEntries(lifeData)
+    // END OF ORGANISING DATA FOR GRAPH JS
+
+    // ORGANISING DATA FOR DATE PICKER
+    const date = props.date
+    const setDate = props.setDate
+    // END OF ORGANISING DATA FOR DATE PICKER
 
     let analyticComponent = <></>
 
@@ -46,9 +55,24 @@ function Analytics(props) {
         analyticComponent = <></>
     }
 
+
     return (
         <div id="analytics-page">
-            <Select options={options} onChange={(option) => setAnalytic(option.value)} placeholder="Please select an analytic to view."/>
+            <div id="analytics-select">
+                <DatePicker 
+                    selected={new Date(date.year, date.month, date.date)} 
+                    onChange={d => setDate(toYmd(d))}
+                    inline fixedHeight
+                />
+                <>
+                    <h5>How would you like your data presented?</h5>
+                    <Select options={analyticOptions} onChange={(option) => setAnalytic(option.value)}/>
+                </>
+                <>  
+                    <h5>Pick your timeline: (day/week/month)</h5>
+                    {/* <Select options={options} onChange={(option) => setAnalytic(option.value)}/> */}
+                </>
+            </div>
             {analyticComponent}
         </div>
     )

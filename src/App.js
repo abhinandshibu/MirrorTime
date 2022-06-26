@@ -143,6 +143,7 @@ function App() {
               planEvents={planEvents} setPlanEvents={setPlanEvents}
               lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
               count={count} setCount={setCount}
+              date={date} setDate={setDate}
             />
           </ColourContext.Provider>
         </Route>
