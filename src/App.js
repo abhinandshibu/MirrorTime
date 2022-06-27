@@ -98,14 +98,14 @@ function App() {
       let temp = new Map();
       const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date", "==", date)));
       planSnapshot.forEach((e) => {
-        temp.set(e.id, e.data());
+        temp.set(+e.id, e.data());
       })
       setPlanEvents(new Map(temp));
 
       temp.clear();
       const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date", "==", date)));
       lifeSnapshot.forEach((e) => {
-        temp.set(e.id, e.data());
+        temp.set(+e.id, e.data());
       })
       setLifeEvents(new Map(temp));
     };

@@ -41,7 +41,6 @@ function SideBar({
     }, [current]);
 
     useEffect(() => {
-        console.log(time);
         if (current.isRunning && !current.isIncreasing && time[0]===0 && time[1]===0) {
             clearInterval(intervalId);
             setTimeoutWindow(true);
