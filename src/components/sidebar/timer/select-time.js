@@ -51,7 +51,7 @@ function SelectTime({
         await setDoc(doc(db, 'info/count'), {count: count+1});
 
         setCurrent({index: count, isRunning: true, isIncreasing: false});
-        setTime([min, sec]); console.log(newEvent, min, sec);
+        setTime([min, sec]);
 
         setSelectTimeWindow(false);
     }

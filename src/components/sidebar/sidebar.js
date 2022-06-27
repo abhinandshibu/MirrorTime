@@ -20,28 +20,35 @@ function SideBar({
     const [timeoutWindow, setTimeoutWindow] = useState(false);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
     const [activeCategory, setActiveCategory] = useState("");
+    const [intervalId, setIntervalId] = useState();
 
     useEffect(() => {
         if (current.isRunning) {
-            if (current.isIncreasing) {console.log("play button");
+            if (current.isIncreasing) {
                 const id = setInterval(() => {
                     setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
                 }, 1000);
                 return () => clearInterval(id);
             } 
-            else {console.log("countdown");
-                const id = setInterval(() => {
-                    if (time === [0, 0]) {console.log("stop");
-                        clearInterval(id);
-                        setTimeoutWindow(true);
-                    } else {console.log("tick");
-                        setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
-                    }
-                }, 1000);
+            else {
+                const id = (setInterval(() => {
+                    setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
+                }, 1000));
+                setIntervalId(id);
                 return () => clearInterval(id);
             }
         }
     }, [current]);
+
+    useEffect(() => {
+        console.log(time);
+        if (current.isRunning && !current.isIncreasing && time[0]===0 && time[1]===0) {
+            clearInterval(intervalId);
+            setTimeoutWindow(true);
+            setCurrent({isRunning: false});
+            setTime([0, 0]);
+        }
+    }, [time])
 
     const play = (category) => {
         const date = new Date();
