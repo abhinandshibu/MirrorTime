@@ -1,6 +1,6 @@
 import './timetable.css';
 import { db, months } from '../../App';
-import Edit from './edit';
+import Info from './info';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState } from 'react';
 import { EditText } from 'react-edit-text';
@@ -11,10 +11,8 @@ function Timetable({
     lifeEvents, setLifeEvents, count, setCount, categories, date, currentEvent, isRunning
 }) {
 
-    const [editWindowShow, setEditWindowShow] = useState(false);
-    const [isPlan, setIsPlan] = useState(true);
-    const [index, setIndex] = useState(0);
-    const [times, setTimes] = useState([0, 3600]);
+    const [infoWindowShow, setInfoWindowShow] = useState(false);
+    const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600});
     const [lines, setLines] = useState(true);
     const [barProgress, setBarProgress] = useState(0);
     const timetableHeight = 288 * 8 + 287 * 0.5;
@@ -70,8 +68,8 @@ function Timetable({
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deletePlanEvent(index)} 
                     />
-                    <img className="edit" src={require("./edit.png")} alt="edit event"
-                        onClick={() => editEvent(index, true)} 
+                    <img className="info" src={require("./info.png")} alt="expand event information"
+                        onClick={() => expandEvent(index, true)} 
                     />
                     {event.copied ? 
                         <img className="copied" src={require("./ticked.png")} alt="event copied to life"/>
@@ -96,8 +94,8 @@ function Timetable({
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deleteLifeEvent(index, event)} 
                     />
-                    <img className="edit" src={require("./edit.png")} alt="edit event"
-                        onClick={() => editEvent(index, false)} 
+                    <img className="info" src={require("./info.png")} alt="expand event information"
+                        onClick={() => expandEvent(index, false)} 
                     />
                     <EditText 
                         name={index} defaultValue={event.name} 
@@ -155,12 +153,10 @@ function Timetable({
         }
     }
 
-    const editEvent = (index, isPlanEvent) => {
-        setIndex(index);
-        setIsPlan(isPlanEvent);
+    const expandEvent = (index, isPlanEvent) => {
         const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
-        setTimes([event.start, event.end]); console.log(event.start, event.end);
-        setEditWindowShow(true);
+        setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end});
+        setInfoWindowShow(true);
     }
 
     const editName = async ({name, value, previousValue}) => {
@@ -220,12 +216,11 @@ function Timetable({
                 <div id="now" style={{top: barProgress + 'px'}}></div>
             </div>
 
-            <Edit 
-                editWindowShow={editWindowShow} setEditWindowShow={setEditWindowShow}
-                events={isPlan ? planEvents : lifeEvents} 
-                setEvents={isPlan ? setPlanEvents : setLifeEvents}
-                isPlan={isPlan}
-                index={index} times={times}
+            <Info 
+                infoWindowShow={infoWindowShow} setInfoWindowShow={setInfoWindowShow}
+                events={info.isPlan ? planEvents : lifeEvents} 
+                setEvents={info.isPlan ? setPlanEvents : setLifeEvents}
+                info={info}
             />
         </div>
     )

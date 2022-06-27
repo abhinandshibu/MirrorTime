@@ -61,7 +61,7 @@
     border-radius: 10px;
 }
 
-.delete, .edit {
+.delete, .info {
     position: absolute;
     top: calc(50%-15px);
     width: 15px;
@@ -74,7 +74,7 @@
     right: 10px;
 }
 
-.edit {
+.info {
     right: 30px;
 }
 

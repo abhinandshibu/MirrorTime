@@ -1,10 +1,10 @@
-import './edit.css';
+import './info.css';
 import { db } from '../../App';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 
-function Edit({editWindowShow, setEditWindowShow, events, setEvents, isPlan, index, times}) {
+function Info({infoWindowShow, setInfoWindowShow, events, setEvents, info}) {
 
     const [startHour, setStartHour] = useState();
     const [startMin, setStartMin] = useState();
@@ -12,22 +12,23 @@ function Edit({editWindowShow, setEditWindowShow, events, setEvents, isPlan, ind
     const [endMin, setEndMin] = useState();
 
     useEffect(() => {
-        setStartHour(Math.floor(times[0] / 3600));
-        setStartMin(Math.floor(times[0] % 3600 / 60));
-        setEndHour(Math.floor(times[1] / 3600));
-        setEndMin(Math.floor(times[1] % 3600 / 60));
-    }, [times])
+        setStartHour(Math.floor(info.start / 3600));
+        setStartMin(Math.floor(info.start % 3600 / 60));
+        setEndHour(Math.floor(info.end / 3600));
+        setEndMin(Math.floor(info.end % 3600 / 60));
+    }, [info])
 
     const save = async () => {
         const start = 3600 * startHour + 60 * startMin;
         const end = 3600 * endHour + 60 * endMin;
+        const updatedEvent = {...events.get(info.index), start: start, end: end};
         if (start < end) {
-            setEvents(map => new Map (map.set( index, {...events.get(index), start: start, end: end} ) ));
+            setEvents(map => new Map (map.set( info.index, updatedEvent ) ));
 
-            const ref = doc(db, isPlan ? "plan" : "life", index.toString())
+            const ref = doc(db, info.isPlan ? "plan" : "life", info.index.toString())
             await updateDoc(ref, {start: start, end: end});
     
-            setEditWindowShow(false);
+            setInfoWindowShow(false);
         }
     }
 
@@ -74,7 +75,7 @@ function Edit({editWindowShow, setEditWindowShow, events, setEvents, isPlan, ind
     const print = (number) => (number < 10 ? '0' : '') + number;
 
     return (
-        <Modal show={editWindowShow} onHide={() => setEditWindowShow(false)}>
+        <Modal show={infoWindowShow} onHide={() => setInfoWindowShow(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>Edit event time...</Modal.Title>
             </Modal.Header>
@@ -101,4 +102,4 @@ function Edit({editWindowShow, setEditWindowShow, events, setEvents, isPlan, ind
     )
 }
 
-export default Edit;
+export default Info;
