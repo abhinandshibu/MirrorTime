@@ -30,11 +30,11 @@ function SideBar({
                 return () => clearInterval(id);
             } 
             else {console.log("countdown");
-                const id = setInterval(() => {console.log("tick");
-                    if (time === [0, 0]) {
+                const id = setInterval(() => {
+                    if (time === [0, 0]) {console.log("stop");
                         clearInterval(id);
                         setTimeoutWindow(true);
-                    } else {
+                    } else {console.log("tick");
                         setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
                     }
                 }, 1000);
@@ -93,31 +93,33 @@ function SideBar({
                             style={{background: '#' + colour, 
                                 border: current.isRunning && activeCategory===name ? "3px dashed black" : "none"}}
                         >
-                            <span>{name}</span>
-                            <div className="box1">
-                                <img className="play" src={require("./play.png")} 
-                                    alt="start an event in this category"
-                                    style={{visibility: current.isRunning ? "hidden" : "visible"}}
-                                    onClick={() => play(name)} 
-                                />
-                                <img className="stop" src={require("./stop.png")} 
-                                    alt="end the current event"
-                                    style={{visibility: current.isRunning && activeCategory===name ? "visible" : "hidden"}}
-                                    onClick={stop} 
-                                />
-                            </div>
-                            <div className="box2">
-                                <img className="countdown" src={require("./timer.png")} 
-                                    alt="start a countdown timer for an activity in this category"
-                                    style={{visibility: current.isRunning ? "hidden" : "visible"}}
-                                    onClick={() => countdown(name)} 
-                                />
-                                <span className="time"
-                                    style={{visibility: current.isRunning && activeCategory===name ? "visible" : "hidden"}}
-                                >
-                                    {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
-                                </span>
-                            </div>
+                            <span className="category-name">{name}</span>
+                            {current.isRunning ? 
+                                <>
+                                    <img className="stop" src={require("./stop.png")} 
+                                        alt="end the current event"
+                                        style={{visibility: activeCategory===name ? "visible" : "hidden"}}
+                                        onClick={stop} 
+                                    />
+                                    <span className="time"
+                                        style={{visibility: activeCategory===name ? "visible" : "hidden"}}
+                                    >
+                                        {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
+                                    </span>
+                                </>
+                                :
+                                <>
+                                    <img className="play" src={require("./play.png")} 
+                                        alt="start an event in this category"
+                                        onClick={() => play(name)} 
+                                    /> 
+                                    <img className="countdown" src={require("./timer.png")} 
+                                        alt="start a countdown timer for an activity in this category"
+                                        style={{visibility: current.isRunning ? "hidden" : "visible"}}
+                                        onClick={() => countdown(name)} 
+                                    />
+                                </>
+                            }
                         </div>
                     ))}
                 </div>

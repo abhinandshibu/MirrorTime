@@ -1,8 +1,30 @@
 .presets {
+    margin: 0 50px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    justify-items: stretch;
+    align-items: center;
 }
 
 .presets * {
-    background: gray;
+    border-radius: 5px;
+    padding: 10px 0;
+    text-align: center;
+    cursor: pointer;
+}
+
+.my-heading {
+    font-weight: 700;
+    font-size: 1.25em;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+#start-timer {
+    font-weight: 700;
+    font-size: 1.5em;
+    margin: 20px 50px;
+    padding: 0 20px;
+    float: right;
 }

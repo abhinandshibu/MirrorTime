@@ -51,24 +51,32 @@
     width: 100%;
     margin-bottom: 10px;
     border-radius: 5px;
-    padding-right: 10px;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: repeat(8, 1fr);
     justify-items: center;
     align-items: center;
 } 
 
-.box1 {
-    width: 25px;
-    height: 25px;
-    position: relative;
+.category-name {
+    grid-column: 1 / 5;
 }
 
-.box2 {
-    width: 60px;
-    height: 25px;
-    position: relative;
+.play {
+    grid-column: 5 / 7;
 }
+
+.countdown {
+    grid-column: 7 / 9;
+}
+
+.stop {
+    grid-column: 5 / 6;
+}
+
+.time {
+    grid-column: 6 / 9;
+}
+
 
 .play, .stop, .countdown {
     width: 25px;
@@ -76,12 +84,6 @@
     opacity: 0.3;
     cursor: pointer;
 } 
-
-.play, .stop, .countdown, .time {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
 
 .play:hover, .stop:hover, .countdown:hover {
     opacity: 1;
