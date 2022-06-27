@@ -4,7 +4,7 @@ import Info from './info';
 import NewPlan from './create/new-plan';
 import NewLife from './create/new-life';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useRef } from 'react';
 import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
 
@@ -19,12 +19,12 @@ function Timetable({
 
     const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600});
     const [lines, setLines] = useState(true);
-    const [barProgress, setBarProgress] = useState(0);
     const timetableHeight = 288 * 8 + 287 * 0.5;
+    const [barProgress, setBarProgress] = useState((new Date().getHours()/24 + new Date().getMinutes()/1440) * timetableHeight);
+    const bar = useRef(null);
 
     useEffect(() => {
-        const date = new Date();
-        setBarProgress((date.getHours()/24 + date.getMinutes()/1440) * timetableHeight);
+        bar.current.scrollIntoView({behavior: "smooth", block: "center"});
 
         const updateTime = setInterval(() => {
             const date = new Date();
@@ -128,7 +128,8 @@ function Timetable({
             style={{gridRowStart: nearestSlot + 1,
                 top: error / 86400 * timetableHeight,
                 height: Math.max(0, barProgress - current.start / 86400 * timetableHeight),
-                background: '#' + categories.get(current.category)}}
+                background: `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${categories.get(current.category)}`
+            }}
         ></div>
     }
 
@@ -231,7 +232,7 @@ function Timetable({
 
                 {lines ? renderLines() : ""}
 
-                <div id="now" style={{top: barProgress + 'px'}}></div>
+                <div id="now" ref={bar} style={{top: barProgress + 'px'}}></div>
             </div>
 
             <Info 
