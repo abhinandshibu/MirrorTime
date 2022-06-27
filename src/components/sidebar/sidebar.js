@@ -46,7 +46,6 @@ function SideBar({
             clearInterval(intervalId);
             setTimeoutWindow(true);
             setCurrent({isRunning: false});
-            setTime([0, 0]);
         }
     }, [time])
 
@@ -54,6 +53,7 @@ function SideBar({
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
         setActiveCategory(category);
+        setTime([0, 0]);
         setCurrent({category: category, start: timeNow, isRunning: true, isIncreasing: true});
     }
 
@@ -76,7 +76,6 @@ function SideBar({
             await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});
         }
         setCurrent({isRunning: false});
-        setTime([0, 0]);
     }
 
     const countdown = (category) => {

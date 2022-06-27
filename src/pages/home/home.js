@@ -35,7 +35,7 @@ function Home({
           count={count} setCount={setCount}
           categories={categories}
           date={date}
-          current={current}
+          current={current} setCurrent={setCurrent}
         />
       </div>
     </div>

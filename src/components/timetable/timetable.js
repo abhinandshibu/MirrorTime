@@ -10,7 +10,7 @@ import 'react-edit-text/dist/index.css';
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
-    count, setCount, categories, date, current
+    count, setCount, categories, date, current, setCurrent
 }) {
 
     const [infoWindow, setInfoWindow] = useState(false);
@@ -54,9 +54,10 @@ function Timetable({
     }
 
     const renderEvents = () => {
+        const timeNow = barProgress / timetableHeight * 86400;
         const array = [];
         for (const [index, event] of planEvents.entries()) {
-            const timeNow = barProgress / timetableHeight * 86400;
+            
             let active = false;
             if (event.start <= timeNow && event.end >= timeNow) {
                 active = true;
@@ -91,10 +92,18 @@ function Timetable({
             );
         }
         for (const [index, event] of lifeEvents.entries()) {
+            let active = false;
+            if (event.start <= timeNow && event.end >= timeNow) {
+                active = true;
+            }
+            const colour = categories.get(event.category);
+
             array.push(
                 <div className="event" key={index}
                     style={{gridArea: `${Math.round(event.start/300) + 1} / 2 / ${Math.round(event.end/300) + 1} / 3`, 
-                            background: '#' + categories.get(event.category)}}
+                            background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
+                                : '#' + colour,
+                            border: active ? `2px solid black` : "none"}}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
                         onClick={() => deleteLifeEvent(index, event)} 
@@ -144,6 +153,10 @@ function Timetable({
     }
 
     const deleteLifeEvent = async (index, event) => {
+        if (current.isRunning && !current.isIncreasing && index === current.index) {
+            setCurrent({isRunning: false});
+        }
+
         setLifeEvents(map => {
             map.delete(index);
             return new Map(map);
