@@ -3,6 +3,8 @@ import { db } from '../../App';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
+import { EditTextarea } from 'react-edit-text';
+import 'react-edit-text/dist/index.css';
 
 function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
 
@@ -10,23 +12,25 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     const [startMin, setStartMin] = useState();
     const [endHour, setEndHour] = useState();
     const [endMin, setEndMin] = useState();
+    const [description, setDescription] = useState("");
 
     useEffect(() => {
         setStartHour(Math.floor(info.start / 3600));
         setStartMin(Math.floor(info.start % 3600 / 60));
         setEndHour(Math.floor(info.end / 3600));
-        setEndMin(Math.floor(info.end % 3600 / 60));
+        setEndMin(Math.floor(info.end % 3600 / 60)); console.log(info.description);
+        setDescription(info.description !== undefined ? info.description : "");
     }, [info])
 
     const save = async () => {
         const start = 3600 * startHour + 60 * startMin;
         const end = 3600 * endHour + 60 * endMin;
-        const updatedEvent = {...events.get(info.index), start: start, end: end};
+        const updatedEvent = {...events.get(info.index), start: start, end: end, description: description};
         if (start < end) {
             setEvents(map => new Map (map.set( info.index, updatedEvent ) ));
 
             const ref = doc(db, info.isPlan ? "plan" : "life", info.index.toString())
-            await updateDoc(ref, {start: start, end: end});
+            await updateDoc(ref, {start: start, end: end, description: description});
     
             setInfoWindow(false);
         }
@@ -77,27 +81,44 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     return (
         <Modal show={infoWindow} onHide={() => setInfoWindow(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit event time...</Modal.Title>
+                <Modal.Title>{info.name}</Modal.Title>
             </Modal.Header>
 
-            <div className="edit-form">
-                <span>{print(startHour)} : {print(startMin)}</span>
-                <span>to</span>
-                <span>{print(endHour)} : {print(endMin)}</span>
+            <div className="info-body">
+                <div>
+                    <label>Category: </label>
+                    <span className="info-category" 
+                        style={{background: '#' + info.colour}}
+                    >{info.category}</span>
+                </div>
                 
-                <div className="buttons">
-                    <span onClick={startEarlier}>&#9664;</span>
-                    <span onClick={startLater}>&#9654;</span>
+                <label>Time: </label>
+                <div className="info-time">
+                    <span>{print(startHour)} : {print(startMin)}</span>
+                    <span>to</span>
+                    <span>{print(endHour)} : {print(endMin)}</span>
+                    
+                    <div className="buttons">
+                        <span onClick={startEarlier}>&#9664;</span>
+                        <span onClick={startLater}>&#9654;</span>
+                    </div>
+                    <span></span>
+                    <div className="buttons">
+                        <span onClick={endEarlier}>&#9664;</span>
+                        <span onClick={endLater}>&#9654;</span>
+                    </div>
                 </div>
-                <span></span>
-                <div className="buttons">
-                    <span onClick={endEarlier}>&#9664;</span>
-                    <span onClick={endLater}>&#9654;</span>
-                </div>
+
+                <label>Description: </label>
+                <EditTextarea 
+                    name="description" value={description} 
+                    className="info-description" inputClassName="info-description"
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={5}
+                />
 
                 <button onClick={save} id="save">Save</button>
             </div>
-            
         </Modal>
     )
 }

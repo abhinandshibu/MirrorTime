@@ -17,7 +17,7 @@ function Timetable({
     const [planWindow, setPlanWindow] = useState(false);
     const [lifeWindow, setLifeWindow] = useState(false);
 
-    const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600});
+    const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600, name: "", category: "", colour: "ffffff"});
     const [lines, setLines] = useState(true);
     const timetableHeight = 288 * 8 + 287 * 0.5;
     const [barProgress, setBarProgress] = useState((new Date().getHours()/24 + new Date().getMinutes()/1440) * timetableHeight);
@@ -174,7 +174,9 @@ function Timetable({
 
     const expandEvent = (index, isPlanEvent) => {
         const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
-        setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end});
+        setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end, 
+            name: event.name, category: event.category, colour: categories.get(event.category),
+            description: event.description});
         setInfoWindow(true);
     }
 
