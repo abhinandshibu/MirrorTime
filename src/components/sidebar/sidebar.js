@@ -2,50 +2,79 @@ import './sidebar.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from 'react';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
 import { toYmd, db } from '../../App';
+import Timeout from './timer/timeout';
+import SelectTime from './timer/select-time';
+import NewCategory from './new-category';
 
 function SideBar({
-    setCategoryWindowShow, setLifeEvents, count, setCount, categories, date, setDate, 
-    currentEvent, setCurrentEvent, isRunning, setIsRunning
+    lifeEvents, setLifeEvents, count, setCount, categories, setCategories, date, setDate, 
+    current, setCurrent
 }) {
     let history = useHistory();
 
     const [time, setTime] = useState([0, 0]); // used for both stopwatch and timer
+    const [categoryWindow, setCategoryWindow] = useState(false);
+    const [timeoutWindow, setTimeoutWindow] = useState(false);
+    const [selectTimeWindow, setSelectTimeWindow] = useState(false);
+    const [activeCategory, setActiveCategory] = useState("");
 
     useEffect(() => {
-        if (isRunning) {
-            const id = setInterval(() => {
-                setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
-            }, 1000);
-            return () => clearInterval(id);
+        if (current.isRunning) {
+            if (current.isIncreasing) {console.log("play button");
+                const id = setInterval(() => {
+                    setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
+                }, 1000);
+                return () => clearInterval(id);
+            } 
+            else {console.log("countdown");
+                const id = setInterval(() => {console.log("tick");
+                    if (time === [0, 0]) {
+                        clearInterval(id);
+                        setTimeoutWindow(true);
+                    } else {
+                        setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
+                    }
+                }, 1000);
+                return () => clearInterval(id);
+            }
         }
-    }, [isRunning])
+    }, [current]);
 
     const play = (category) => {
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
-        setIsRunning(true);
-        setCurrentEvent({category: category, start: timeNow});
+        setActiveCategory(category);
+        setCurrent({category: category, start: timeNow, isRunning: true, isIncreasing: true});
     }
 
     const stop = async () => {
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
-        const newEvent = {name: `${currentEvent.category} activity`, category: currentEvent.category,
-            date: toYmd(date), start: currentEvent.start, end: timeNow};
-        setLifeEvents(map => new Map( map.set(count, newEvent) ));
-        setCount(count + 1);
-        setIsRunning(false);
+        if (current.isIncreasing) {
+            // Play button: event stopped, record event
+            const newEvent = {name: `${activeCategory} activity`, category: activeCategory,
+                date: toYmd(date), start: current.start, end: timeNow};
+            setLifeEvents(map => new Map( map.set(count, newEvent) ));
+            setCount(count + 1);
+    
+            await setDoc(doc(db, `life/${count}`), newEvent);
+            await setDoc(doc(db, 'info/count'), {count: count+1});
+        } else {
+            // Countdown timer: user ended early, update event's end time
+            const updatedEvent = {...lifeEvents.get(current.index), end: timeNow};
+            setLifeEvents(map => new Map( map.set(current.index, updatedEvent) ));
+            await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});
+        }
+        setCurrent({isRunning: false});
         setTime([0, 0]);
-
-        await setDoc(doc(db, `life/${count}`), newEvent);
-        await setDoc(doc(db, 'info/count'), {count: count+1});
     }
 
     const countdown = (category) => {
-        
+        setActiveCategory(category);
+        setSelectTimeWindow(true);
     }
     
     return (
@@ -57,34 +86,34 @@ function SideBar({
             />
 
             <div className="categories">
-                <button id="new-category" onClick={() => setCategoryWindowShow(true)}>New Category</button>
+                <button id="new-category" onClick={() => setCategoryWindow(true)}>New Category</button>
                 <div className="category-list">
                     {Array.from(categories).map(([name, colour]) => (
                         <div key={name} className="category"
                             style={{background: '#' + colour, 
-                                border: isRunning && currentEvent.category===name ? "3px dashed black" : "none"}}
+                                border: current.isRunning && activeCategory===name ? "3px dashed black" : "none"}}
                         >
                             <span>{name}</span>
                             <div className="box1">
                                 <img className="play" src={require("./play.png")} 
                                     alt="start an event in this category"
-                                    style={{visibility: isRunning ? "hidden" : "visible"}}
+                                    style={{visibility: current.isRunning ? "hidden" : "visible"}}
                                     onClick={() => play(name)} 
                                 />
                                 <img className="stop" src={require("./stop.png")} 
                                     alt="end the current event"
-                                    style={{visibility: isRunning && currentEvent.category===name ? "visible" : "hidden"}}
+                                    style={{visibility: current.isRunning && activeCategory===name ? "visible" : "hidden"}}
                                     onClick={stop} 
                                 />
                             </div>
                             <div className="box2">
-                                <img className="timer" src={require("./timer.png")} 
+                                <img className="countdown" src={require("./timer.png")} 
                                     alt="start a countdown timer for an activity in this category"
-                                    style={{visibility: isRunning ? "hidden" : "visible"}}
+                                    style={{visibility: current.isRunning ? "hidden" : "visible"}}
                                     onClick={() => countdown(name)} 
                                 />
                                 <span className="time"
-                                    style={{visibility: isRunning && currentEvent.category===name ? "visible" : "hidden"}}
+                                    style={{visibility: current.isRunning && activeCategory===name ? "visible" : "hidden"}}
                                 >
                                     {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
                                 </span>
@@ -94,6 +123,24 @@ function SideBar({
                 </div>
             </div>
             <button id="analytics-button" onClick={()=>history.push('/analytics')}>Analytics</button>
+
+            <NewCategory
+                categoryWindow={categoryWindow} setCategoryWindow={setCategoryWindow}
+                setCategories={setCategories}
+            />
+
+            <SelectTime
+                selectTimeWindow={selectTimeWindow} setSelectTimeWindow={setSelectTimeWindow}
+                setCurrent={setCurrent} setTime={setTime}
+                setLifeEvents={setLifeEvents}
+                category={activeCategory}
+                count={count} setCount={setCount}
+                
+            />
+
+            <Timeout
+                timeoutWindow={timeoutWindow} setTimeoutWindow={setTimeoutWindow}
+            />
         </div>
     );
 }

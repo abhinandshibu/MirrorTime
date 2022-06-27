@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 
-function Info({infoWindowShow, setInfoWindowShow, events, setEvents, info}) {
+function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
 
     const [startHour, setStartHour] = useState();
     const [startMin, setStartMin] = useState();
@@ -28,7 +28,7 @@ function Info({infoWindowShow, setInfoWindowShow, events, setEvents, info}) {
             const ref = doc(db, info.isPlan ? "plan" : "life", info.index.toString())
             await updateDoc(ref, {start: start, end: end});
     
-            setInfoWindowShow(false);
+            setInfoWindow(false);
         }
     }
 
@@ -75,7 +75,7 @@ function Info({infoWindowShow, setInfoWindowShow, events, setEvents, info}) {
     const print = (number) => (number < 10 ? '0' : '') + number;
 
     return (
-        <Modal show={infoWindowShow} onHide={() => setInfoWindowShow(false)}>
+        <Modal show={infoWindow} onHide={() => setInfoWindow(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>Edit event time...</Modal.Title>
             </Modal.Header>

@@ -1,17 +1,22 @@
 import './timetable.css';
 import { db, months } from '../../App';
 import Info from './info';
+import NewPlan from './create/new-plan';
+import NewLife from './create/new-life';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState } from 'react';
 import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
 
 function Timetable({
-    setPlanWindowShow, setLifeWindowShow, planEvents, setPlanEvents, 
-    lifeEvents, setLifeEvents, count, setCount, categories, date, currentEvent, isRunning
+    planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
+    count, setCount, categories, date, current
 }) {
 
-    const [infoWindowShow, setInfoWindowShow] = useState(false);
+    const [infoWindow, setInfoWindow] = useState(false);
+    const [planWindow, setPlanWindow] = useState(false);
+    const [lifeWindow, setLifeWindow] = useState(false);
+
     const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600});
     const [lines, setLines] = useState(true);
     const [barProgress, setBarProgress] = useState(0);
@@ -79,7 +84,7 @@ function Timetable({
                         />
                     }
                     <EditText 
-                        name={index} defaultValue={event.name} 
+                        name={index.toString()} defaultValue={event.name} 
                         inputClassName="title" onSave={editName}
                     />
                 </div>
@@ -98,7 +103,7 @@ function Timetable({
                         onClick={() => expandEvent(index, false)} 
                     />
                     <EditText 
-                        name={index} defaultValue={event.name} 
+                        name={index.toString()} defaultValue={event.name} 
                         inputClassName="title" onSave={editName}
                     />
                 </div>
@@ -108,13 +113,13 @@ function Timetable({
     }
 
     const renderCurrentEvent = () => {
-        const nearestSlot = Math.round(currentEvent.start / 300);
-        const error = currentEvent.start - nearestSlot * 300;
+        const nearestSlot = Math.round(current.start / 300);
+        const error = current.start - nearestSlot * 300;
         return <div id="current"
             style={{gridRowStart: nearestSlot + 1,
                 top: error / 86400 * timetableHeight,
-                height: Math.max(0, barProgress - currentEvent.start / 86400 * timetableHeight),
-                background: '#' + categories.get(currentEvent.category)}}
+                height: Math.max(0, barProgress - current.start / 86400 * timetableHeight),
+                background: '#' + categories.get(current.category)}}
         ></div>
     }
 
@@ -156,17 +161,17 @@ function Timetable({
     const expandEvent = (index, isPlanEvent) => {
         const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
         setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end});
-        setInfoWindowShow(true);
+        setInfoWindow(true);
     }
 
     const editName = async ({name, value, previousValue}) => {
-        if (planEvents.has(name)) {
-            const event = planEvents.get(name);
-            setPlanEvents(map => new Map( map.set(name, {...event, name: value}) ));
+        if (planEvents.has(+name)) {
+            const event = planEvents.get(+name);
+            setPlanEvents(map => new Map( map.set(+name, {...event, name: value}) ));
             await updateDoc(doc(db, "plan", name), {name: value});
         } else {
-            const event = lifeEvents.get(name);
-            setLifeEvents(map => new Map( map.set(name, {...event, name: value}) ));
+            const event = lifeEvents.get(+name);
+            setLifeEvents(map => new Map( map.set(+name, {...event, name: value}) ));
             await updateDoc(doc(db, "life", name), {name: value});
         }
     }
@@ -194,13 +199,13 @@ function Timetable({
                 <div>
                     Your Life
                     <img className="add" src={require("./plus.png")} alt="log a real event"
-                        onClick={() => setLifeWindowShow(true)} 
+                        onClick={() => setLifeWindow(true)} 
                     />
                 </div>
                 <div>
                     Your Plan
                     <img className="add" src={require("./plus.png")} alt="plan an event"
-                        onClick={() => setPlanWindowShow(true)} 
+                        onClick={() => setPlanWindow(true)} 
                     />
                 </div>
             </div>
@@ -209,7 +214,7 @@ function Timetable({
                 
                 {renderEvents()}
 
-                {isRunning ? renderCurrentEvent() : ""}
+                {current.isRunning && current.isIncreasing ? renderCurrentEvent() : ""}
 
                 {lines ? renderLines() : ""}
 
@@ -217,10 +222,26 @@ function Timetable({
             </div>
 
             <Info 
-                infoWindowShow={infoWindowShow} setInfoWindowShow={setInfoWindowShow}
+                infoWindow={infoWindow} setInfoWindow={setInfoWindow}
                 events={info.isPlan ? planEvents : lifeEvents} 
                 setEvents={info.isPlan ? setPlanEvents : setLifeEvents}
                 info={info}
+            />
+
+            <NewPlan 
+                planWindow={planWindow} setPlanWindow={setPlanWindow}
+                categories={categories}
+                setPlanEvents={setPlanEvents}
+                count={count} setCount={setCount}
+                date={date}
+            />
+
+            <NewLife 
+                lifeWindow={lifeWindow} setLifeWindow={setLifeWindow}
+                categories={categories}
+                setLifeEvents={setLifeEvents}
+                count={count} setCount={setCount}
+                date={date}
             />
         </div>
     )

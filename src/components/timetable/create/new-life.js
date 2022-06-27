@@ -1,45 +1,45 @@
-import './new-plan.css';
+import './new-life.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { db } from '../../App';
+import { db } from '../../../App';
 import { useState } from 'react';
 import React from 'react';
 
-function NewPlan({
-        planWindowShow, setPlanWindowShow, categories,
-        setPlanEvents, count, setCount, date
+function NewLife({
+    lifeWindow, setLifeWindow, categories,
+    setLifeEvents, count, setCount, date
 }) {
 
     const initialEvent = {name: "", category: "", startHour: -1, startMin: -10000,
         endHour: -1, endMin: -10000}
     const [event, setEvent] = useState(initialEvent);
 
-    const addEvent = () => {
-        const name = event.name;
-        const category = event.category;
-        const start = 3600 * event.startHour + 60 * event.startMin;
-        const end = 3600 * event.endHour + 60 * event.endMin;
-        if (name !== "" && category !== "" && start >= 0 && end >= 0 && start < end) 
-        {
-            const newEvent = {name: name, category: category, date: date, start: start, end: end, copied: false};
-            setPlanEvents(map => new Map( map.set(count, newEvent) ));
-            setCount(count+1);
-            // write to database
-            let ref = doc(db, `plan/${count}`);
-            const write = async () => {
-                setDoc(ref, newEvent);
-                setDoc(doc(db, 'info/count'), {count: count+1});
+        const addEvent = () => {
+            const name = event.name;
+            const category = event.category;
+            const start = 3600 * event.startHour + 60 * event.startMin;
+            const end = 3600 * event.endHour + 60 * event.endMin;
+            if (name !== "" && category !== "" && start >= 0 && end >= 0 && start < end) 
+            {
+                const newEvent = {name: name, category: category, date: date, start: start, end: end};
+                setLifeEvents(map => new Map( map.set(count, newEvent) ));
+                setCount(count+1);
+                // write to database
+                let ref = doc(db, `life/${count}`);
+                const write = async () => {
+                    setDoc(ref, newEvent);
+                    setDoc(doc(db, 'info/count'), {count: count+1});
+                }
+                write().catch(console.error);
+                setLifeWindow(false);
+                setEvent(initialEvent);
             }
-            write().catch(console.error);
-            setPlanWindowShow(false);
-            setEvent(initialEvent)
         }
-    }
 
     return (
-        <Modal show={planWindowShow} onHide={() => setPlanWindowShow(false)}>
+        <Modal show={lifeWindow} onHide={() => setLifeWindow(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Add a new event to your plan...</Modal.Title>
+                <Modal.Title>Log an activity you did...</Modal.Title>
             </Modal.Header>
 
             <div className="form">
@@ -99,7 +99,7 @@ function NewPlan({
                         onChange={(e) => {setEvent({...event, endMin: +e.target.value})}}
                     >
                         <option value={-10000} key="default">Min</option>
-                        {event.endHour==24 ? <option value={0}>00</option> :
+                        {event.endHour===24 ? <option value={0}>00</option> :
                             [...Array(12).keys()].map(i => (
                                 <option value={i*5} key={i*5}>{i<2 ? '0' + i*5 : i*5}</option>
                             ))
@@ -114,4 +114,4 @@ function NewPlan({
     );
 }
 
-export default NewPlan;
+export default NewLife;

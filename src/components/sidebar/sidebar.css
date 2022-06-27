@@ -70,23 +70,19 @@
     position: relative;
 }
 
-.play, .stop, .timer {
+.play, .stop, .countdown {
     width: 25px;
     height: 25px;
     opacity: 0.3;
     cursor: pointer;
 } 
 
-.play, .stop, .timer, .time {
+.play, .stop, .countdown, .time {
     position: absolute;
     top: 0;
     left: 0;
 }
 
-.play:hover, .stop:hover, .timer:hover {
+.play:hover, .stop:hover, .countdown:hover {
     opacity: 1;
-}
-
-.time {
-
 }

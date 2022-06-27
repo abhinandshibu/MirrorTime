@@ -5,7 +5,7 @@ import { ColourContext, db } from '../../App';
 import { useState, useContext } from 'react';
 import React from 'react';
 
-function NewCategory ({categoryWindowShow, setCategoryWindowShow, setCategories}) {
+function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
 
     const colours = useContext(ColourContext);
     const [categoryName, setCategoryName] = useState("");
@@ -22,11 +22,13 @@ function NewCategory ({categoryWindowShow, setCategoryWindowShow, setCategories}
             write().catch(console.error);
             setCategoryName("");
             setCategoryColour(colours[0]);
+
+            setCategoryWindow(false);
         }
     }
 
     return (
-        <Modal show={categoryWindowShow} onHide={() => setCategoryWindowShow(false)}>
+        <Modal show={categoryWindow} onHide={() => setCategoryWindow(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>New Category</Modal.Title>
             </Modal.Header>
