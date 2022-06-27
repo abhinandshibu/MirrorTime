@@ -30,104 +30,102 @@ function Analytics(props) {
     const [analytic, setAnalytic] = useState("pie-chart");
     const [analyticTimeline, setAnalyticTimeline] = useState("day");
 
-    const [startDate, setStartDate] = useState(structuredClone(date));
-    const [endDate, setEndDate] = useState(structuredClone(date));
     const [totalPlanEvents, setTotalPlanEvents] = useState(new Map());
     const [totalLifeEvents, setTotalLifeEvents] = useState(new Map());
 
     const categories = Array.from(props.categories.keys())
     const categoriesColors = Array.from(props.categories.values()).map(color => '#' + color)
 
-    // When the timeline for the analytic changes
     useEffect(() => {
-        if (analyticTimeline === "day") {
-            setStartDate(date)
-            setEndDate(date)
-        } else if (analyticTimeline === "week") {
-            console.log("hello world")
-        } else if (analyticTimeline === "month") {
-            const startDate = structuredClone(date)
-            startDate.date = 1
-            setStartDate(startDate)
-            const endDate = structuredClone(date)
-            endDate.date = 31
-            setEndDate(endDate)
-        } else {
-            console.log("INVALID ANALYTIC TIMELINE")
-        }
-    }, [date, analyticTimeline])
 
-    // When the startDate and the endDate for the analytic period changes
-    useEffect(() => {
-        // Date should be a object consisting of 
-        // a `year`, `month` and `date` which are integers. 
-        async function getEventsForDay(date) {
+        async function getEventsInDate(date) {
             let temp = new Map();
             const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date", "==", date)));
             planSnapshot.forEach((e) => {
                 temp.set(e.id, e.data());
             })
-            const planEvents = new Map(temp)
+            const propPlanEvents = new Map(temp)
 
             temp.clear();
             const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date", "==", date)));
             lifeSnapshot.forEach((e) => {
                 temp.set(e.id, e.data());
             })
-            const lifeEvents = new Map(temp)
-            
-            return [planEvents, lifeEvents]
-        }
-
-        /* Note, that startDate and endDate should be a object consisting of 
-        a `year`, `month` and `date` which are integers. 
-        Use helper function `toYmd` defined in `App.js` to convert a javascript
-        date to this format. */
-        async function getEventsInBetween(startDate, endDate) {
-            let propPlanEvents = new Map();
-            let propLifeEvents = new Map();
-
-            for (let yearCount=startDate.year; yearCount<=endDate.year; yearCount++) {
-                const firstMonth = yearCount === startDate.year ? startDate.month : 1
-                const finalMonth = yearCount === endDate.year ? endDate.month : 12
-            
-                for (let monthCount=firstMonth; monthCount<=finalMonth; monthCount++) {
-                    const firstDay = (yearCount === startDate.year && monthCount === startDate.month) ? startDate.date : 1
-                    const finalDay = (yearCount === endDate.year && monthCount === endDate.month) ? endDate.date : 31
-
-                    for (let dayCount=firstDay; dayCount<=finalDay; dayCount++) {
-                        const tempDate = toYmd(new Date(yearCount, monthCount, dayCount))
-                        
-                        console.log(tempDate)
-                        const propEvents = await getEventsForDay(tempDate)
-                        console.log(propEvents)
-                        propPlanEvents = new Map([...propPlanEvents, ...propEvents[0]])
-                        propLifeEvents = new Map([...propLifeEvents, ...propEvents[1]])
-                    }
-                }
-            }
-        
+            const propLifeEvents = new Map(temp)
+                         
             setTotalPlanEvents(propPlanEvents)
             setTotalLifeEvents(propLifeEvents)
         }
 
-        getEventsInBetween(startDate, endDate).catch()
-    }, [startDate, endDate])
+        async function getEventsInWeek(date) {
+            let temp = new Map();
+            const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date.date", ">=", date.date - 7), where("date.month", "==", date.month), where("date.year", "==", date.year)));
+            planSnapshot.forEach((e) => {
+                temp.set(e.id, e.data());
+            })
+            const propPlanEvents = new Map(temp)
+
+            temp.clear();
+            const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date.date", ">=", date.date - 7), where("date.month", "==", date.month), where("date.year", "==", date.year)));
+            lifeSnapshot.forEach((e) => {
+                temp.set(e.id, e.data());
+            })
+            const propLifeEvents = new Map(temp)
+                         
+            setTotalPlanEvents(propPlanEvents)
+            setTotalLifeEvents(propLifeEvents)
+        }
+
+        async function getEventsInMonth(date) {
+            const month = date.month
+            const year = date.year
+
+            let temp = new Map();
+            const planSnapshot = await getDocs(query(collection(db, 'plan'), where("date.month", "==", month), where("date.year", "==", year)));
+            planSnapshot.forEach((e) => {
+                temp.set(e.id, e.data());
+            })
+            const propPlanEvents = new Map(temp)
+
+            temp.clear();
+            const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date.month", "==", month), where("date.month", "==", month)));
+            lifeSnapshot.forEach((e) => {
+                temp.set(e.id, e.data());
+            })
+            const propLifeEvents = new Map(temp)
+                         
+            setTotalPlanEvents(propPlanEvents)
+            setTotalLifeEvents(propLifeEvents)
+        }
+        
+        if (analyticTimeline === "day") {
+            getEventsInDate(date)
+        } else if (analyticTimeline === "week") {
+            getEventsInWeek(date)
+        } else if (analyticTimeline === "month") {
+            getEventsInMonth(date)
+        } else {
+            console.log("INVALID ANALYTIC TIMELINE")
+        }
+    }, [date, analyticTimeline])
 
     function formatForGraphJS(propPlanEvents, propLifeEvents) {
         const planEvents = Array.from(propPlanEvents.values())
+        console.log(planEvents)
         const planData = new Map()
         categories.forEach(category => planData.set(category, 0))
         planEvents.forEach(obj => {
-            planData.set(obj.category, ((planData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start)) / 3600);
+            planData.set(obj.category, planData.get(obj.category) + ((parseInt(obj.end) - parseInt(obj.start)) / 3600));
         })
 
         const lifeEvents = Array.from(propLifeEvents.values())
         const lifeData = new Map()
         categories.forEach(category => lifeData.set(category, 0))
         lifeEvents.forEach(obj => {
-            lifeData.set(obj.category, ((lifeData.get(obj.category)) + parseInt(obj.end) - parseInt(obj.start)) / 3600);
+            lifeData.set(obj.category, lifeData.get(obj.category) + ((parseInt(obj.end) - parseInt(obj.start)) / 3600));
         })
+
+        console.log(planData)
 
         return [planData, lifeData]
     }
@@ -160,12 +158,18 @@ function Analytics(props) {
                 <div id="analytics-view-picker">
                     <>
                         <h5>How would you like your data presented?</h5>
-                        <Select options={analyticOptions} onChange={(option) => setAnalytic(option.value)}/>
+                        <Select 
+                            options={analyticOptions} 
+                            onChange={(option) => setAnalytic(option.value)}
+                            defaultValue={{ value: 'pie-chart', label: 'Pie Chart' }}/>
                     </>
                     <>  
                         <p></p>
                         <h5>Pick your timeline: (day/week/month)</h5>
-                        <Select options={timelineOptions} onChange={(option) => setAnalyticTimeline(option.value)}/>
+                        <Select 
+                            options={timelineOptions} 
+                            onChange={(option) => setAnalyticTimeline(option.value)}
+                            defaultValue={{ value: 'day', label: 'Day' }}/>
                     </>
                 </div>
             </div>
