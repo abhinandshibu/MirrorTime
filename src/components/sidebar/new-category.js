@@ -28,33 +28,35 @@ function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
     }
 
     return (
-        <Modal show={categoryWindow} onHide={() => setCategoryWindow(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>New Category</Modal.Title>
-            </Modal.Header>
-            
-            <div className="form">
-                <div className="my-row colours">
-                    <label>Colour: </label>
-                    {colours.map(col => (
-                        <div className={`colour ${categoryColour === col ? "selected" : ""}`} 
-                            style={{background: '#' + col}}
-                            onClick={() => setCategoryColour(col)}
-                            key={col}>
-                        </div>
-                    ))}
-                </div>
+        <div id="new-category-window">
+            <Modal show={categoryWindow} onHide={() => setCategoryWindow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>New Category</Modal.Title>
+                </Modal.Header>
                 
-                <div className="my-row">
-                    <label>Name: </label>
-                    <input type="text" value={categoryName}
-                        onChange={(e) => setCategoryName(e.target.value) } 
-                    />
+                <div className="form">
+                    <div className="my-row colours">
+                        <label>Colour: </label>
+                        {colours.map(col => (
+                            <div className={`colour ${categoryColour === col ? "selected" : ""}`} 
+                                style={{background: '#' + col}}
+                                onClick={() => setCategoryColour(col)}
+                                key={col}>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="my-row">
+                        <label>Name: </label>
+                        <input type="text" value={categoryName}
+                            onChange={(e) => setCategoryName(e.target.value) } 
+                        />
+                    </div>
+                    
+                    <button onClick={addNewCategory}>Add Category</button>
                 </div>
-                
-                <button onClick={addNewCategory}>Add Category</button>
-            </div>
-        </Modal>
+            </Modal>
+        </div>
     );
 }
 

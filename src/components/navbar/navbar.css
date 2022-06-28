@@ -1,0 +1,21 @@
+#navbar {
+    /* background-color: # !important; */
+    background: rgb(2,0,36);
+    background: linear-gradient(277deg, rgba(2,0,36,1) 0%, rgba(127,149,248,1) 0%, rgba(149,137,248,1) 100%); 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+    order: 1; 
+}
+
+/* #navbar-name {
+    color: #fff !important;
+} */
+
+.navbar-brand {
+    color: #fff !important;
+    /* font-size: 1.5rem; */
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #fff !important;
+}

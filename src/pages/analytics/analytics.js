@@ -28,7 +28,7 @@ function Analytics(props) {
 
     // ORGANISING DATA FOR GRAPH JS
     const [analytic, setAnalytic] = useState("pie-chart");
-    const [analyticTimeline, setAnalyticTimeline] = useState("day");
+    const [analyticTimeline, setAnalyticTimeline] = useState("week");
 
     const [totalPlanEvents, setTotalPlanEvents] = useState(new Map());
     const [totalLifeEvents, setTotalLifeEvents] = useState(new Map());
@@ -138,9 +138,9 @@ function Analytics(props) {
     let analyticComponent = <></>
 
     if (analytic === "bar-chart") {
-        analyticComponent = <BarChart id="analytics-component" categories={categories} planData={planData} lifeData={lifeData}/>
+        analyticComponent = <BarChart categories={categories} planData={planData} lifeData={lifeData}/>
     } else if (analytic === "pie-chart") {
-        analyticComponent = <PieChart id="analytics-component" categories={categories} categoriesColors={categoriesColors} planData={planData} lifeData={lifeData}/>
+        analyticComponent = <PieChart categories={categories} categoriesColors={categoriesColors} planData={planData} lifeData={lifeData}/>
     } else {
         analyticComponent = <></>
     }
@@ -169,11 +169,13 @@ function Analytics(props) {
                         <Select 
                             options={timelineOptions} 
                             onChange={(option) => setAnalyticTimeline(option.value)}
-                            defaultValue={{ value: 'day', label: 'Day' }}/>
+                            defaultValue={{ value: 'week', label: 'Week' }}/>
                     </>
                 </div>
             </div>
-            {analyticComponent}
+            <div id="analytics-component">
+                {analyticComponent}
+            </div>
         </div>
     )
 }

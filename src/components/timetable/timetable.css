@@ -1,18 +1,28 @@
 .timetable {
-    position: relative;
+    /* position: relative; */
     padding: 20px;
-    background: lightgrey;
-    border-radius: 10px;
+    background: #eef3f9;
+    /* border-radius: 10px; */
+}
+
+#timetable-top {
+    /* display: flex; */
+    /* display: inline-block; */
+    width: 100%;
 }
 
 #toggle-lines {
-    position: absolute;
-    top: 50px;
-    left: 20px;
     font-size: 0.75em;
+    /* display:inline-block; */
 }
 
+/* #button-toggle-lines {
+    padding-left: 0px;
+} */
+
 #today {
+    /* text-align: center; */
+    display:inline-block;
     margin-bottom: 5px;
     font-size: 2em;
     font-weight: 200;
@@ -21,7 +31,7 @@
 .timetable-heading {
     margin: 5px 0;
     display: grid;
-    grid-template-columns: 70px 5fr 3fr;
+    grid-template-columns: 115px 5fr 3fr;
     font-size: 1.3em;
     font-weight: 700;
 }
@@ -44,7 +54,7 @@
 .timetable-body {
     grid-area: timetable;
     position: relative;
-    height: 75vh;
+    height: 85vh;
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;

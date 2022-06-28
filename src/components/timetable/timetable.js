@@ -7,6 +7,7 @@ import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState, useRef } from 'react';
 import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
+import { Button } from 'react-bootstrap';
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
@@ -208,10 +209,14 @@ function Timetable({
 
     return (
         <div className="timetable">
-            <button id="toggle-lines" onClick={() => setLines(!lines)}>Toggle lines</button>
-            <div id="today">{date.date} {months[date.month]} {date.year}</div>
+            {/* <div id="timetable-top">
+                
+                <div id="today">{date.date} {months[date.month]} {date.year}</div>
+            </div> */}
             <div className="timetable-heading">
-                <div> </div>
+                <div id="button-toggle-lines">
+                    <Button variant="outline-dark" id="toggle-lines" onClick={() => setLines(!lines)}>Toggle lines</Button>
+                </div>
                 <div>
                     Your Life
                     <img className="add" src={require("./plus.png")} alt="log a real event"

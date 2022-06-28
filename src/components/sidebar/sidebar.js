@@ -8,6 +8,7 @@ import { toYmd, db } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
+import { Button } from 'react-bootstrap';
 
 function SideBar({
     lifeEvents, setLifeEvents, count, setCount, categories, setCategories, date, setDate, 
@@ -84,14 +85,16 @@ function SideBar({
     
     return (
         <div className="sidebar">
-            <DatePicker 
-                selected={new Date(date.year, date.month, date.date)} 
-                onChange={d => setDate(toYmd(d))}
-                inline fixedHeight
-            />
+            <div id="datepicker">
+                <DatePicker 
+                    selected={new Date(date.year, date.month, date.date)} 
+                    onChange={d => setDate(toYmd(d))}
+                    inline fixedHeight
+                />
+            </div>
 
             <div className="categories">
-                <button id="new-category" onClick={() => setCategoryWindow(true)}>New Category</button>
+                <Button variant="outline-dark" id="new-category" onClick={() => setCategoryWindow(true)}>New Category</Button>
                 <div className="category-list">
                     {Array.from(categories).map(([name, colour]) => (
                         <div key={name} className="category"
@@ -129,7 +132,6 @@ function SideBar({
                     ))}
                 </div>
             </div>
-            <button id="analytics-button" onClick={()=>history.push('/analytics')}>Analytics</button>
 
             <NewCategory
                 categoryWindow={categoryWindow} setCategoryWindow={setCategoryWindow}
