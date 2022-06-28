@@ -1,35 +1,16 @@
 .timetable {
-    /* position: relative; */
-    padding: 20px;
+    padding: 3vh;
     background: #eef3f9;
-    /* border-radius: 10px; */
-}
-
-#timetable-top {
-    /* display: flex; */
-    /* display: inline-block; */
-    width: 100%;
+    box-sizing: border-box;
 }
 
 #toggle-lines {
     font-size: 0.75em;
-    /* display:inline-block; */
-}
-
-/* #button-toggle-lines {
-    padding-left: 0px;
-} */
-
-#today {
-    /* text-align: center; */
-    display:inline-block;
-    margin-bottom: 5px;
-    font-size: 2em;
-    font-weight: 200;
 }
 
 .timetable-heading {
-    margin: 5px 0;
+    height: 5vh;
+    margin-bottom: 2vh;
     display: grid;
     grid-template-columns: 115px 5fr 3fr;
     font-size: 1.3em;
@@ -54,7 +35,7 @@
 .timetable-body {
     grid-area: timetable;
     position: relative;
-    height: 85vh;
+    height: 80vh;
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 70px 5fr 3fr;

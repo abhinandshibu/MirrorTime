@@ -1,20 +1,15 @@
 #analytics-page {
-    /* margin: 0px 50px; */
+    height: 93vh;
     display: grid;
-    grid-template-columns: 1fr 3fr;
-    grid-template-areas: "sidebar timetable";
-    /* grid-gap: 40px; */
-    height: 100vh
-    /* padding-top: 1.2rem; */
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: "sidebar component";
 }
 
 #analytics-select {
-    /* display: flex; */
+    grid-area: sidebar;
     justify-content: space-right;
     background: linear-gradient(277deg, rgba(2,0,36,1) 0%, rgba(127,149,248,1) 0%, rgba(149,137,248,1) 100%); 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
-    height: 100vh;
-    width: 20vw;
 }
 
 #analytics-date-picker {
@@ -28,16 +23,9 @@
     padding: 2rem;
 }
 
-#plan-pie {
-    padding-top: 15px !important; 
-    height: 35% !important;
+#analytics-component {
+    grid-area: component;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
-
-#life-pie {
-    padding-top: 15px !important; 
-    height: 35% !important; 
-}
-
-/* #analytics-component {
-
-} */

@@ -1,15 +1,7 @@
-.home{
+.home {
   text-align: center;
   background: #eef3f9;
-  height: 100vh;
-}
-
-.main {
-  /* margin: 0px 50px; */
   display: grid;
   grid-template-columns: 1fr 4fr;
   grid-template-areas: "sidebar timetable";
-  /* grid-gap: 40px; */
-  height: 100vh
-  /* padding-top: 1.2rem; */
 }

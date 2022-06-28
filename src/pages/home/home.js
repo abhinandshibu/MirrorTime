@@ -20,24 +20,23 @@ function Home({
 
     <div className="home"> 
  
-      <div className="main">
-        <SideBar 
-          lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-          count={count} setCount={setCount}
-          categories={categories} setCategories={setCategories}
-          date={date} setDate={setDate}
-          current={current} setCurrent={setCurrent}
-        />
+      <SideBar 
+        lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+        count={count} setCount={setCount}
+        categories={categories} setCategories={setCategories}
+        date={date} setDate={setDate}
+        current={current} setCurrent={setCurrent}
+      />
 
-        <Timetable 
-          planEvents={planEvents} setPlanEvents={setPlanEvents}
-          lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-          count={count} setCount={setCount}
-          categories={categories}
-          date={date}
-          current={current} setCurrent={setCurrent}
-        />
-      </div>
+      <Timetable 
+        planEvents={planEvents} setPlanEvents={setPlanEvents}
+        lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+        count={count} setCount={setCount}
+        categories={categories}
+        date={date}
+        current={current} setCurrent={setCurrent}
+      />
+      
     </div>
 
   );

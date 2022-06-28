@@ -1,3 +1,4 @@
+import './bar-chart.css'
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -56,7 +57,7 @@ function BarChart(props) {
         datasets: datasets,
     }
 
-    return <Bar options={options} data={data} />
+    return <div id="bar-chart"><Bar options={options} data={data} /></div>
 }
 
 export default BarChart;
