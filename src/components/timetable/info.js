@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 import { EditTextarea } from 'react-edit-text';
+import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
 function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
@@ -36,43 +37,32 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
         }
     }
 
-    const startEarlier = () => {
-        if (startHour === 0 && startMin === 0) return;
-        if (startMin === 0) {
-            setStartHour(startHour - 1);
-            setStartMin(55);
+    const earlier = (step, isStart) => {
+        const [hour, setHour, min, setMin] = isStart ? 
+            [startHour, setStartHour, startMin, setStartMin] : 
+            [endHour, setEndHour, endMin, setEndMin];
+
+        if (hour === 0 && min < step) return;
+        if (min < step) {
+            setHour(hour - 1);
+            setMin(60 + min - step);
         } else {
-            setStartMin(startMin - 5);
+            setMin(min - step);
         }
     }
 
-    const startLater = () => {
-        if (startHour === 23 && startMin === 55) return;
-        if (startMin === 55) {
-            setStartHour(startHour + 1);
-            setStartMin(0);
-        } else {
-            setStartMin(startMin + 5);
-        }
-    }
+    const later = (step, isStart) => {
+        const [hour, setHour, min, setMin] = isStart ? 
+            [startHour, setStartHour, startMin, setStartMin] : 
+            [endHour, setEndHour, endMin, setEndMin];
 
-    const endEarlier = () => {
-        if (endHour === 0 && endMin === 5) return;
-        if (endMin === 0) {
-            setEndHour(endHour - 1);
-            setEndMin(55);
+        if (hour > 23) return;
+        if (hour === 23 && min >= 60 - step) return;
+        if (min >= 60 - step) {
+            setHour(hour + 1);
+            setMin(min + step - 60);
         } else {
-            setEndMin(endMin - 5);
-        }
-    }
-
-    const endLater = () => {
-        if (endHour === 24) return;
-        if (endMin === 55) {
-            setEndHour(endHour + 1);
-            setEndMin(0);
-        } else {
-            setEndMin(endMin + 5);
+            setMin(min + step);
         }
     }
 
@@ -94,18 +84,26 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
                 
                 <label>Time: </label>
                 <div className="info-time">
-                    <span>{print(startHour)} : {print(startMin)}</span>
-                    <span>to</span>
-                    <span>{print(endHour)} : {print(endMin)}</span>
+                    <span style={{gridArea: "start"}}>{print(startHour)} : {print(startMin)}</span>
+                    <span style={{gridArea: "to"}}>to</span>
+                    <span style={{gridArea: "end"}}>{print(endHour)} : {print(endMin)}</span>
                     
-                    <div className="buttons">
-                        <span onClick={startEarlier}>&#9664;</span>
-                        <span onClick={startLater}>&#9654;</span>
+                    <div style={{gridArea: "start-earlier"}} className="buttons">
+                        <span onClick={() => earlier(1, true)}>&lt;</span>
+                        <span onClick={() => earlier(5, true)}>&#9664;</span>
                     </div>
-                    <span></span>
-                    <div className="buttons">
-                        <span onClick={endEarlier}>&#9664;</span>
-                        <span onClick={endLater}>&#9654;</span>
+                    <div style={{gridArea: "start-later"}} className="buttons">
+                        <span onClick={() => later(5, true)}>&#9654;</span>
+                        <span onClick={() => later(1, true)}>&gt;</span>
+                    </div>
+
+                    <div style={{gridArea: "end-earlier"}} className="buttons">
+                        <span onClick={() => earlier(1, false)}>&lt;</span>
+                        <span onClick={() => earlier(5, false)}>&#9664;</span>
+                    </div>
+                    <div style={{gridArea: "end-later"}} className="buttons">
+                        <span onClick={() => later(5, false)}>&#9654;</span>
+                        <span onClick={() => later(1, false)}>&gt;</span>
                     </div>
                 </div>
 
@@ -114,10 +112,10 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
                     name="description" value={description} 
                     className="info-description" inputClassName="info-description"
                     onChange={(e) => setDescription(e.target.value)}
-                    rows={5}
+                    placeholder="Add a description to your event."
                 />
 
-                <button onClick={save} id="save">Save</button>
+                <Button variant="outline-dark" onClick={save} id="save">Save</Button>
             </div>
         </Modal>
     )

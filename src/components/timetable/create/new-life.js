@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
 import { db } from '../../../App';
 import { useState } from 'react';
-import React from 'react';
+import { Button } from 'react-bootstrap';
 
 function NewLife({
     lifeWindow, setLifeWindow, categories,
@@ -107,7 +107,7 @@ function NewLife({
                     </select>
                 </div>
                 
-                <button onClick={addEvent} id="add-event">Add Event</button>
+                <Button variant="outline-dark" onClick={addEvent} id="add-event">Add Event</Button>
 
             </div>
         </Modal>

@@ -40,7 +40,7 @@
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
     grid-template-rows: repeat(288, 8px);
-    grid-gap: 0.5px;
+    grid-gap: 1px;
 }
 
 .event {

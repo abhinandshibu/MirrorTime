@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
 import { ColourContext, db } from '../../App';
 import { useState, useContext } from 'react';
-import React from 'react';
+import { Button } from 'react-bootstrap';
 
 function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
 
@@ -53,7 +53,7 @@ function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
                         />
                     </div>
                     
-                    <button onClick={addNewCategory}>Add Category</button>
+                    <Button variant="outline-dark" onClick={addNewCategory}>Add Category</Button>
                 </div>
             </Modal>
         </div>

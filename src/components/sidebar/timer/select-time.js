@@ -3,6 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { toYmd, db } from '../../../App';
 import { doc, setDoc } from "firebase/firestore";
+import { Button } from 'react-bootstrap';
 
 function SelectTime({
     selectTimeWindow, setSelectTimeWindow, setCurrent, setTime, 
@@ -105,7 +106,7 @@ function SelectTime({
                     ))}
                 </select>
             </div>
-            <button onClick={submit} id="start-timer">Start</button>
+            <Button variant="outline-dark" onClick={submit} id="start-timer">Start</Button>
         </div>
         </Modal>
     )

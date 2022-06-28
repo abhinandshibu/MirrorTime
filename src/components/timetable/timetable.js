@@ -6,7 +6,6 @@ import NewLife from './create/new-life';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState, useRef } from 'react';
 import { EditText } from 'react-edit-text';
-import 'react-edit-text/dist/index.css';
 import { Button } from 'react-bootstrap';
 
 function Timetable({
@@ -20,7 +19,7 @@ function Timetable({
 
     const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600, name: "", category: "", colour: "ffffff"});
     const [lines, setLines] = useState(true);
-    const timetableHeight = 288 * 8 + 287 * 0.5;
+    const timetableHeight = 288 * 8 + 287 * 1;
     const [barProgress, setBarProgress] = useState((new Date().getHours()/24 + new Date().getMinutes()/1440) * timetableHeight);
     const bar = useRef(null);
 
@@ -209,10 +208,6 @@ function Timetable({
 
     return (
         <div className="timetable">
-            {/* <div id="timetable-top">
-                
-                <div id="today">{date.date} {months[date.month]} {date.year}</div>
-            </div> */}
             <div className="timetable-heading">
                 <div id="button-toggle-lines">
                     <Button variant="outline-dark" id="toggle-lines" onClick={() => setLines(!lines)}>Toggle lines</Button>
