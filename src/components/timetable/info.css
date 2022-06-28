@@ -14,8 +14,8 @@
 }
 
 .info-time {
-    margin-left: 20px;
-    width: 60%;
+    margin: 0 0 20px 20px;
+    width: 75%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: 30px 20px;
@@ -24,15 +24,17 @@
         "start-earlier start-later blank end-earlier end-later";
     justify-items: center;
     align-items: center;
+    font-size: 1.5rem;
 }
 
 .buttons * {
     margin: 0 2px;
     cursor: pointer;
-    opacity: 0.5;
     user-select: none;
+    opacity: 0.7;
 } 
 .buttons *:hover {
+    color: #9ed9d9;
     opacity: 1;
 }
 

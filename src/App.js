@@ -37,7 +37,7 @@ export const auth = getAuth(app);
 // END OF FIREBASE AND AUTH SETUP
 
 export const ColourContext = createContext();
-const colours = ["fc9f9f", "9ed9d8", "e8c07c", "c38d9e", "41b3a3", "8282b9", "f4d1d1", "e27d60", "bee09d"];
+const colours = ["f4d1d1", "fc9f9f", "e27d60", "e8c07c", "bee09d", "41b3a3", "9ed9d8", "8282b9", "c38d9e"];
 
 let fetched = false;
 

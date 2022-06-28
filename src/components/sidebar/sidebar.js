@@ -118,10 +118,12 @@ function SideBar({
                                 :
                                 <>
                                     <img className="play" src={require("./play.png")} 
+                                        title="Play"
                                         alt="start an event in this category"
                                         onClick={() => play(name)} 
                                     /> 
                                     <img className="countdown" src={require("./timer.png")} 
+                                        title="Countdown Timer"
                                         alt="start a countdown timer for an activity in this category"
                                         style={{visibility: current.isRunning ? "hidden" : "visible"}}
                                         onClick={() => countdown(name)} 

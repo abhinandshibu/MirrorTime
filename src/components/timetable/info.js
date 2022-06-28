@@ -3,7 +3,7 @@ import { db } from '../../App';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
-import { EditTextarea } from 'react-edit-text';
+import { EditTextarea, EditText } from 'react-edit-text';
 import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
@@ -14,6 +14,7 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     const [endHour, setEndHour] = useState();
     const [endMin, setEndMin] = useState();
     const [description, setDescription] = useState("");
+    const [name, setName] = useState("");
 
     useEffect(() => {
         setStartHour(Math.floor(info.start / 3600));
@@ -21,17 +22,19 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
         setEndHour(Math.floor(info.end / 3600));
         setEndMin(Math.floor(info.end % 3600 / 60)); console.log(info.description);
         setDescription(info.description !== undefined ? info.description : "");
+        setName(info.name);
     }, [info])
 
     const save = async () => {
         const start = 3600 * startHour + 60 * startMin;
         const end = 3600 * endHour + 60 * endMin;
-        const updatedEvent = {...events.get(info.index), start: start, end: end, description: description};
+        const updatedEvent = {...events.get(info.index), 
+            start: start, end: end, description: description, name: name};
         if (start < end) {
             setEvents(map => new Map (map.set( info.index, updatedEvent ) ));
 
             const ref = doc(db, info.isPlan ? "plan" : "life", info.index.toString())
-            await updateDoc(ref, {start: start, end: end, description: description});
+            await updateDoc(ref, {start: start, end: end, description: description, name: name});
     
             setInfoWindow(false);
         }
@@ -71,7 +74,12 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     return (
         <Modal show={infoWindow} onHide={() => setInfoWindow(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>{info.name}</Modal.Title>
+                <Modal.Title>
+                    <EditText 
+                        name="title" value={name} showEditButton
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </Modal.Title>
             </Modal.Header>
 
             <div className="info-body">

@@ -70,24 +70,26 @@ function Timetable({
                             background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
                                 : '#' + colour,
                             border: active ? `2px solid black` : "none"}}
+                    onClick={() => expandEvent(index, true)}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
-                        onClick={() => deletePlanEvent(index)} 
+                        onClick={(e) => {e.stopPropagation(); deletePlanEvent(index)}} 
                     />
-                    <img className="info" src={require("./info.png")} alt="expand event information"
+                    {/* <img className="info" src={require("./info.png")} alt="expand event information"
                         onClick={() => expandEvent(index, true)} 
-                    />
+                    /> */}
                     {event.copied ? 
                         <img className="copied" src={require("./ticked.png")} alt="event copied to life"/>
                         : 
                         <img className="copy" src={require("./unticked.png")} alt="delete event"
-                        onClick={() => copyToLife(index, event)} 
+                        onClick={(e) => {e.stopPropagation(); copyToLife(index, event)}} 
                         />
                     }
-                    <EditText 
+                    {event.name}
+                    {/* <EditText 
                         name={index.toString()} defaultValue={event.name} 
                         inputClassName="title" onSave={editName}
-                    />
+                    /> */}
                 </div>
             );
         }
@@ -104,17 +106,19 @@ function Timetable({
                             background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
                                 : '#' + colour,
                             border: active ? `2px solid black` : "none"}}
+                    onClick={() => expandEvent(index, false)}
                 >
                     <img className="delete" src={require("./delete.png")} alt="delete event"
-                        onClick={() => deleteLifeEvent(index, event)} 
+                        onClick={(e) => {e.stopPropagation(); deleteLifeEvent(index, event)}} 
                     />
-                    <img className="info" src={require("./info.png")} alt="expand event information"
+                    {/* <img className="info" src={require("./info.png")} alt="expand event information"
                         onClick={() => expandEvent(index, false)} 
-                    />
-                    <EditText 
+                    /> */}
+                    {/* <EditText 
                         name={index.toString()} defaultValue={event.name} 
                         inputClassName="title" onSave={editName}
-                    />
+                    /> */}
+                    {event.name}
                 </div>
             );
         }
