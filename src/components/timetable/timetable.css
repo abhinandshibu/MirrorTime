@@ -1,6 +1,7 @@
 .timetable {
     padding: 3vh;
-    background: #eef3f9;
+    background: var(--background);
+    color: var(--font);
     box-sizing: border-box;
 }
 
@@ -102,7 +103,7 @@
 
 
 .hour-line {
-    background-color: gray;
+    background-color: var(--lines);
     height: 1px;
     z-index: 1000;
 }

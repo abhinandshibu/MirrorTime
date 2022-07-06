@@ -1,10 +1,10 @@
 import './sidebar.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
-import { toYmd, db } from '../../App';
+import { toYmd, db, ColourTheme } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
@@ -14,7 +14,7 @@ function SideBar({
     lifeEvents, setLifeEvents, count, setCount, categories, setCategories, date, setDate, 
     current, setCurrent
 }) {
-    let history = useHistory();
+    const theme = useContext(ColourTheme);
 
     const [time, setTime] = useState([0, 0]); // used for both stopwatch and timer
     const [categoryWindow, setCategoryWindow] = useState(false);
@@ -94,7 +94,13 @@ function SideBar({
             </div>
 
             <div className="categories">
-                <Button variant="outline-dark" id="new-category" onClick={() => setCategoryWindow(true)}>New Category</Button>
+                <Button 
+                    variant={theme === "light" ? "outline-dark" : "outline-light"}
+                    id="new-category" 
+                    onClick={() => setCategoryWindow(true)}
+                >
+                    New Category
+                </Button>
                 <div className="category-list">
                     {Array.from(categories).map(([name, colour]) => (
                         <div key={name} className="category"

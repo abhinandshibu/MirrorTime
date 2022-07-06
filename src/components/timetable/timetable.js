@@ -1,17 +1,18 @@
 import './timetable.css';
-import { db, months } from '../../App';
+import { ColourTheme, db } from '../../App';
 import Info from './info';
 import NewPlan from './create/new-plan';
 import NewLife from './create/new-life';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { React, useEffect, useState, useRef } from 'react';
-import { EditText } from 'react-edit-text';
+import { React, useEffect, useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
     count, setCount, categories, date, current, setCurrent
 }) {
+
+    const theme = useContext(ColourTheme);
 
     const [infoWindow, setInfoWindow] = useState(false);
     const [planWindow, setPlanWindow] = useState(false);
@@ -36,7 +37,7 @@ function Timetable({
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<96; i++) {
-            let colour = (i%8 > 3) ? "white" : "#f0ffff";
+            let colour = (i%8 > 3) ? "var(--light-slot)" : "var(--dark-slot)";
             array.push(
                 <div className={`time-slot ${i}`} key={`t${i}`}
                     style={{gridArea: `${3*i+1} / 1 / ${3*i+4} / 2`, background: colour}}>
@@ -214,7 +215,13 @@ function Timetable({
         <div className="timetable">
             <div className="timetable-heading">
                 <div id="button-toggle-lines">
-                    <Button variant="outline-dark" id="toggle-lines" onClick={() => setLines(!lines)}>Toggle lines</Button>
+                    <Button 
+                        variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                        id="toggle-lines"
+                        onClick={() => setLines(!lines)}
+                    >
+                        Toggle lines
+                    </Button>
                 </div>
                 <div>
                     Your Life

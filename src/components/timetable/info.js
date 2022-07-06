@@ -1,13 +1,15 @@
 import './info.css';
-import { db } from '../../App';
+import { db, ColourTheme } from '../../App';
 import { Modal } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 import { EditTextarea, EditText } from 'react-edit-text';
 import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
 function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
+
+    const theme = useContext(ColourTheme);
 
     const [startHour, setStartHour] = useState();
     const [startMin, setStartMin] = useState();
@@ -72,7 +74,11 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     const print = (number) => (number < 10 ? '0' : '') + number;
 
     return (
-        <Modal show={infoWindow} onHide={() => setInfoWindow(false)}>
+        <Modal 
+            show={infoWindow} 
+            onHide={() => setInfoWindow(false)}
+            contentClassName={"modal-" + theme}
+        >
             <Modal.Header closeButton>
                 <Modal.Title>
                     <EditText 

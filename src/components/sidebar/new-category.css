@@ -1,0 +1,9 @@
+.modal-dark {
+    background: black;
+    color: white;
+}
+
+.modal-light {
+    background: white;
+    color: black;
+}

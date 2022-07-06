@@ -1,3 +1,4 @@
+import "./App.css";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { createContext, useEffect, useState } from 'react';
@@ -36,8 +37,7 @@ export const auth = getAuth(app);
 
 // END OF FIREBASE AND AUTH SETUP
 
-export const ColourContext = createContext();
-const colours = ["f4d1d1", "fc9f9f", "e27d60", "e8c07c", "bee09d", "41b3a3", "9ed9d8", "8282b9", "c38d9e"];
+export const ColourTheme = createContext();
 
 let fetched = false;
 
@@ -47,6 +47,7 @@ export const toYmd = (date) => {
 
 export const months = ["January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"];
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -113,43 +114,49 @@ function App() {
     fetchData().catch(console.error);
   }, [date]);
 
-  return (
-    <Router>
-      <NavBar isLoggedIn={isLoggedIn}/>
+  const [theme, setTheme] = useState("light");
+  const toggleTheme = () => {
+    setTheme(theme => theme === "light" ? "dark" : "light")
+  }
 
-      <Switch>
-        <Route exact path="/">
-          <Landing />
-        </Route>
-        <Route exact path="/login">
-          <Login setIsLoggedIn={setIsLoggedIn}/>
-        </Route>
-        <Route exact path="/home">
-          <ColourContext.Provider value={colours}>
-            {/* <Home /> */}
-            <Home 
-              categories={categories} setCategories={setCategories} 
-              planEvents={planEvents} setPlanEvents={setPlanEvents}
-              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-              count={count} setCount={setCount}
-              date={date} setDate={setDate}
-            />
-          </ColourContext.Provider>
-        </Route>
-        <Route exact path="/analytics">
-          <ColourContext.Provider value={colours}>
-            <Analytics 
-              categories={categories} setCategories={setCategories} 
-              planEvents={planEvents} setPlanEvents={setPlanEvents}
-              lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-              count={count} setCount={setCount}
-              date={date} setDate={setDate}
-            />
-          </ColourContext.Provider>
-        </Route>
-        
-      </Switch>
-    </Router>
+  return (
+    <div className={theme + "-theme"}>
+      <ColourTheme.Provider value={theme}>
+        <Router>
+          <NavBar 
+            isLoggedIn={isLoggedIn}
+            toggleTheme={toggleTheme}
+          />
+
+          <Switch>
+            <Route exact path="/">
+              <Landing />
+            </Route>
+            <Route exact path="/login">
+              <Login setIsLoggedIn={setIsLoggedIn}/>
+            </Route>
+            <Route exact path="/home">
+              <Home 
+                categories={categories} setCategories={setCategories} 
+                planEvents={planEvents} setPlanEvents={setPlanEvents}
+                lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+                count={count} setCount={setCount}
+                date={date} setDate={setDate}
+              />
+            </Route>
+            <Route exact path="/analytics">
+              <Analytics 
+                categories={categories} setCategories={setCategories} 
+                planEvents={planEvents} setPlanEvents={setPlanEvents}
+                lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
+                count={count} setCount={setCount}
+                date={date} setDate={setDate}
+              />
+            </Route>
+          </Switch>
+        </Router>
+      </ColourTheme.Provider>
+    </div>
   );
 }
 

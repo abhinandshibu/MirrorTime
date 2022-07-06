@@ -1,6 +1,6 @@
 .sidebar {
     grid-area: sidebar;
-    background: linear-gradient(277deg, rgba(2,0,36,1) 0%, rgba(127,149,248,1) 0%, rgba(149,137,248,1) 100%); 
+    background: linear-gradient(277deg, var(--purple1) 0%, var(--purple2) 100%); 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
     padding: 3vh;
     display: flex;
@@ -39,7 +39,7 @@
 }
 
 .categories {
-    background: #eef3f9;
+    background: var(--background);
     height: 50vh;
     border-radius: 10px;
     padding: 10px;

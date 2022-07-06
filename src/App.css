@@ -1,0 +1,19 @@
+.light-theme {
+    --font: black;
+    --background: #eef3f9;
+    --light-slot: white;
+    --dark-slot: #f0ffff;
+    --lines: gray;
+    --purple1: #af89f8;
+    --purple2: #7f95f8;
+}
+
+.dark-theme {
+    --font: white;
+    --background: #121333;
+    --light-slot: #252440;
+    --dark-slot: #201e39;
+    --lines: black;
+    --purple1: #3e2967;
+    --purple2: #414f8c;
+}

@@ -1,14 +1,16 @@
 import './new-category.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { ColourContext, db } from '../../App';
+import { db, ColourTheme } from '../../App';
 import { useState, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 
 function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
 
-    const colours = useContext(ColourContext);
+    const theme = useContext(ColourTheme);
+
     const [categoryName, setCategoryName] = useState("");
+    const colours = ["f4d1d1", "fc9f9f", "e27d60", "e8c07c", "bee09d", "41b3a3", "9ed9d8", "8282b9", "c38d9e"];
     const [categoryColour, setCategoryColour] = useState(colours[0]);
 
     const addNewCategory = () => {
@@ -29,7 +31,11 @@ function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
 
     return (
         <div id="new-category-window">
-            <Modal show={categoryWindow} onHide={() => setCategoryWindow(false)}>
+            <Modal 
+                show={categoryWindow} 
+                onHide={() => setCategoryWindow(false)}
+                contentClassName={"modal-" + theme}
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>New Category</Modal.Title>
                 </Modal.Header>
@@ -53,7 +59,12 @@ function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
                         />
                     </div>
                     
-                    <Button variant="outline-dark" onClick={addNewCategory}>Add Category</Button>
+                    <Button 
+                        variant={theme === "light" ? "outline-dark" : "outline-light"}
+                        onClick={addNewCategory}
+                    >  
+                        Add Category
+                    </Button>
                 </div>
             </Modal>
         </div>

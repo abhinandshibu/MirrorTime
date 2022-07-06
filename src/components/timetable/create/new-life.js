@@ -1,14 +1,16 @@
 import './new-life.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { db } from '../../../App';
-import { useState } from 'react';
+import { db, ColourTheme } from '../../../App';
+import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 function NewLife({
     lifeWindow, setLifeWindow, categories,
     setLifeEvents, count, setCount, date
 }) {
+
+    const theme = useContext(ColourTheme);
 
     const initialEvent = {name: "", category: "", startHour: -1, startMin: -10000,
         endHour: -1, endMin: -10000}
@@ -37,7 +39,11 @@ function NewLife({
         }
 
     return (
-        <Modal show={lifeWindow} onHide={() => setLifeWindow(false)}>
+        <Modal 
+            show={lifeWindow} 
+            onHide={() => setLifeWindow(false)}
+            contentClassName={"modal-" + theme}
+        >
             <Modal.Header closeButton>
                 <Modal.Title>Log an activity you did...</Modal.Title>
             </Modal.Header>

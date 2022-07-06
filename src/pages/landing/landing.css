@@ -2,7 +2,7 @@
     /* display: flex; */
     /* justify-content: center; */
     /* align-items: center; */
-    height: 100vh; 
+    height: 93vh; 
 
     /* background-image: url("assets/background.jpg");
     background-position: center;
@@ -21,14 +21,23 @@
     padding-top: 12rem;
 }
 
-#landing-text1 {
+.landing-title {
     font-size: 5rem;
     font-weight: bold;
     text-align: left;
-
 }
 
-#landing-text2 {
+.mirrored {
+    transform: scale(1, -1);
+    opacity: 0.5;
+    position: relative;
+    bottom: 0.5em;
+    background: -webkit-linear-gradient(transparent, white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.landing-subtitle {
     padding-top: 1rem;
     font-size: 3rem;
     font-weight: bold;
