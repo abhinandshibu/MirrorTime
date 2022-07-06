@@ -22,7 +22,7 @@ function NavBar(props) {
                 </Nav>
                 <div className="toggle-theme"><BootstrapSwitchButton 
                     onlabel="Dark" offlabel="Light" onstyle="dark" offstyle="secondary" width={100}
-                    onChange={props.toggleTheme}
+                    onChange={props.toggleTheme} checked={props.theme === "dark"}
                 /></div>
             </Navbar.Collapse>
         </Container>

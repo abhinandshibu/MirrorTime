@@ -78,6 +78,13 @@ function App() {
           await setDoc(doc(db, 'info', 'count'), {count: 0});
         }
 
+        const prefsSnapshot = await getDoc(doc(db, 'info', 'prefs'));
+        if (prefsSnapshot.exists()) {
+          setTheme(prefsSnapshot.data().theme);
+        } else {
+          await setDoc(doc(db, 'info', 'prefs'), {theme: "light"});
+        }
+
         const categorySnapshot = await getDocs(collection(db, 'categories'));
         const temp = new Map();
         categorySnapshot.forEach((doc) => {
@@ -115,8 +122,10 @@ function App() {
   }, [date]);
 
   const [theme, setTheme] = useState("light");
-  const toggleTheme = () => {
-    setTheme(theme => theme === "light" ? "dark" : "light")
+  const toggleTheme = async () => {
+    const newTheme = theme === "light" ? "dark" : "light"
+    setTheme(newTheme);
+    await setDoc(doc(db, 'info', 'prefs'), {theme: newTheme});
   }
 
   return (
@@ -125,7 +134,7 @@ function App() {
         <Router>
           <NavBar 
             isLoggedIn={isLoggedIn}
-            toggleTheme={toggleTheme}
+            theme={theme} toggleTheme={toggleTheme}
           />
 
           <Switch>
