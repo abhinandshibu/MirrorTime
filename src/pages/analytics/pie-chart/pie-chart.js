@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './pie-chart.css'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import { ColourTheme } from '../../../App';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function PieChart(props) {
+    const theme = useContext(ColourTheme);
+    const textColour = theme === "light" ? "gray" : "white";
+
     const planOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',
+                labels: {
+                    color: textColour
+                }
             },
             title: {
                 display: true,
                 text: 'Your Plan',
+                color: textColour
             },
             tooltip: {
                 callbacks: {
@@ -42,10 +50,14 @@ function PieChart(props) {
         plugins: {
             legend: {
                 position: 'top',
+                labels: {
+                    color: textColour
+                }
             },
             title: {
                 display: true,
                 text: 'Your Life',
+                color: textColour
             },
             tooltip: {
                 callbacks: {

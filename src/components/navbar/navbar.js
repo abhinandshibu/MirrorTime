@@ -19,11 +19,11 @@ function NavBar(props) {
                     {!props.isLoggedIn ? 
                     (<Nav.Link href="/login">Login</Nav.Link>) : 
                     (<Nav.Link href="/" onClick={() => auth.signOut()}>Logout</Nav.Link>)}
-                    <BootstrapSwitchButton 
-                        onlabel="Dark" offlabel="Light" onstyle="dark" offstyle="secondary" width={100}
-                        onChange={props.toggleTheme}
-                    />
                 </Nav>
+                <div className="toggle-theme"><BootstrapSwitchButton 
+                    onlabel="Dark" offlabel="Light" onstyle="dark" offstyle="secondary" width={100}
+                    onChange={props.toggleTheme}
+                /></div>
             </Navbar.Collapse>
         </Container>
         </Navbar>

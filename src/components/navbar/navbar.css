@@ -20,3 +20,12 @@
 .nav-link {
     color: #fff !important;
 }
+
+.toggle-theme {
+    float: right;
+}
+
+.btn-secondary, .btn-secondary:hover {
+    background-color: #d3d3d3;
+    color: black;
+}

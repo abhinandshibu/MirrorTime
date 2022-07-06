@@ -3,12 +3,14 @@
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-areas: "sidebar component";
+    color: var(--font);
+    background: var(--background);
 }
 
 #analytics-select {
     grid-area: sidebar;
     justify-content: space-right;
-    background: linear-gradient(277deg, rgba(2,0,36,1) 0%, rgba(127,149,248,1) 0%, rgba(149,137,248,1) 100%); 
+    background: linear-gradient(277deg, var(--purple1) 0%, var(--purple2) 100%); 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
 }
 
@@ -21,6 +23,10 @@
 #analytics-view-picker {
     display: inline-block;
     padding: 2rem;
+}
+
+.analytics-dropdown {
+    color: black;
 }
 
 #analytics-component {

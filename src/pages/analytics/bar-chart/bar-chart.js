@@ -1,4 +1,6 @@
 import './bar-chart.css'
+import { useContext } from 'react';
+import { ColourTheme } from '../../../App';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -20,15 +22,24 @@ ChartJS.register(
 );
 
 function BarChart(props) {
+    const theme = useContext(ColourTheme);
+    const textColour = theme === "light" ? "gray" : "white";
+    const gridColour = theme === "light" ? "#d3d3d3" : "#444";
+
     const options = {
         responsive: true,
         plugins: {
             legend: {
                 position: 'top',
+                labels: {
+                    color: textColour,
+                    fontColor: textColour 
+                }
             },
             title: {
                 display: true,
                 text: 'How you planned your life, and how you spend it.',
+                color: textColour
             },
             tooltip: {
                 callbacks: {
@@ -37,6 +48,24 @@ function BarChart(props) {
                 },
             },
         },
+        scales: {
+            x: {
+                grid: {
+                    color: gridColour
+                },
+                ticks: {
+                    color: textColour
+                }
+            },
+            y: {
+                grid: {
+                    color: gridColour
+                },
+                ticks: {
+                    color: textColour
+                }
+            }
+        }
     };
         
     const datasets = [

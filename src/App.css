@@ -4,6 +4,7 @@
     --light-slot: white;
     --dark-slot: #f0ffff;
     --lines: gray;
+    --soft-lines: #aeaeae;
     --purple1: #af89f8;
     --purple2: #7f95f8;
 }
@@ -14,6 +15,7 @@
     --light-slot: #252440;
     --dark-slot: #201e39;
     --lines: black;
+    --soft-lines: #444;
     --purple1: #3e2967;
     --purple2: #414f8c;
 }

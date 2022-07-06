@@ -88,7 +88,7 @@ function Analytics(props) {
             const propPlanEvents = new Map(temp)
 
             temp.clear();
-            const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date.month", "==", month), where("date.month", "==", month)));
+            const lifeSnapshot = await getDocs(query(collection(db, 'life'), where("date.month", "==", month), where("date.year", "==", year)));
             lifeSnapshot.forEach((e) => {
                 temp.set(e.id, e.data());
             })
@@ -153,7 +153,7 @@ function Analytics(props) {
                         selected={new Date(date.year, date.month, date.date)} 
                         onChange={d => setDate(toYmd(d))}
                         inline fixedHeight
-                        />
+                    />
                 </div>
                 <div id="analytics-view-picker">
                     <>
@@ -161,7 +161,8 @@ function Analytics(props) {
                         <Select 
                             options={analyticOptions} 
                             onChange={(option) => setAnalytic(option.value)}
-                            defaultValue={{ value: 'pie-chart', label: 'Pie Chart' }}/>
+                            defaultValue={{ value: 'pie-chart', label: 'Pie Chart' }}
+                            className='analytics-dropdown'/>
                     </>
                     <>  
                         <p></p>
@@ -169,7 +170,8 @@ function Analytics(props) {
                         <Select 
                             options={timelineOptions} 
                             onChange={(option) => setAnalyticTimeline(option.value)}
-                            defaultValue={{ value: 'week', label: 'Week' }}/>
+                            defaultValue={{ value: 'week', label: 'Week' }}
+                            className='analytics-dropdown'/>
                     </>
                 </div>
             </div>

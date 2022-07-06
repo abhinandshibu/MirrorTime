@@ -15,27 +15,43 @@
     order: 2;
 }
 
-#datepicker {
+/* #datepicker {
     width: 100%;
+} */
+
+.react-datepicker {
+    background-color: var(--background) !important;
+    border: 1px solid var(--soft-lines) !important;
 }
 
-.react-datepicker__day, .react-datepicker__day-name {
+.react-datepicker__header {
+    background-color: var(--light-slot) !important;
+}
+
+.react-datepicker__day, .react-datepicker__day-name, .react-datepicker__current-month {
     line-height: 1.2rem !important;
+    color: var(--font) !important;
 }
 
 .react-datepicker__day--today {
     border-radius: 0.3rem; 
+    border: 1px solid #8282b9;
     font-weight: 900 !important;
 }
 
 .react-datepicker__day--selected {
-    background-color: #8282b9 !important;
+    background-color: #fc9f9f !important;
     font-weight: 900;
+    color: black !important;
 }
 
 .react-datepicker__day--keyboard-selected {
-    background-color: white !important;
-    color: black !important;
+    background-color: transparent !important;
+    color: var(--font);
+}
+
+.react-datepicker__day--outside-month {
+    color: gray !important;
 }
 
 .categories {
