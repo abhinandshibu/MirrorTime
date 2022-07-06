@@ -38,6 +38,7 @@
     position: relative;
     height: 80vh;
     overflow-y: scroll;
+    background-color: var(--timetable-lines);
     display: grid;
     grid-template-columns: 70px 5fr 3fr;
     grid-template-rows: repeat(288, 8px);

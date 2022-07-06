@@ -36,24 +36,4 @@ label {
     font-size: 1.5em;
     font-weight: 700;
     margin-bottom: 20px;
-}
-
-.new-category-label {
-    font-size: 1.25em;
-    font-weight: 600;
-}
-
-.colours {
-    display: flex;
-
-}
-
-.colour {
-    height: 20px;
-    width: 20px;
-    margin: 0 5px;
-}
-
-.selected {
-    border: 2px solid black;
-}
+} 

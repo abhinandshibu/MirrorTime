@@ -7,6 +7,7 @@
     --dark-slot-2: #f0ffff;
     --lines: gray;
     --soft-lines: #aeaeae;
+    --timetable-lines: #d9e0e9;
     --purple1: #af89f8;
     --purple2: #7f95f8;
 }
@@ -14,6 +15,7 @@
 .dark-theme {
     --font: white;
     --background: #121333;
+    --timetable-lines: #121333;
     --light-slot: #252440;
     --dark-slot: #201e39;
     --light-slot-2: #2d2c48;

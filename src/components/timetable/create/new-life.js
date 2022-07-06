@@ -1,4 +1,4 @@
-import './new-life.css';
+import './new-event.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
 import { db, ColourTheme } from '../../../App';
@@ -61,7 +61,7 @@ function NewLife({
                     <select id="category"
                         onChange={(e) => setEvent({...event, category: e.target.value})}
                     >
-                        <option value="" key="default">Choose a cateogry:</option>
+                        <option value="" key="default">Choose a category:</option>
 
                         {Array.from(categories.keys()).map((cat) => (
                             <option value={cat} key={cat}>{cat}</option>
@@ -113,8 +113,12 @@ function NewLife({
                     </select>
                 </div>
                 
-                <Button variant="outline-dark" onClick={addEvent} id="add-event">Add Event</Button>
-
+                <Button variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                    onClick={addEvent} 
+                    id="add-event"
+                >
+                    Add Event
+                </Button>
             </div>
         </Modal>
     );

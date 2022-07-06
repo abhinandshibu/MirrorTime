@@ -1,9 +1,31 @@
 .modal-dark {
-    background: black;
+    background: #302f41;
     color: white;
+    --highlight: white;
 }
 
 .modal-light {
     background: white;
     color: black;
+    --highlight: black;
+}
+
+.selected {
+    border: 2px solid var(--highlight);
+}
+
+.new-category-label {
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.colours {
+    display: flex;
+
+}
+
+.colour {
+    height: 20px;
+    width: 20px;
+    margin: 0 5px;
 }
