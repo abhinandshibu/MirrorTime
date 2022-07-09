@@ -25,13 +25,22 @@ function SideBar({
 
     useEffect(() => {
         if (current.isRunning) {
+            const date = new Date();
+            const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
             if (current.isIncreasing) {
+                setActiveCategory(current.category);
+                const date = new Date();
+                const elapsedMins = timeNow - current.start;
+                setTime([elapsedMins, 0]);
                 const id = setInterval(() => {
                     setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
                 }, 1000);
                 return () => clearInterval(id);
             } 
             else {
+                const event = lifeEvents.get(current.index);
+                setActiveCategory(event.category);
+                setTime([event.end - timeNow, 0])
                 const id = (setInterval(() => {
                     setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
                 }, 1000));
@@ -49,12 +58,14 @@ function SideBar({
         }
     }, [time])
 
-    const play = (category) => {
+    const play = async (category) => {
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+        setDate(toYmd(date));
         setActiveCategory(category);
         setTime([0, 0]);
         setCurrent({category: category, start: timeNow, isRunning: true, isIncreasing: true});
+        await setDoc(doc(db, 'info/current'), {category: category, start: timeNow, isRunning: true, isIncreasing: true});
     }
 
     const stop = async () => {
@@ -76,6 +87,7 @@ function SideBar({
             await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});
         }
         setCurrent({isRunning: false});
+        await setDoc(doc(db, 'info/current'), {isRunning: false});
     }
 
     const countdown = (category) => {

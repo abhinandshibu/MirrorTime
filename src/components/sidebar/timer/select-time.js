@@ -55,6 +55,7 @@ function SelectTime({
         setTime([min, sec]);
 
         setSelectTimeWindow(false);
+        await setDoc(doc(db, 'info/current'), {index: count, isRunning: true, isIncreasing: false});
     }
 
     return (

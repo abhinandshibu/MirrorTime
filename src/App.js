@@ -54,9 +54,6 @@ function App() {
 
   // Runs once when the app starts, links up the authentication to the isLoggedIn variable
   useEffect(() => {
-    console.log("AUTH")
-    console.log(auth);
-
     return () => onAuthStateChanged(auth, async (user) => {
       setIsLoggedIn(user);
     });

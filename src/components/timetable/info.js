@@ -22,7 +22,7 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
         setStartHour(Math.floor(info.start / 3600));
         setStartMin(Math.floor(info.start % 3600 / 60));
         setEndHour(Math.floor(info.end / 3600));
-        setEndMin(Math.floor(info.end % 3600 / 60)); console.log(info.description);
+        setEndMin(Math.floor(info.end % 3600 / 60));
         setDescription(info.description !== undefined ? info.description : "");
         setName(info.name);
     }, [info])
