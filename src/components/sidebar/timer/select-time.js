@@ -31,7 +31,7 @@ function SelectTime({
 
     const submit = async () => {
         const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
         let min, sec, end;
         if (usingPreset) {
             min = presetTime / 60;

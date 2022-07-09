@@ -26,12 +26,12 @@ function SideBar({
     useEffect(() => {
         if (current.isRunning) {
             const date = new Date();
-            const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+            const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
             if (current.isIncreasing) {
                 setActiveCategory(current.category);
-                const date = new Date();
-                const elapsedMins = timeNow - current.start;
-                setTime([elapsedMins, 0]);
+                const elapsedSecs = timeNow - current.start;
+                setTime([Math.floor(elapsedSecs / 60), elapsedSecs % 60]);
+
                 const id = setInterval(() => {
                     setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
                 }, 1000);
@@ -39,28 +39,42 @@ function SideBar({
             } 
             else {
                 const event = lifeEvents.get(current.index);
-                setActiveCategory(event.category);
-                setTime([event.end - timeNow, 0])
-                const id = (setInterval(() => {
-                    setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
-                }, 1000));
-                setIntervalId(id);
-                return () => clearInterval(id);
+                if (event !== undefined) {
+                    setActiveCategory(event.category);
+                    const timeLeft = event.end - timeNow;
+                    if (timeLeft <= 0) {
+                        endCountdown().catch(console.error);
+                    }
+                    else {
+                        setTime([Math.floor(timeLeft / 60), timeLeft % 60]);
+
+                        const id = (setInterval(() => {
+                            setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
+                        }, 1000));
+                        setIntervalId(id);
+                        return () => clearInterval(id);
+                    }
+                }
             }
         }
-    }, [current]);
+    }, [current, lifeEvents]);
 
     useEffect(() => {
         if (current.isRunning && !current.isIncreasing && time[0]===0 && time[1]===0) {
-            clearInterval(intervalId);
-            setTimeoutWindow(true);
-            setCurrent({isRunning: false});
+            endCountdown().catch(console.error);
         }
     }, [time])
 
+    const endCountdown = async () => {
+        clearInterval(intervalId);
+        setTimeoutWindow(true);
+        setCurrent({isRunning: false});
+        await setDoc(doc(db, 'info/current'), {isRunning: false});
+    }
+
     const play = async (category) => {
         const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
         setDate(toYmd(date));
         setActiveCategory(category);
         setTime([0, 0]);
@@ -70,7 +84,7 @@ function SideBar({
 
     const stop = async () => {
         const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60;
+        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
         if (current.isIncreasing) {
             // Play button: event stopped, record event
             const newEvent = {name: `${activeCategory} activity`, category: activeCategory,
@@ -82,6 +96,7 @@ function SideBar({
             await setDoc(doc(db, 'info/count'), {count: count+1});
         } else {
             // Countdown timer: user ended early, update event's end time
+            clearInterval(intervalId);
             const updatedEvent = {...lifeEvents.get(current.index), end: timeNow};
             setLifeEvents(map => new Map( map.set(current.index, updatedEvent) ));
             await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});

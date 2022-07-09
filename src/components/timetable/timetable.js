@@ -58,6 +58,8 @@ function Timetable({
     const renderEvents = () => {
         const timeNow = barProgress / timetableHeight * 86400;
         const array = [];
+
+        // Render events in Your Plan
         for (const [index, event] of planEvents.entries()) {
             
             let active = false;
@@ -95,6 +97,8 @@ function Timetable({
                 </div>
             );
         }
+
+        // Render events in Your Life
         for (const [index, event] of lifeEvents.entries()) {
             let active = false;
             if (event.start <= timeNow && event.end >= timeNow) {
@@ -186,17 +190,17 @@ function Timetable({
         setInfoWindow(true);
     }
 
-    const editName = async ({name, value, previousValue}) => {
-        if (planEvents.has(+name)) {
-            const event = planEvents.get(+name);
-            setPlanEvents(map => new Map( map.set(+name, {...event, name: value}) ));
-            await updateDoc(doc(db, "plan", name), {name: value});
-        } else {
-            const event = lifeEvents.get(+name);
-            setLifeEvents(map => new Map( map.set(+name, {...event, name: value}) ));
-            await updateDoc(doc(db, "life", name), {name: value});
-        }
-    }
+    // const editName = async ({name, value, previousValue}) => {
+    //     if (planEvents.has(+name)) {
+    //         const event = planEvents.get(+name);
+    //         setPlanEvents(map => new Map( map.set(+name, {...event, name: value}) ));
+    //         await updateDoc(doc(db, "plan", name), {name: value});
+    //     } else {
+    //         const event = lifeEvents.get(+name);
+    //         setLifeEvents(map => new Map( map.set(+name, {...event, name: value}) ));
+    //         await updateDoc(doc(db, "life", name), {name: value});
+    //     }
+    // }
 
     const copyToLife = async (index, event) => {
         event.copied = true;
