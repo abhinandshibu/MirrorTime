@@ -91,7 +91,8 @@ function SideBar({
 
         if (current.isIncreasing) {
             // Play button: event stopped, record event
-            const newEvent = {name: `${activeCategory} activity`, category: activeCategory,
+            const eventName = current.hasOwnProperty('name') ? current.name : `${activeCategory} activity`;
+            const newEvent = {name: eventName, category: activeCategory,
                 date: toYmd(date), start: current.start, end: timeNow};
             setLifeEvents(map => new Map( map.set(count, newEvent) ));
             setCount(count + 1);

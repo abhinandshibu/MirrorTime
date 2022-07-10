@@ -6,6 +6,8 @@ import NewLife from './create/new-life';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
+import { EditText } from 'react-edit-text';
+import 'react-edit-text/dist/index.css';
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
@@ -134,13 +136,27 @@ function Timetable({
     const renderCurrentEvent = () => {
         const nearestSlot = Math.round(current.start / 300);
         const error = current.start - nearestSlot * 300;
-        return <div id="current"
-            style={{gridRowStart: nearestSlot + 1,
-                top: error / 86400 * timetableHeight,
-                height: Math.max(0, barProgress - current.start / 86400 * timetableHeight),
-                background: `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${categories.get(current.category)}`
-            }}
-        ></div>
+        const height = Math.max(0, barProgress - current.start / 86400 * timetableHeight)
+        return (
+            <div id="current"
+                style={{gridRowStart: nearestSlot + 1,
+                    top: error / 86400 * timetableHeight,
+                    height: height,
+                    background: `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${categories.get(current.category)}`
+                }}
+            >
+                {
+                    height >= 16 ?
+                    <EditText onSave={editName} inputClassName="current-name" placeholder="Event name"/>
+                    : ""
+                }
+            </div>
+        )
+    }
+
+    const editName = async ({name, value, previousValue}) => {
+        setCurrent({...current, name: value});
+        await updateDoc(doc(db, "info", "current"), {name: value});
     }
 
     const renderLines = () => {

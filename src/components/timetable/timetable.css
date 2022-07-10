@@ -94,15 +94,6 @@
     opacity: 1;
 }
 
-.title {
-    max-width: 60%;
-    padding: 0 10px;
-    background: rgba(255, 255, 255, 0.7);
-    border: none;
-    text-align: center;
-}
-
-
 .hour-line {
     background-color: var(--lines);
     height: 1px;
@@ -122,4 +113,20 @@
     grid-column-end: 3;
     border-radius: 10px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.current-name {
+    max-width: 60%;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    text-align: center;
+}
+
+.edit-text-button {
+    
 }
