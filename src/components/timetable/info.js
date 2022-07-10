@@ -129,7 +129,13 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
                     placeholder="Add a description to your event."
                 />
 
-                <Button variant="outline-dark" onClick={save} id="save">Save</Button>
+                <Button 
+                    variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                    onClick={save} 
+                    id="save"
+                >
+                    Save
+                </Button>
             </div>
         </Modal>
     )

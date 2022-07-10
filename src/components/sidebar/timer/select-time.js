@@ -1,15 +1,17 @@
 import './select-time.css';
 import { Modal } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
-import { toYmd, db } from '../../../App';
+import { useState, useEffect, useContext } from 'react';
+import { toYmd, db, ColourTheme } from '../../../App';
 import { doc, setDoc } from "firebase/firestore";
 import { Button } from 'react-bootstrap';
 
 function SelectTime({
-    selectTimeWindow, setSelectTimeWindow, setCurrent, setTime, 
+    selectTimeWindow, setSelectTimeWindow, setCurrent, setTime, setDate,
     setLifeEvents, category, count, setCount
 }) {
 
+    const theme = useContext(ColourTheme);
+    
     const presets = [[60, "1 min"], [180, "3 min"], [300, "5 min"], [600, "10 min"], [900, "15 min"], 
         [1800, "30 min"], [2700, "45 min"], [3600, "1 hr"], [7200, "2 hr"]];
 
@@ -53,13 +55,18 @@ function SelectTime({
 
         setCurrent({index: count, isRunning: true, isIncreasing: false});
         setTime([min, sec]);
+        setDate(toYmd(date));
 
         setSelectTimeWindow(false);
         await setDoc(doc(db, 'info/current'), {index: count, isRunning: true, isIncreasing: false});
     }
 
     return (
-        <Modal show={selectTimeWindow} onHide={() => setSelectTimeWindow(false)}>
+        <Modal 
+            show={selectTimeWindow} 
+            onHide={() => setSelectTimeWindow(false)}
+            contentClassName={"modal-" + theme}
+        >
             <Modal.Header closeButton>
                 <Modal.Title>Countdown Timer</Modal.Title>
             </Modal.Header>
@@ -107,7 +114,13 @@ function SelectTime({
                     ))}
                 </select>
             </div>
-            <Button variant="outline-dark" onClick={submit} id="start-timer">Start</Button>
+            <Button 
+                variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                onClick={submit} 
+                id="start-timer"
+            >
+                Start
+            </Button>
         </div>
         </Modal>
     )

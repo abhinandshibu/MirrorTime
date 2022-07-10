@@ -42,7 +42,7 @@ function SideBar({
                 if (event !== undefined) {
                     setActiveCategory(event.category);
                     const timeLeft = event.end - timeNow;
-                    if (timeLeft <= 0) {
+                    if (timeLeft < 0) {
                         endCountdown().catch(console.error);
                     }
                     else {
@@ -83,8 +83,12 @@ function SideBar({
     }
 
     const stop = async () => {
+        setCurrent({isRunning: false});
+        await setDoc(doc(db, 'info/current'), {isRunning: false});
+
         const date = new Date();
         const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+
         if (current.isIncreasing) {
             // Play button: event stopped, record event
             const newEvent = {name: `${activeCategory} activity`, category: activeCategory,
@@ -101,8 +105,6 @@ function SideBar({
             setLifeEvents(map => new Map( map.set(current.index, updatedEvent) ));
             await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});
         }
-        setCurrent({isRunning: false});
-        await setDoc(doc(db, 'info/current'), {isRunning: false});
     }
 
     const countdown = (category) => {
@@ -176,6 +178,7 @@ function SideBar({
             <SelectTime
                 selectTimeWindow={selectTimeWindow} setSelectTimeWindow={setSelectTimeWindow}
                 setCurrent={setCurrent} setTime={setTime}
+                setDate={setDate}
                 setLifeEvents={setLifeEvents}
                 category={activeCategory}
                 count={count} setCount={setCount}
