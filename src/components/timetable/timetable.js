@@ -78,16 +78,16 @@ function Timetable({
                             border: active ? `2px solid black` : "none"}}
                     onClick={() => expandEvent(index, true)}
                 >
-                    <img className="delete" src={require("./delete.png")} alt="delete event"
+                    <img className="delete" src={require("./assets/delete.png")} alt="delete event"
                         onClick={(e) => {e.stopPropagation(); deletePlanEvent(index)}} 
                     />
-                    {/* <img className="info" src={require("./info.png")} alt="expand event information"
+                    {/* <img className="info" src={require("./assets/info.png")} alt="expand event information"
                         onClick={() => expandEvent(index, true)} 
                     /> */}
                     {event.copied ? 
-                        <img className="copied" src={require("./ticked.png")} alt="event copied to life"/>
+                        <img className="copied" src={require("./assets/ticked.png")} alt="event copied to life"/>
                         : 
-                        <img className="copy" src={require("./unticked.png")} alt="delete event"
+                        <img className="copy" src={require("./assets/unticked.png")} alt="delete event"
                         onClick={(e) => {e.stopPropagation(); copyToLife(index, event)}} 
                         />
                     }
@@ -116,10 +116,10 @@ function Timetable({
                             border: active ? `2px solid black` : "none"}}
                     onClick={() => expandEvent(index, false)}
                 >
-                    <img className="delete" src={require("./delete.png")} alt="delete event"
+                    <img className="delete" src={require("./assets/delete.png")} alt="delete event"
                         onClick={(e) => {e.stopPropagation(); deleteLifeEvent(index, event)}} 
                     />
-                    {/* <img className="info" src={require("./info.png")} alt="expand event information"
+                    {/* <img className="info" src={require("./assets/info.png")} alt="expand event information"
                         onClick={() => expandEvent(index, false)} 
                     /> */}
                     {/* <EditText 
@@ -246,13 +246,13 @@ function Timetable({
                 </div>
                 <div>
                     Your Life
-                    <img className="add" src={require("./plus.png")} alt="log a real event"
+                    <img className="add" src={require("./assets/plus.png")} alt="log a real event"
                         onClick={() => setLifeWindow(true)} 
                     />
                 </div>
                 <div>
                     Your Plan
-                    <img className="add" src={require("./plus.png")} alt="plan an event"
+                    <img className="add" src={require("./assets/plus.png")} alt="plan an event"
                         onClick={() => setPlanWindow(true)} 
                     />
                 </div>

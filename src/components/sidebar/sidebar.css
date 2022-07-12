@@ -76,7 +76,23 @@
     grid-template-columns: repeat(8, 1fr);
     justify-items: center;
     align-items: center;
-} 
+    position: relative;
+    z-index: 0;
+}
+
+.category * {
+    z-index: 2;
+}
+
+#reverse-progress-bar {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    background: var(--background);
+    opacity: 0.3;
+    border-radius: 0 5px 5px 0;
+    z-index: 1;
+}
 
 .category-name {
     grid-column: 1 / 5;

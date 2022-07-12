@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState, useContext } from 'react';
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { useHistory } from 'react-router-dom';
 import { toYmd, db, ColourTheme } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
@@ -16,17 +15,21 @@ function SideBar({
 }) {
     const theme = useContext(ColourTheme);
 
-    const [time, setTime] = useState([0, 0]); // used for both stopwatch and timer
     const [categoryWindow, setCategoryWindow] = useState(false);
     const [timeoutWindow, setTimeoutWindow] = useState(false);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
+
+    const [time, setTime] = useState([0, 0]); // used for both stopwatch and timer
     const [activeCategory, setActiveCategory] = useState("");
     const [intervalId, setIntervalId] = useState();
+    const [growthRate, setGrowthRate] = useState(0);
+    const [progBarWidth, setProgBarWidth] = useState(0);
 
     useEffect(() => {
         if (current.isRunning) {
             const date = new Date();
             const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+
             if (current.isIncreasing) {
                 setActiveCategory(current.category);
                 const elapsedSecs = timeNow - current.start;
@@ -40,13 +43,16 @@ function SideBar({
             else {
                 const event = lifeEvents.get(current.index);
                 if (event !== undefined) {
-                    setActiveCategory(event.category);
                     const timeLeft = event.end - timeNow;
                     if (timeLeft < 0) {
-                        endCountdown().catch(console.error);
+                        timeout().catch(console.error);
                     }
                     else {
+                        setActiveCategory(event.category);
                         setTime([Math.floor(timeLeft / 60), timeLeft % 60]);
+                        const growthRate = 100 / (event.end - event.start);
+                        setGrowthRate(growthRate);
+                        setProgBarWidth(100 - timeLeft * growthRate);
 
                         const id = (setInterval(() => {
                             setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
@@ -60,12 +66,16 @@ function SideBar({
     }, [current, lifeEvents]);
 
     useEffect(() => {
-        if (current.isRunning && !current.isIncreasing && time[0]===0 && time[1]===0) {
-            endCountdown().catch(console.error);
-        }
+        if (current.isRunning && !current.isIncreasing) {
+            if (time[0]===0 && time[1]===0) {
+                timeout().catch(console.error);
+            } else {
+                setProgBarWidth(width => width + growthRate);
+            }
+        } 
     }, [time])
 
-    const endCountdown = async () => {
+    const timeout = async () => {
         clearInterval(intervalId);
         setTimeoutWindow(true);
         setCurrent({isRunning: false});
@@ -139,18 +149,23 @@ function SideBar({
                         >
                             <span className="category-name">{name}</span>
                             {current.isRunning ? 
-                                <>
-                                    <img className="stop" src={require("./stop.png")} 
-                                        alt="end the current event"
-                                        style={{visibility: activeCategory===name ? "visible" : "hidden"}}
-                                        onClick={stop} 
-                                    />
-                                    <span className="time"
-                                        style={{visibility: activeCategory===name ? "visible" : "hidden"}}
-                                    >
-                                        {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
-                                    </span>
-                                </>
+                                (activeCategory===name ?
+                                    <>
+                                        {current.isIncreasing ? "" : 
+                                            <div id="reverse-progress-bar"
+                                                style={{width: progBarWidth + '%'}}></div>
+                                        }
+                                        <img className="stop" src={require("./stop.png")} 
+                                            alt="end the current event"
+                                            onClick={stop} 
+                                        />
+                                        <span className="time">
+                                            {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
+                                        </span>
+                                    </>
+                                    :
+                                    ""
+                                )
                                 :
                                 <>
                                     <img className="play" src={require("./play.png")} 
@@ -161,7 +176,6 @@ function SideBar({
                                     <img className="countdown" src={require("./timer.png")} 
                                         title="Countdown Timer"
                                         alt="start a countdown timer for an activity in this category"
-                                        style={{visibility: current.isRunning ? "hidden" : "visible"}}
                                         onClick={() => countdown(name)} 
                                     />
                                 </>
@@ -183,7 +197,6 @@ function SideBar({
                 setLifeEvents={setLifeEvents}
                 category={activeCategory}
                 count={count} setCount={setCount}
-                
             />
 
             <Timeout

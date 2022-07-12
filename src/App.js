@@ -60,8 +60,6 @@ function App() {
   }, []);
    
   const [categories, setCategories] = useState(new Map());
-  const [planEvents, setPlanEvents] = useState(new Map());
-  const [lifeEvents, setLifeEvents] = useState(new Map());
   const [count, setCount] = useState(0);
 
   // Runs once the app starts, fetches data on categories and current event index
@@ -96,6 +94,8 @@ function App() {
   }, []);
 
   const [date, setDate] = useState(toYmd(new Date()));
+  const [planEvents, setPlanEvents] = useState(new Map());
+  const [lifeEvents, setLifeEvents] = useState(new Map());
 
   // Runs every time user selects a date, fetches plan and life events for that day
   useEffect(() => {
