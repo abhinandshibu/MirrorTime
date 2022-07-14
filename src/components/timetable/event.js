@@ -12,14 +12,17 @@ function Event({index, event, type, colour, isActive, handle}) {
         >
             {isActive ? <div className="event-highlighter"></div> : ""}
 
-            <img className="delete" src={require("./assets/delete.png")} alt="delete event"
+            <img className="delete" src={require("./assets/delete.png")} 
+                alt="delete event" key="delete"
                 onClick={(e) => {e.stopPropagation(); handle("delete", type, index)}} 
             /> 
 
             {type === "plan"
                 ? event.copied 
-                    ? <img className="copied" src={require("./assets/ticked.png")} alt="event copied to life"/>
-                    : <img className="copy" src={require("./assets/unticked.png")} alt="delete event"
+                    ? <img className="copied" src={require("./assets/ticked.png")} 
+                        alt="event copied to life" key="copied"/>
+                    : <img className="copy" src={require("./assets/unticked.png")} 
+                        alt="delete event" key="copy"
                         onClick={(e) => {e.stopPropagation(); handle("copy", type, index)}} />
                 : ""
             }

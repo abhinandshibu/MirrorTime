@@ -17,7 +17,8 @@ function Timetable({
     const theme = useContext(ColourTheme);
 
     const [infoWindow, setInfoWindow] = useState(false);
-    const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600, name: "", category: "", colour: "ffffff"});
+    // Info has the form {index, event, type, colour}
+    const [info, setInfo] = useState({colour: "fff", event: {category: ""}});
 
     const [newEventWindow, setNewEventWindow] = useState(false);
     const [newEventType, setNewEventType] = useState("plan");
@@ -102,69 +103,57 @@ function Timetable({
         return array;
     }
 
+    // Function passed to Event component
     const handle = async (action, type, index) => {
         switch (action) {
             case "delete":
-                type==="plan" ? deletePlanEvent(index) : deleteLifeEvent(index);
+                if (type==="life" && lifeEvents.get(index).hasOwnProperty("parent")) {
+                    updateEvent(lifeEvents.get(index).parent, {copied: false}, "plan");
+                }
+                deleteEvent(index, type);
                 break;
             case "open":
-                openEvent(index, type==="plan");
+                const event = type==="plan" ? planEvents.get(index) : lifeEvents.get(index);
+                const colour = categories.get(event.category);
+                setInfo({index: index, event: event, type: type, colour: colour});
+                setInfoWindow(true);
                 break;
             case "copy":
-                copyToLife(index);
+                const copy = Object.assign({}, planEvents.get(index));
+                const {copied, ...lifeEvent} = {...copy, parent: index};
+                addEvent(lifeEvent, "life");
+                updateEvent(index, {copied: true}, "plan");
+                break;
+            default:
+                console.log("this shouldn't happen");
         }
     }
 
-    const deletePlanEvent = async (index) => {
-        setPlanEvents(map => {
+    // Functions to edit event maps and database
+    const addEvent = async (event, type) => {
+        event.date = date;
+
+        const setEvents = type==="plan" ? setPlanEvents : setLifeEvents;
+        setEvents(map => new Map(map.set(count, event)));
+        await setDoc(doc(db, type, count.toString()), event);
+
+        setCount(count => count+1);
+        await updateDoc(doc(db, "info/count"), {count: count+1});
+    }
+
+    const updateEvent = async (index, properties, type) => {
+        const events = type==="plan" ? planEvents : lifeEvents;
+        Object.assign(events.get(index), properties);
+        await updateDoc(doc(db, type, index.toString()), properties);
+    }
+
+    const deleteEvent = async (index, type) => {
+        const setEvents = type==="plan" ? setPlanEvents : setLifeEvents;
+        setEvents(map => {
             map.delete(index);
             return new Map(map);
         });
-        await deleteDoc(doc(db, "plan", index.toString()));
-    }
-
-    const deleteLifeEvent = async (index) => {
-        const event = lifeEvents.get(index);
-
-        if (current.isRunning && !current.isIncreasing && index === current.index) {
-            setCurrent({isRunning: false});
-        }
-
-        setLifeEvents(map => {
-            map.delete(index);
-            return new Map(map);
-        });
-        await deleteDoc(doc(db, "life", index.toString()));
-
-        if (event.hasOwnProperty("parent")) {
-            const id = event.parent;
-            const parentEvent = planEvents.get(id);
-            setPlanEvents( map => new Map(map.set(id, {...parentEvent, copied: false})) );
-            await updateDoc(doc(db, "plan", id.toString()), {copied: false});
-        }
-    }
-
-    const openEvent = (index, isPlanEvent) => {
-        const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
-        setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end, 
-            name: event.name, category: event.category, colour: categories.get(event.category),
-            description: event.description});
-        setInfoWindow(true);
-    }
-
-    const copyToLife = async (index) => {
-        const event = planEvents.get(index);
-        event.copied = true;
-
-        const lifeEvent = {name: event.name, category: event.category, date: date,
-            start: event.start, end: event.end, parent: index};
-        setLifeEvents(map => new Map(map.set(count, lifeEvent)));
-        setCount(count+1);
-
-        // write to database
-        await updateDoc(doc(db, "plan", index.toString()), {copied: true});
-        await setDoc(doc(db, `life/${count}`), lifeEvent);
-        await setDoc(doc(db, 'info/count'), {count: count+1});
+        await deleteDoc(doc(db, type, index.toString()));
     }
 
     return (
@@ -217,19 +206,16 @@ function Timetable({
             </div>
 
             <Info 
-                infoWindow={infoWindow} setInfoWindow={setInfoWindow}
-                events={info.isPlan ? planEvents : lifeEvents} 
-                setEvents={info.isPlan ? setPlanEvents : setLifeEvents}
-                info={info}
+                visibility={infoWindow} setVisibility={setInfoWindow}
+                info={info} 
+                updateEvent={updateEvent}
             />
 
             <Create 
                 visibility={newEventWindow} setVisibility={setNewEventWindow}
                 categories={categories}
-                setEvents={newEventType==="plan" ? setPlanEvents : setLifeEvents}
-                count={count} setCount={setCount}
-                date={date}
                 type={newEventType}
+                addEvent={addEvent}
             />
         </div>
     )

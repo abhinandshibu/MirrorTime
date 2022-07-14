@@ -61,21 +61,6 @@
     background: var(--dark-slot-2);
 }
 
-.event {
-    color: black;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    opacity: 0.9;
-    cursor: pointer;
-}
-.event:hover {
-    opacity: 1;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
-}
-
 .delete, .info {
     position: absolute;
     top: calc(50%-15px);

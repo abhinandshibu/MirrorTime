@@ -1,13 +1,11 @@
 import './create.css';
 import { Modal } from 'react-bootstrap';
-import { doc, setDoc } from "firebase/firestore";
-import { db, ColourTheme } from '../../App';
+import { ColourTheme } from '../../App';
 import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 function Create({
-    visibility, setVisibility, categories,
-    setEvents, count, setCount, date, type
+    visibility, setVisibility, categories, type, addEvent
 }) {
 
     const theme = useContext(ColourTheme);
@@ -16,32 +14,28 @@ function Create({
         endHour: -1, endMin: -10000}
     const [event, setEvent] = useState(initialEvent);
 
-    const addEvent = () => {
+    const create = () => {
         const name = event.name;
         const category = event.category;
         const start = 3600 * event.startHour + 60 * event.startMin;
         const end = 3600 * event.endHour + 60 * event.endMin;
+
         if (name !== "" && category !== "" && start >= 0 && end >= 0 && start < end) 
         {
-            const newEvent = {name: name, category: category, date: date, start: start, end: end, copied: false};
-            setEvents(map => new Map( map.set(count, newEvent) ));
-            setCount(count+1);
-            // write to database
-            let ref = doc(db, type, count.toString());
-            const write = async () => {
-                setDoc(ref, newEvent);
-                setDoc(doc(db, 'info/count'), {count: count+1});
-            }
-            write().catch(console.error);
+            const newEvent = {name: name, category: category, start: start, end: end, hasDescription: false};
+            if (type==="plan")
+                newEvent.copied = false;
+            
             setVisibility(false);
-            setEvent(initialEvent)
+            setEvent(initialEvent);
+
+            addEvent(newEvent, type);
         }
     }
 
     return (
         <Modal 
-            show={visibility} 
-            onHide={() => setVisibility(false)}
+            show={visibility} onHide={() => setVisibility(false)}
             contentClassName={"modal-" + theme}
         >
             <Modal.Header closeButton>
@@ -120,8 +114,7 @@ function Create({
                 </div>
                 
                 <Button variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                    onClick={addEvent} 
-                    id="add-event"
+                    onClick={create} id="add-event"
                 >
                     Add Event
                 </Button>

@@ -1,13 +1,12 @@
 import './info.css';
-import { db, ColourTheme } from '../../App';
+import { ColourTheme } from '../../App';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
-import { doc, updateDoc } from "firebase/firestore";
 import { EditTextarea, EditText } from 'react-edit-text';
 import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
-function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
+function Info({visibility, setVisibility, info, updateEvent}) {
 
     const theme = useContext(ColourTheme);
 
@@ -19,26 +18,34 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
     const [name, setName] = useState("");
 
     useEffect(() => {
-        setStartHour(Math.floor(info.start / 3600));
-        setStartMin(Math.floor(info.start % 3600 / 60));
-        setEndHour(Math.floor(info.end / 3600));
-        setEndMin(Math.floor(info.end % 3600 / 60));
-        setDescription(info.description !== undefined ? info.description : "");
-        setName(info.name);
-    }, [info])
+        if (visibility) {
+            const start = info.event.start;
+            const end = info.event.end;
+            setStartHour(Math.floor(start / 3600));
+            setStartMin(Math.floor(start % 3600 / 60));
+            setEndHour(Math.floor(end / 3600));
+            setEndMin(Math.floor(end % 3600 / 60));
+
+            setDescription(info.event.hasDescription ? info.event.description : "");
+            setName(info.event.name);
+        }
+    }, [visibility])
 
     const save = async () => {
         const start = 3600 * startHour + 60 * startMin;
         const end = 3600 * endHour + 60 * endMin;
-        const updatedEvent = {...events.get(info.index), 
-            start: start, end: end, description: description, name: name};
-        if (start < end) {
-            setEvents(map => new Map (map.set( info.index, updatedEvent ) ));
-
-            const ref = doc(db, info.isPlan ? "plan" : "life", info.index.toString())
-            await updateDoc(ref, {start: start, end: end, description: description, name: name});
-    
-            setInfoWindow(false);
+        console.log(name, description, start, end);
+        if (name !== "" && start < end) {
+            setVisibility(false);
+            
+            const properties = {name: name, start: start, end: end};
+            if (description !== "") {
+                properties.hasDescription = true;
+                properties.description = description;
+            } else {
+                properties.hasDescription = false;
+            }
+            updateEvent(info.index, properties, info.type);
         }
     }
 
@@ -75,8 +82,8 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
 
     return (
         <Modal 
-            show={infoWindow} 
-            onHide={() => setInfoWindow(false)}
+            show={visibility} 
+            onHide={() => setVisibility(false)}
             contentClassName={"modal-" + theme}
         >
             <Modal.Header closeButton>
@@ -93,7 +100,7 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
                     <label>Category: </label>
                     <span className="info-category" 
                         style={{background: '#' + info.colour}}
-                    >{info.category}</span>
+                    >{info.event.category}</span>
                 </div>
                 
                 <label>Time: </label>
@@ -131,8 +138,7 @@ function Info({infoWindow, setInfoWindow, events, setEvents, info}) {
 
                 <Button 
                     variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                    onClick={save} 
-                    id="save"
+                    onClick={save} id="save"
                 >
                     Save
                 </Button>
