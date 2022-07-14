@@ -2,8 +2,7 @@ import './timetable.css';
 import { ColourTheme, db } from '../../App';
 import Event from './event';
 import Info from './info';
-import NewPlan from './create/new-plan';
-import NewLife from './create/new-life';
+import Create from './create';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
@@ -18,10 +17,11 @@ function Timetable({
     const theme = useContext(ColourTheme);
 
     const [infoWindow, setInfoWindow] = useState(false);
-    const [planWindow, setPlanWindow] = useState(false);
-    const [lifeWindow, setLifeWindow] = useState(false);
-
     const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600, name: "", category: "", colour: "ffffff"});
+
+    const [newEventWindow, setNewEventWindow] = useState(false);
+    const [newEventType, setNewEventType] = useState("plan");
+    
     const [lines, setLines] = useState(true);
 
     const TIMETABLE_HEIGHT = 288 * 8 + 287 * 1;
@@ -180,13 +180,13 @@ function Timetable({
                 <div>
                     Your Life
                     <img className="add" src={require("./assets/plus.png")} alt="log a real event"
-                        onClick={() => setLifeWindow(true)} 
+                        onClick={() => {setNewEventType("life"); setNewEventWindow(true);}} 
                     />
                 </div>
                 <div>
                     Your Plan
                     <img className="add" src={require("./assets/plus.png")} alt="plan an event"
-                        onClick={() => setPlanWindow(true)} 
+                        onClick={() => {setNewEventType("plan"); setNewEventWindow(true);}} 
                     />
                 </div>
             </div>
@@ -223,20 +223,13 @@ function Timetable({
                 info={info}
             />
 
-            <NewPlan 
-                planWindow={planWindow} setPlanWindow={setPlanWindow}
+            <Create 
+                visibility={newEventWindow} setVisibility={setNewEventWindow}
                 categories={categories}
-                setPlanEvents={setPlanEvents}
+                setEvents={newEventType==="plan" ? setPlanEvents : setLifeEvents}
                 count={count} setCount={setCount}
                 date={date}
-            />
-
-            <NewLife 
-                lifeWindow={lifeWindow} setLifeWindow={setLifeWindow}
-                categories={categories}
-                setLifeEvents={setLifeEvents}
-                count={count} setCount={setCount}
-                date={date}
+                type={newEventType}
             />
         </div>
     )

@@ -1,13 +1,13 @@
-import './new-event.css';
+import './create.css';
 import { Modal } from 'react-bootstrap';
 import { doc, setDoc } from "firebase/firestore";
-import { db, ColourTheme } from '../../../App';
+import { db, ColourTheme } from '../../App';
 import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 
-function NewLife({
-    lifeWindow, setLifeWindow, categories,
-    setLifeEvents, count, setCount, date
+function Create({
+    visibility, setVisibility, categories,
+    setEvents, count, setCount, date, type
 }) {
 
     const theme = useContext(ColourTheme);
@@ -16,36 +16,41 @@ function NewLife({
         endHour: -1, endMin: -10000}
     const [event, setEvent] = useState(initialEvent);
 
-        const addEvent = () => {
-            const name = event.name;
-            const category = event.category;
-            const start = 3600 * event.startHour + 60 * event.startMin;
-            const end = 3600 * event.endHour + 60 * event.endMin;
-            if (name !== "" && category !== "" && start >= 0 && end >= 0 && start < end) 
-            {
-                const newEvent = {name: name, category: category, date: date, start: start, end: end};
-                setLifeEvents(map => new Map( map.set(count, newEvent) ));
-                setCount(count+1);
-                // write to database
-                let ref = doc(db, `life/${count}`);
-                const write = async () => {
-                    setDoc(ref, newEvent);
-                    setDoc(doc(db, 'info/count'), {count: count+1});
-                }
-                write().catch(console.error);
-                setLifeWindow(false);
-                setEvent(initialEvent);
+    const addEvent = () => {
+        const name = event.name;
+        const category = event.category;
+        const start = 3600 * event.startHour + 60 * event.startMin;
+        const end = 3600 * event.endHour + 60 * event.endMin;
+        if (name !== "" && category !== "" && start >= 0 && end >= 0 && start < end) 
+        {
+            const newEvent = {name: name, category: category, date: date, start: start, end: end, copied: false};
+            setEvents(map => new Map( map.set(count, newEvent) ));
+            setCount(count+1);
+            // write to database
+            let ref = doc(db, type, count.toString());
+            const write = async () => {
+                setDoc(ref, newEvent);
+                setDoc(doc(db, 'info/count'), {count: count+1});
             }
+            write().catch(console.error);
+            setVisibility(false);
+            setEvent(initialEvent)
         }
+    }
 
     return (
         <Modal 
-            show={lifeWindow} 
-            onHide={() => setLifeWindow(false)}
+            show={visibility} 
+            onHide={() => setVisibility(false)}
             contentClassName={"modal-" + theme}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Log an activity you did...</Modal.Title>
+                <Modal.Title>
+                    {type === "plan"
+                        ? "Schedule an Event"
+                        : "Log an Activity"
+                    }
+                </Modal.Title>
             </Modal.Header>
 
             <div className="form">
@@ -105,8 +110,9 @@ function NewLife({
                         onChange={(e) => {setEvent({...event, endMin: +e.target.value})}}
                     >
                         <option value={-10000} key="default">Min</option>
-                        {event.endHour===24 ? <option value={0}>00</option> :
-                            [...Array(12).keys()].map(i => (
+                        {event.endHour===24 
+                            ? <option value={0}>00</option> 
+                            : [...Array(12).keys()].map(i => (
                                 <option value={i*5} key={i*5}>{i<2 ? '0' + i*5 : i*5}</option>
                             ))
                         }
@@ -119,9 +125,10 @@ function NewLife({
                 >
                     Add Event
                 </Button>
+
             </div>
         </Modal>
     );
 }
 
-export default NewLife;
+export default Create;
