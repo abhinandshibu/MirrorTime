@@ -1,5 +1,6 @@
 import './timetable.css';
 import { ColourTheme, db } from '../../App';
+import Event from './event';
 import Info from './info';
 import NewPlan from './create/new-plan';
 import NewLife from './create/new-life';
@@ -22,16 +23,21 @@ function Timetable({
 
     const [info, setInfo] = useState({index: 0, isPlan: true, start: 0, end: 3600, name: "", category: "", colour: "ffffff"});
     const [lines, setLines] = useState(true);
-    const timetableHeight = 288 * 8 + 287 * 1;
-    const [barProgress, setBarProgress] = useState((new Date().getHours()/24 + new Date().getMinutes()/1440) * timetableHeight);
+
+    const TIMETABLE_HEIGHT = 288 * 8 + 287 * 1;
+    // All times given in terms of the number of seconds that have passed since 00:00 that day
+    const SECS_PER_DAY = 60 * 60 * 24; 
+    const timeToHeight = (time) => time / SECS_PER_DAY * TIMETABLE_HEIGHT;
+    const [timeNow, setTimeNow] = useState(new Date().getHours() * 3600 + new Date().getMinutes() * 60);
     const bar = useRef(null);
 
     useEffect(() => {
         bar.current.scrollIntoView({behavior: "smooth", block: "center"});
 
+        // Update time and move bar downwards every minute
         const updateTime = setInterval(() => {
             const date = new Date();
-            setBarProgress((date.getHours()/24 + date.getMinutes()/1440) * timetableHeight);
+            setTimeNow(date.getHours() * 3600 + date.getMinutes() * 60);
         }, 60000);
         return () => clearInterval(updateTime);
     }, []);
@@ -39,94 +45,19 @@ function Timetable({
     const renderTimeSlots = () => {
         const array = [];
         for (let i=0; i<96; i++) {
-            let colour = (i%8 > 3) ? "var(--light-slot)" : "var(--dark-slot)";
-            let colour2 = (i%8 > 3) ? "var(--light-slot-2)" : "var(--dark-slot-2)";
+            const band = (i%8 > 3) ? 'light' : 'dark'
+            const rowStart = 3 * i + 1;
+            const rowEnd = 3 * i + 4;
             array.push(
-                <div className={`time-slot ${i}`} key={`t${i}`}
-                    style={{gridArea: `${3*i+1} / 1 / ${3*i+4} / 2`, background: colour}}>
+                <div className={`time-slot-${band}`} key={`t${i}`}
+                    style={{gridArea: `${rowStart} / 1 / ${rowEnd} / 2`}}>
                     <span>{i%4===0 ? (i<40 ? `0${i/4} : 00` : `${i/4} : 00`) : ""}</span>
                 </div>,
-                <div className={`life-slot ${i}`} key={`l${i}`}
-                    style={{gridArea: `${3*i+1} / 2 / ${3*i+4} / 3`, background: colour2}}>
+                <div className={`life-slot-${band}`} key={`l${i}`}
+                    style={{gridArea: `${rowStart} / 2 / ${rowEnd} / 3`}}>
                 </div>,
-                <div className={`plan-slot ${i}`} key={`p${i}`}
-                    style={{gridArea: `${3*i+1} / 3 / ${3*i+4} / 4`, background: colour}}>
-                </div>
-            );
-        }
-        return array;
-    }
-
-    const renderEvents = () => {
-        const timeNow = barProgress / timetableHeight * 86400;
-        const array = [];
-
-        // Render events in Your Plan
-        for (const [index, event] of planEvents.entries()) {
-            
-            let active = false;
-            if (event.start <= timeNow && event.end >= timeNow) {
-                active = true;
-            }
-            const colour = categories.get(event.category);
-
-            array.push(
-                <div className="event" key={index}
-                    style={{gridArea: `${Math.round(event.start/300) + 1} / 3 / ${Math.round(event.end/300) + 1} / 4`, 
-                            background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
-                                : '#' + colour,
-                            border: active ? `2px solid black` : "none"}}
-                    onClick={() => expandEvent(index, true)}
-                >
-                    <img className="delete" src={require("./assets/delete.png")} alt="delete event"
-                        onClick={(e) => {e.stopPropagation(); deletePlanEvent(index)}} 
-                    />
-                    {/* <img className="info" src={require("./assets/info.png")} alt="expand event information"
-                        onClick={() => expandEvent(index, true)} 
-                    /> */}
-                    {event.copied ? 
-                        <img className="copied" src={require("./assets/ticked.png")} alt="event copied to life"/>
-                        : 
-                        <img className="copy" src={require("./assets/unticked.png")} alt="delete event"
-                        onClick={(e) => {e.stopPropagation(); copyToLife(index, event)}} 
-                        />
-                    }
-                    {event.name}
-                    {/* <EditText 
-                        name={index.toString()} defaultValue={event.name} 
-                        inputClassName="title" onSave={editName}
-                    /> */}
-                </div>
-            );
-        }
-
-        // Render events in Your Life
-        for (const [index, event] of lifeEvents.entries()) {
-            let active = false;
-            if (event.start <= timeNow && event.end >= timeNow) {
-                active = true;
-            }
-            const colour = categories.get(event.category);
-
-            array.push(
-                <div className="event" key={index}
-                    style={{gridArea: `${Math.round(event.start/300) + 1} / 2 / ${Math.round(event.end/300) + 1} / 3`, 
-                            background: active ? `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${colour}` 
-                                : '#' + colour,
-                            border: active ? `2px solid black` : "none"}}
-                    onClick={() => expandEvent(index, false)}
-                >
-                    <img className="delete" src={require("./assets/delete.png")} alt="delete event"
-                        onClick={(e) => {e.stopPropagation(); deleteLifeEvent(index, event)}} 
-                    />
-                    {/* <img className="info" src={require("./assets/info.png")} alt="expand event information"
-                        onClick={() => expandEvent(index, false)} 
-                    /> */}
-                    {/* <EditText 
-                        name={index.toString()} defaultValue={event.name} 
-                        inputClassName="title" onSave={editName}
-                    /> */}
-                    {event.name}
+                <div className={`plan-slot-${band}`} key={`p${i}`}
+                    style={{gridArea: `${rowStart} / 3 / ${rowEnd} / 4`}}>
                 </div>
             );
         }
@@ -136,18 +67,18 @@ function Timetable({
     const renderCurrentEvent = () => {
         const nearestSlot = Math.round(current.start / 300);
         const error = current.start - nearestSlot * 300;
-        const height = Math.max(0, barProgress - current.start / 86400 * timetableHeight)
+        const duration = timeNow - current.start;
         return (
             <div id="current"
                 style={{gridRowStart: nearestSlot + 1,
-                    top: error / 86400 * timetableHeight,
-                    height: height,
-                    background: `repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.3) 3px, rgba(255, 255, 255, 0.3) 6px), #${categories.get(current.category)}`
+                    top: timeToHeight(error),
+                    height: Math.max(timeToHeight(duration), 0),
+                    background: '#' + categories.get(current.category)
                 }}
             >
-                {
-                    height >= 16 ?
-                    <EditText onSave={editName} inputClassName="current-name" placeholder="Event name"/>
+                <div className="event-highlighter"></div>
+                {duration >= 10
+                    ? <EditText onSave={editName} inputClassName="current-name" placeholder="Event name"/>
                     : ""
                 }
             </div>
@@ -171,6 +102,19 @@ function Timetable({
         return array;
     }
 
+    const handle = async (action, type, index) => {
+        switch (action) {
+            case "delete":
+                type==="plan" ? deletePlanEvent(index) : deleteLifeEvent(index);
+                break;
+            case "open":
+                openEvent(index, type==="plan");
+                break;
+            case "copy":
+                copyToLife(index);
+        }
+    }
+
     const deletePlanEvent = async (index) => {
         setPlanEvents(map => {
             map.delete(index);
@@ -179,7 +123,9 @@ function Timetable({
         await deleteDoc(doc(db, "plan", index.toString()));
     }
 
-    const deleteLifeEvent = async (index, event) => {
+    const deleteLifeEvent = async (index) => {
+        const event = lifeEvents.get(index);
+
         if (current.isRunning && !current.isIncreasing && index === current.index) {
             setCurrent({isRunning: false});
         }
@@ -198,7 +144,7 @@ function Timetable({
         }
     }
 
-    const expandEvent = (index, isPlanEvent) => {
+    const openEvent = (index, isPlanEvent) => {
         const event = isPlanEvent ? planEvents.get(index) : lifeEvents.get(index);
         setInfo({index: index, isPlan: isPlanEvent, start: event.start, end: event.end, 
             name: event.name, category: event.category, colour: categories.get(event.category),
@@ -206,19 +152,8 @@ function Timetable({
         setInfoWindow(true);
     }
 
-    // const editName = async ({name, value, previousValue}) => {
-    //     if (planEvents.has(+name)) {
-    //         const event = planEvents.get(+name);
-    //         setPlanEvents(map => new Map( map.set(+name, {...event, name: value}) ));
-    //         await updateDoc(doc(db, "plan", name), {name: value});
-    //     } else {
-    //         const event = lifeEvents.get(+name);
-    //         setLifeEvents(map => new Map( map.set(+name, {...event, name: value}) ));
-    //         await updateDoc(doc(db, "life", name), {name: value});
-    //     }
-    // }
-
-    const copyToLife = async (index, event) => {
+    const copyToLife = async (index) => {
+        const event = planEvents.get(index);
         event.copied = true;
 
         const lifeEvent = {name: event.name, category: event.category, date: date,
@@ -235,15 +170,13 @@ function Timetable({
     return (
         <div className="timetable">
             <div className="timetable-heading">
-                <div id="button-toggle-lines">
-                    <Button 
-                        variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                        id="toggle-lines"
-                        onClick={() => setLines(!lines)}
-                    >
-                        Toggle lines
-                    </Button>
-                </div>
+                <Button 
+                    variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                    id="toggle-lines"
+                    onClick={() => setLines(!lines)}
+                >
+                    Toggle lines
+                </Button>
                 <div>
                     Your Life
                     <img className="add" src={require("./assets/plus.png")} alt="log a real event"
@@ -260,13 +193,27 @@ function Timetable({
             <div className="timetable-body">
                 {renderTimeSlots()}
                 
-                {renderEvents()}
+                {Array.from(lifeEvents).map(([index, event]) => (
+                    <Event index={index} event={event} type="life"
+                        colour={categories.get(event.category)}
+                        isActive={event.start <= timeNow && event.end >= timeNow}
+                        handle={handle}
+                    />
+                ))}
+
+                {Array.from(planEvents).map(([index, event]) => (
+                    <Event index={index} event={event} type="plan"
+                        colour={categories.get(event.category)}
+                        isActive={event.start <= timeNow && event.end >= timeNow}
+                        handle={handle}
+                    />
+                ))}
 
                 {current.isRunning && current.isIncreasing ? renderCurrentEvent() : ""}
 
                 {lines ? renderLines() : ""}
 
-                <div id="now" ref={bar} style={{top: barProgress + 'px'}}></div>
+                <div id="now" ref={bar} style={{top: timeToHeight(timeNow) + 'px'}}></div>
             </div>
 
             <Info 
