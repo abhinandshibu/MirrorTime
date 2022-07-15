@@ -1,13 +1,11 @@
 import './select-time.css';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
-import { toYmd, db, ColourTheme } from '../../../App';
-import { doc, setDoc } from "firebase/firestore";
+import { ColourTheme, getTimeNow } from '../../../App';
 import { Button } from 'react-bootstrap';
 
 function SelectTime({
-    selectTimeWindow, setSelectTimeWindow, setCurrent, setTime, setDate,
-    setLifeEvents, category, count, setCount
+    visibility, setVisibility, current, startEvent
 }) {
 
     const theme = useContext(ColourTheme);
@@ -23,48 +21,38 @@ function SelectTime({
     const [name, setName] = useState("");
 
     useEffect(() => {
-        setPresetTime(60);
-        setUsingPreset(true);
-        setHour(-1);
-        setMinute(-1);
-        setSecond(-1);
-        setName("");
-    }, [setSelectTimeWindow]);
+        if (visibility) {
+            setPresetTime(60);
+            setUsingPreset(true);
+            setHour(-1);
+            setMinute(-1);
+            setSecond(-1);
+            setName("");
+        }
+    }, [setVisibility]);
 
     const submit = async () => {
-        const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-        let min, sec, end;
+        setVisibility(false);
+
+        const timeNow = getTimeNow();
+        let end;
         if (usingPreset) {
-            min = presetTime / 60;
-            sec = 0;
             end = timeNow + presetTime;
         } else {
-            if (hour < 0 || minute < 0 || second < 0) {
+            if (hour < 0 || minute < 0 || second < 0)
                 return;
-            }
-            min = hour * 60 + minute;
-            sec = second;
-            end = timeNow + hour * 3600 + min * 60 + second;
+            end = timeNow + hour * 3600 + minute * 60 + second;
         }
-        const newEvent = {name: name, category: category, date: toYmd(date), start: timeNow, end: end};
-        setLifeEvents(map => new Map( map.set(count, newEvent) ));
-        setCount(count + 1);
-        await setDoc(doc(db, `life/${count}`), newEvent);
-        await setDoc(doc(db, 'info/count'), {count: count+1});
-
-        setCurrent({index: count, isRunning: true, isIncreasing: false});
-        setTime([min, sec]);
-        setDate(toYmd(date));
-
-        setSelectTimeWindow(false);
-        await setDoc(doc(db, 'info/current'), {index: count, isRunning: true, isIncreasing: false});
+        const newCurrent = {...current, isRunning: true, isIncreasing: false, name: name,
+            start: timeNow, end: end, growthRate: 100 / (end - timeNow)};
+        
+        startEvent(newCurrent);
     }
 
     return (
         <Modal 
-            show={selectTimeWindow} 
-            onHide={() => setSelectTimeWindow(false)}
+            show={visibility} 
+            onHide={() => setVisibility(false)}
             contentClassName={"modal-" + theme}
         >
             <Modal.Header closeButton>
@@ -116,8 +104,7 @@ function SelectTime({
             </div>
             <Button 
                 variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                onClick={submit} 
-                id="start-timer"
+                onClick={submit} id="start-timer"
             >
                 Start
             </Button>

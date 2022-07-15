@@ -45,6 +45,15 @@ export const toYmd = (date) => {
   return {year: date.getFullYear(), month: date.getMonth(), date: date.getDate()};
 };
 
+export const getTimeNow = () => {
+    const date = new Date();
+    return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+}
+
+export const getToday = () => {
+    return toYmd(new Date());
+}
+
 export const months = ["January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"];
 

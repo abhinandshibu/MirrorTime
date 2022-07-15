@@ -22,7 +22,7 @@ function Event({index, event, type, colour, isActive, handle}) {
                     ? <img className="copied" src={require("./assets/ticked.png")} 
                         alt="event copied to life" key="copied"/>
                     : <img className="copy" src={require("./assets/unticked.png")} 
-                        alt="delete event" key="copy"
+                        alt="copy this event to life" key="copy"
                         onClick={(e) => {e.stopPropagation(); handle("copy", type, index)}} />
                 : ""
             }

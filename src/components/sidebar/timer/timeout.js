@@ -2,9 +2,9 @@ import './timeout.css';
 import { Modal } from 'react-bootstrap';
 import React from 'react';
 
-function Timeout({timeoutWindow, setTimeoutWindow}) {
+function Timeout({visibility, setVisibility}) {
     return (
-        <Modal show={timeoutWindow} onHide={() => setTimeoutWindow(false)}>
+        <Modal show={visibility} onHide={() => setVisibility(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>Time's up!</Modal.Title>
             </Modal.Header>

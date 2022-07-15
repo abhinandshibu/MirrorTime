@@ -1,6 +1,6 @@
 import './home.css';
 import { useEffect, useState } from 'react';
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from '../../App'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -30,16 +30,23 @@ function Home({
     checkDb().catch(console.error);
   }, [])
 
+  const addCurrentEvent = async (event) => {
+    setLifeEvents(map => new Map(map.set(count, event)));
+    await setDoc(doc(db, `life/${count}`), event);
+
+    setCount(count => count+1);
+    await updateDoc(doc(db, "info/count"), {count: count+1});
+  }
+
   return (
 
     <div className="home"> 
  
       <SideBar 
-        lifeEvents={lifeEvents} setLifeEvents={setLifeEvents}
-        count={count} setCount={setCount}
         categories={categories} setCategories={setCategories}
         date={date} setDate={setDate}
         current={current} setCurrent={setCurrent}
+        addCurrentEvent={addCurrentEvent}
       />
 
       <Timetable 

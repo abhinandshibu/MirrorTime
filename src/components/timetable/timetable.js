@@ -1,5 +1,5 @@
 import './timetable.css';
-import { ColourTheme, db } from '../../App';
+import { ColourTheme, db, getTimeNow } from '../../App';
 import Event from './event';
 import Info from './info';
 import Create from './create';
@@ -29,7 +29,7 @@ function Timetable({
     // All times given in terms of the number of seconds that have passed since 00:00 that day
     const SECS_PER_DAY = 60 * 60 * 24; 
     const timeToHeight = (time) => time / SECS_PER_DAY * TIMETABLE_HEIGHT;
-    const [timeNow, setTimeNow] = useState(new Date().getHours() * 3600 + new Date().getMinutes() * 60);
+    const [timeNow, setTimeNow] = useState(getTimeNow());
     const bar = useRef(null);
 
     useEffect(() => {
@@ -37,8 +37,7 @@ function Timetable({
 
         // Update time and move bar downwards every minute
         const updateTime = setInterval(() => {
-            const date = new Date();
-            setTimeNow(date.getHours() * 3600 + date.getMinutes() * 60);
+            setTimeNow(getTimeNow());
         }, 60000);
         return () => clearInterval(updateTime);
     }, []);
@@ -66,29 +65,41 @@ function Timetable({
     }
 
     const renderCurrentEvent = () => {
-        const nearestSlot = Math.round(current.start / 300);
-        const error = current.start - nearestSlot * 300;
-        const duration = timeNow - current.start;
-        return (
-            <div id="current"
-                style={{gridRowStart: nearestSlot + 1,
-                    top: timeToHeight(error),
-                    height: Math.max(timeToHeight(duration), 0),
-                    background: '#' + categories.get(current.category)
-                }}
-            >
-                <div className="event-highlighter"></div>
-                {duration >= 10
-                    ? <EditText onSave={editName} inputClassName="current-name" placeholder="Event name"/>
-                    : ""
-                }
-            </div>
-        )
-    }
-
-    const editName = async ({name, value, previousValue}) => {
-        setCurrent({...current, name: value});
-        await updateDoc(doc(db, "info", "current"), {name: value});
+        const colour = categories.get(current.category);
+        if (current.isIncreasing) {
+            const nearestSlot = Math.round(current.start / 300);
+            const error = current.start - nearestSlot * 300;
+            const duration = timeNow - current.start;
+            return (
+                <div id="current"
+                    style={{gridRowStart: nearestSlot + 1,
+                        top: timeToHeight(error),
+                        height: Math.max(timeToHeight(duration), 0),
+                        background: '#' + colour
+                    }}
+                >
+                    <div className="event-highlighter"></div>
+                    {duration >= 10
+                        ? <EditText inputClassName="current-name" placeholder="Event name"
+                            onSave={async ({name, value, previousValue}) => {
+                                setCurrent({...current, name: value});
+                                await updateDoc(doc(db, "info", "current"), {name: value});
+                            }}
+                        />
+                        : ""
+                    }
+                </div>
+            )
+        } else {
+            return (
+                <div id="current"
+                    style={{gridRow: `${Math.round(current.start/300) + 1} / ${Math.round(current.end/300) + 1}`,
+                        background: '#' + colour}}
+                >
+                    <div className="event-highlighter"></div>
+                </div>
+            )
+        }
     }
 
     const renderLines = () => {
@@ -107,6 +118,7 @@ function Timetable({
     const handle = async (action, type, index) => {
         switch (action) {
             case "delete":
+                // If event is a copy, update parent and allow it to be copied again
                 if (type==="life" && lifeEvents.get(index).hasOwnProperty("parent")) {
                     updateEvent(lifeEvents.get(index).parent, {copied: false}, "plan");
                 }
@@ -198,7 +210,7 @@ function Timetable({
                     />
                 ))}
 
-                {current.isRunning && current.isIncreasing ? renderCurrentEvent() : ""}
+                {current.isRunning ? renderCurrentEvent() : ""}
 
                 {lines ? renderLines() : ""}
 

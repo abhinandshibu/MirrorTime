@@ -2,16 +2,16 @@ import './sidebar.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState, useContext } from 'react';
-import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { toYmd, db, ColourTheme } from '../../App';
+import { doc, setDoc } from "firebase/firestore";
+import { toYmd, getTimeNow, db, ColourTheme, getToday } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
 import { Button } from 'react-bootstrap';
 
 function SideBar({
-    lifeEvents, setLifeEvents, count, setCount, categories, setCategories, date, setDate, 
-    current, setCurrent
+    categories, setCategories, date, setDate, 
+    current, setCurrent, addCurrentEvent
 }) {
     const theme = useContext(ColourTheme);
 
@@ -19,108 +19,88 @@ function SideBar({
     const [timeoutWindow, setTimeoutWindow] = useState(false);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
 
-    const [time, setTime] = useState([0, 0]); // used for both stopwatch and timer
-    const [activeCategory, setActiveCategory] = useState("");
-    const [intervalId, setIntervalId] = useState();
-    const [growthRate, setGrowthRate] = useState(0);
-    const [progBarWidth, setProgBarWidth] = useState(0);
+    // Tracks current minute and second. Used in both stopwatch and countdown timer.
+    const [time, setTime] = useState([0, 0]);
 
+    // States used only for countdown timer
+    const [intervalId, setIntervalId] = useState();
+    const [progBarWidth, setProgBarWidth] = useState(0); // Increases from 0% to 100%
+
+    // Called every time a new event is started, or the page loads with an existing running event
     useEffect(() => {
         if (current.isRunning) {
-            const date = new Date();
-            const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-
             if (current.isIncreasing) {
-                setActiveCategory(current.category);
-                const elapsedSecs = timeNow - current.start;
+            // Stopwatch
+                const elapsedSecs = getTimeNow() - current.start;
                 setTime([Math.floor(elapsedSecs / 60), elapsedSecs % 60]);
 
+                // Increment time every second
                 const id = setInterval(() => {
                     setTime(([min, sec]) => sec < 59 ? [min, sec + 1] : [min + 1, 0]);
                 }, 1000);
                 return () => clearInterval(id);
             } 
             else {
-                const event = lifeEvents.get(current.index);
-                if (event !== undefined) {
-                    const timeLeft = event.end - timeNow;
-                    if (timeLeft < 0) {
-                        timeout().catch(console.error);
-                    }
-                    else {
-                        setActiveCategory(event.category);
-                        setTime([Math.floor(timeLeft / 60), timeLeft % 60]);
-                        const growthRate = 100 / (event.end - event.start);
-                        setGrowthRate(growthRate);
-                        setProgBarWidth(100 - timeLeft * growthRate);
+            // Timer
+                const timeLeft = current.end - getTimeNow();
+                if (timeLeft < 0) {
+                    setTimeoutWindow(true);
+                    stop();
+                }
+                else {
+                    setTime([Math.floor(timeLeft / 60), timeLeft % 60]);
+                    setProgBarWidth(100 - timeLeft * current.growthRate);
 
-                        const id = (setInterval(() => {
-                            setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
-                        }, 1000));
-                        setIntervalId(id);
-                        return () => clearInterval(id);
-                    }
+                    // Decrement time every second
+                    const id = (setInterval(() => {
+                        setTime(([min, sec]) => sec > 0 ? [min, sec - 1] : [min - 1, 59]);
+                    }, 1000));
+                    setIntervalId(id);
+                    return () => clearInterval(id);
                 }
             }
         }
-    }, [current, lifeEvents]);
+    }, [current]);
 
+    // For countdown timer only: Checks if time's up, or else it moves the progress bar
     useEffect(() => {
         if (current.isRunning && !current.isIncreasing) {
             if (time[0]===0 && time[1]===0) {
-                timeout().catch(console.error);
+                setTimeoutWindow(true);
+                stop();
             } else {
-                setProgBarWidth(width => width + growthRate);
+                setProgBarWidth(width => width + current.growthRate);
             }
         } 
     }, [time])
 
-    const timeout = async () => {
-        clearInterval(intervalId);
-        setTimeoutWindow(true);
-        setCurrent({isRunning: false});
-        await setDoc(doc(db, 'info/current'), {isRunning: false});
-    }
-
-    const play = async (category) => {
-        const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-        setDate(toYmd(date));
-        setActiveCategory(category);
-        setTime([0, 0]);
-        setCurrent({category: category, start: timeNow, isRunning: true, isIncreasing: true});
-        await setDoc(doc(db, 'info/current'), {category: category, start: timeNow, isRunning: true, isIncreasing: true});
-    }
-
-    const stop = async () => {
-        setCurrent({isRunning: false});
-        await setDoc(doc(db, 'info/current'), {isRunning: false});
-
-        const date = new Date();
-        const timeNow = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-
-        if (current.isIncreasing) {
-            // Play button: event stopped, record event
-            const eventName = current.hasOwnProperty('name') ? current.name : `${activeCategory} activity`;
-            const newEvent = {name: eventName, category: activeCategory,
-                date: toYmd(date), start: current.start, end: timeNow};
-            setLifeEvents(map => new Map( map.set(count, newEvent) ));
-            setCount(count + 1);
-    
-            await setDoc(doc(db, `life/${count}`), newEvent);
-            await setDoc(doc(db, 'info/count'), {count: count+1});
-        } else {
-            // Countdown timer: user ended early, update event's end time
-            clearInterval(intervalId);
-            const updatedEvent = {...lifeEvents.get(current.index), end: timeNow};
-            setLifeEvents(map => new Map( map.set(current.index, updatedEvent) ));
-            await updateDoc(doc(db, `life/${current.index}`), {end: timeNow});
-        }
+    const play = (category) => {
+        startEvent({isRunning: true, isIncreasing: true, category: category, start: getTimeNow()});
     }
 
     const countdown = (category) => {
-        setActiveCategory(category);
+        setCurrent({isRunning: false, category: category});
         setSelectTimeWindow(true);
+    }
+
+    const startEvent = async (curr) => {
+        setDate(getToday());
+        setCurrent(curr);
+        await setDoc(doc(db, 'info/current'), curr);
+    }
+
+    const stop = async () => {
+        const event = {category: current.category, start: current.start, 
+            end: getTimeNow(), date: getToday(), hasDescription: false};
+        event.name = current.hasOwnProperty('name') ? current.name : `${current.category} activity`;
+        
+        if (!current.isIncreasing)
+            clearInterval(intervalId);
+
+        setCurrent({isRunning: false});
+        await setDoc(doc(db, 'info/current'), {isRunning: false});
+        
+        addCurrentEvent(event);
     }
     
     return (
@@ -134,9 +114,8 @@ function SideBar({
             </div>
 
             <div className="categories">
-                <Button 
+                <Button id="new-category" 
                     variant={theme === "light" ? "outline-dark" : "outline-light"}
-                    id="new-category" 
                     onClick={() => setCategoryWindow(true)}
                 >
                     New Category
@@ -145,14 +124,15 @@ function SideBar({
                     {Array.from(categories).map(([name, colour]) => (
                         <div key={name} className="category"
                             style={{background: '#' + colour, 
-                                border: current.isRunning && activeCategory===name ? "3px dashed black" : "none"}}
+                                border: current.isRunning && current.category===name ? "3px dashed black" : "none"}}
                         >
                             <span className="category-name">{name}</span>
-                            {current.isRunning ? 
-                                (activeCategory===name ?
-                                    <>
-                                        {current.isIncreasing ? "" : 
-                                            <div id="reverse-progress-bar"
+                            {current.isRunning
+                                ? (current.category===name
+                                    ? <>
+                                        {current.isIncreasing 
+                                            ? ""
+                                            : <div id="reverse-progress-bar"
                                                 style={{width: progBarWidth + '%'}}></div>
                                         }
                                         <img className="stop" src={require("./stop.png")} 
@@ -163,11 +143,9 @@ function SideBar({
                                             {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
                                         </span>
                                     </>
-                                    :
-                                    ""
+                                    : ""
                                 )
-                                :
-                                <>
+                                : <>
                                     <img className="play" src={require("./play.png")} 
                                         title="Play"
                                         alt="start an event in this category"
@@ -186,21 +164,17 @@ function SideBar({
             </div>
 
             <NewCategory
-                categoryWindow={categoryWindow} setCategoryWindow={setCategoryWindow}
+                visibility={categoryWindow} setVisibility={setCategoryWindow}
                 setCategories={setCategories}
             />
 
             <SelectTime
-                selectTimeWindow={selectTimeWindow} setSelectTimeWindow={setSelectTimeWindow}
-                setCurrent={setCurrent} setTime={setTime}
-                setDate={setDate}
-                setLifeEvents={setLifeEvents}
-                category={activeCategory}
-                count={count} setCount={setCount}
+                visibility={selectTimeWindow} setVisibility={setSelectTimeWindow}
+                current={current} startEvent={startEvent}
             />
 
             <Timeout
-                timeoutWindow={timeoutWindow} setTimeoutWindow={setTimeoutWindow}
+                visibility={timeoutWindow} setVisibility={setTimeoutWindow}
             />
         </div>
     );

@@ -5,7 +5,7 @@ import { db, ColourTheme } from '../../App';
 import { useState, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 
-function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
+function NewCategory ({visibility, setVisibility, setCategories}) {
 
     const theme = useContext(ColourTheme);
 
@@ -25,15 +25,15 @@ function NewCategory ({categoryWindow, setCategoryWindow, setCategories}) {
             setCategoryName("");
             setCategoryColour(colours[0]);
 
-            setCategoryWindow(false);
+            setVisibility(false);
         }
     }
 
     return (
         <div id="new-category-window">
             <Modal 
-                show={categoryWindow} 
-                onHide={() => setCategoryWindow(false)}
+                show={visibility} 
+                onHide={() => setVisibility(false)}
                 contentClassName={"modal-" + theme}
             >
                 <Modal.Header closeButton>
