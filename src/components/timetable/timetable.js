@@ -1,13 +1,17 @@
 import './timetable.css';
-import { ColourTheme, db, getTimeNow } from '../../App';
+import { ColourTheme, db, getTimeNow, getToday } from '../../App';
 import Event from './event';
+import { MovingCurrent, StaticCurrent } from './current';
 import Info from './info';
 import Create from './create';
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { React, useEffect, useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
-import { EditText } from 'react-edit-text';
-import 'react-edit-text/dist/index.css';
+
+const TIMETABLE_HEIGHT = 288 * 8 + 287 * 1;
+// All times given in terms of the number of seconds that have passed since 00:00 that day
+const SECS_PER_DAY = 60 * 60 * 24; 
+export const timeToHeight = (time) => time / SECS_PER_DAY * TIMETABLE_HEIGHT;
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
@@ -25,10 +29,6 @@ function Timetable({
     
     const [lines, setLines] = useState(true);
 
-    const TIMETABLE_HEIGHT = 288 * 8 + 287 * 1;
-    // All times given in terms of the number of seconds that have passed since 00:00 that day
-    const SECS_PER_DAY = 60 * 60 * 24; 
-    const timeToHeight = (time) => time / SECS_PER_DAY * TIMETABLE_HEIGHT;
     const [timeNow, setTimeNow] = useState(getTimeNow());
     const bar = useRef(null);
 
@@ -62,44 +62,6 @@ function Timetable({
             );
         }
         return array;
-    }
-
-    const renderCurrentEvent = () => {
-        const colour = categories.get(current.category);
-        if (current.isIncreasing) {
-            const nearestSlot = Math.round(current.start / 300);
-            const error = current.start - nearestSlot * 300;
-            const duration = timeNow - current.start;
-            return (
-                <div id="current"
-                    style={{gridRowStart: nearestSlot + 1,
-                        top: timeToHeight(error),
-                        height: Math.max(timeToHeight(duration), 0),
-                        background: '#' + colour
-                    }}
-                >
-                    <div className="event-highlighter"></div>
-                    {duration >= 10
-                        ? <EditText inputClassName="current-name" placeholder="Event name"
-                            onSave={async ({name, value, previousValue}) => {
-                                setCurrent({...current, name: value});
-                                await updateDoc(doc(db, "info", "current"), {name: value});
-                            }}
-                        />
-                        : ""
-                    }
-                </div>
-            )
-        } else {
-            return (
-                <div id="current"
-                    style={{gridRow: `${Math.round(current.start/300) + 1} / ${Math.round(current.end/300) + 1}`,
-                        background: '#' + colour}}
-                >
-                    <div className="event-highlighter"></div>
-                </div>
-            )
-        }
     }
 
     const renderLines = () => {
@@ -139,6 +101,12 @@ function Timetable({
             default:
                 console.log("this shouldn't happen");
         }
+    }
+
+    // Only used by current event
+    const editName = async ({name, value, previousValue}) => {
+        setCurrent({...current, name: value});
+        await updateDoc(doc(db, "info", "current"), {name: value});
     }
 
     // Functions to edit event maps and database
@@ -196,21 +164,25 @@ function Timetable({
                 
                 {Array.from(lifeEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="life"
-                        colour={categories.get(event.category)}
-                        isActive={event.start <= timeNow && event.end >= timeNow}
-                        handle={handle}
+                        colour={categories.get(event.category)} timeNow={timeNow}
+                        handle={handle} key={index}
                     />
                 ))}
 
                 {Array.from(planEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="plan"
-                        colour={categories.get(event.category)}
-                        isActive={event.start <= timeNow && event.end >= timeNow}
-                        handle={handle}
+                        colour={categories.get(event.category)} timeNow={timeNow}
+                        handle={handle} key={index}
                     />
                 ))}
 
-                {current.isRunning ? renderCurrentEvent() : ""}
+                {current.isRunning && date===getToday()
+                    ? current.isIncreasing
+                        ? <MovingCurrent current={current} timeNow={timeNow} editName={editName}
+                            colour={categories.get(current.category)} />
+                        : <StaticCurrent current={current} colour={categories.get(current.category)} />
+                    : ""
+                }
 
                 {lines ? renderLines() : ""}
 

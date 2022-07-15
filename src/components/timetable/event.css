@@ -38,3 +38,37 @@
 .event:hover .event-highlighter {
     opacity: 0.3;
 }
+
+.delete, .info {
+    position: absolute;
+    top: calc(50%-15px);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+.delete {
+    right: 20px;
+}
+
+.info {
+    right: 30px;
+}
+
+.copy, .copied {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.copy {
+    opacity: 0.3;
+    cursor: pointer;
+}
+
+.event:hover * {
+    visibility: visible;
+    opacity: 1;
+}

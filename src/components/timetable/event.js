@@ -1,11 +1,14 @@
 import './event.css'
 
-function Event({index, event, type, colour, isActive, handle}) {
+function Event({index, event, type, colour, timeNow, handle}) {
+    
+    const startSlot = Math.round(event.start/300);
+    const endSlot = Math.round(event.end/300);
+    const isActive = startSlot * 300 <= timeNow && endSlot * 300 >= timeNow;
 
     return (
-        <div key={index}
-            className={`${type} event`}
-            style={{gridRow: `${Math.round(event.start/300) + 1} / ${Math.round(event.end/300) + 1}`,
+        <div className={`${type} event`}
+            style={{gridRow: `${startSlot + 1} / ${endSlot + 1}`,
                     background: '#' + colour,
                     border: isActive ? "2px solid red" : "none"}}
             onClick={() => handle("open", type, index)}

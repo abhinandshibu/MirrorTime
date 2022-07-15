@@ -1,4 +1,5 @@
 import './sidebar.css'
+import { Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState, useContext } from 'react';
@@ -7,7 +8,7 @@ import { toYmd, getTimeNow, db, ColourTheme, getToday } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
-import { Button } from 'react-bootstrap';
+import {DisabledCategory, IdleCategory, ActiveCategory} from './category';
 
 function SideBar({
     categories, setCategories, date, setDate, 
@@ -121,45 +122,18 @@ function SideBar({
                     New Category
                 </Button>
                 <div className="category-list">
-                    {Array.from(categories).map(([name, colour]) => (
-                        <div key={name} className="category"
-                            style={{background: '#' + colour, 
-                                border: current.isRunning && current.category===name ? "3px dashed black" : "none"}}
-                        >
-                            <span className="category-name">{name}</span>
-                            {current.isRunning
-                                ? (current.category===name
-                                    ? <>
-                                        {current.isIncreasing 
-                                            ? ""
-                                            : <div id="reverse-progress-bar"
-                                                style={{width: progBarWidth + '%'}}></div>
-                                        }
-                                        <img className="stop" src={require("./stop.png")} 
-                                            alt="end the current event"
-                                            onClick={stop} 
-                                        />
-                                        <span className="time">
-                                            {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
-                                        </span>
-                                    </>
-                                    : ""
-                                )
-                                : <>
-                                    <img className="play" src={require("./play.png")} 
-                                        title="Play"
-                                        alt="start an event in this category"
-                                        onClick={() => play(name)} 
-                                    /> 
-                                    <img className="countdown" src={require("./timer.png")} 
-                                        title="Countdown Timer"
-                                        alt="start a countdown timer for an activity in this category"
-                                        onClick={() => countdown(name)} 
-                                    />
-                                </>
-                            }
-                        </div>
-                    ))}
+                    {current.isRunning
+                        ? Array.from(categories).map(([name, colour]) => (
+                            current.category===name
+                                ? <ActiveCategory name={name} colour={colour} width={progBarWidth} 
+                                    stop={stop} time={time} showBar={!current.isIncreasing} key={name}/>
+                                : <DisabledCategory name={name} colour={colour} key={name}/>
+                        ))
+                        : Array.from(categories).map(([name, colour]) => (
+                            <IdleCategory name={name} colour={colour} 
+                                play={play} countdown={countdown} key={name}/>
+                        ))
+                    }
                 </div>
             </div>
 
