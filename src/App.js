@@ -54,6 +54,11 @@ export const getToday = () => {
     return toYmd(new Date());
 }
 
+export const isToday = (ymd) => {
+    const today = getToday();
+    return today.year===ymd.year && today.month===ymd.month && today.date===ymd.date;
+}
+
 export const months = ["January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"];
 

@@ -1,5 +1,5 @@
 import './timetable.css';
-import { ColourTheme, db, getTimeNow, getToday } from '../../App';
+import { ColourTheme, db, getTimeNow, isToday } from '../../App';
 import Event from './event';
 import { MovingCurrent, StaticCurrent } from './current';
 import Info from './info';
@@ -34,7 +34,6 @@ function Timetable({
 
     useEffect(() => {
         bar.current.scrollIntoView({behavior: "smooth", block: "center"});
-
         // Update time and move bar downwards every minute
         const updateTime = setInterval(() => {
             setTimeNow(getTimeNow());
@@ -176,7 +175,7 @@ function Timetable({
                     />
                 ))}
 
-                {current.isRunning && date===getToday()
+                {current.isRunning && isToday(date)
                     ? current.isIncreasing
                         ? <MovingCurrent current={current} timeNow={timeNow} editName={editName}
                             colour={categories.get(current.category)} />

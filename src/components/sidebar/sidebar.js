@@ -8,7 +8,7 @@ import { toYmd, getTimeNow, db, ColourTheme, getToday } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
-import {DisabledCategory, IdleCategory, ActiveCategory} from './category';
+import { DisabledCategory, IdleCategory, ActiveCategory } from './category';
 
 function SideBar({
     categories, setCategories, date, setDate, 

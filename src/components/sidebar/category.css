@@ -45,6 +45,11 @@
     grid-column: 6 / 9;
 }
 
+.warning {
+    font-weight: bold;
+    color: red;
+}
+
 
 .play, .stop, .countdown {
     width: 25px;

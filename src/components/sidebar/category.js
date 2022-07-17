@@ -41,7 +41,7 @@ export function ActiveCategory({name, colour, width, stop, time, showBar}) {
                 alt="end the current event"
                 onClick={stop} 
             />
-            <span className="time">
+            <span className={`time ${width >= 90 ? "warning" : ""}`}>
                 {time[0]} : {(time[1] < 10 ? "0" : "") + time[1]}
             </span>
         </div>
