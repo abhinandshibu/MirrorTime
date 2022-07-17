@@ -1,0 +1,17 @@
+#timeout-options {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px 0;
+}
+
+#timeout-options * {
+    font-size: 1.5em;
+}
+
+#timeout-continue {
+    background-color: #e8c07c;
+}
+
+#timeout-finish {
+    background-color: #bee09d;
+}

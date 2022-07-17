@@ -46,7 +46,6 @@ function SideBar({
                 const timeLeft = current.end - getTimeNow();
                 if (timeLeft < 0) {
                     setTimeoutWindow(true);
-                    stop();
                 }
                 else {
                     setTime([Math.floor(timeLeft / 60), timeLeft % 60]);
@@ -67,8 +66,8 @@ function SideBar({
     useEffect(() => {
         if (current.isRunning && !current.isIncreasing) {
             if (time[0]===0 && time[1]===0) {
+                clearInterval(intervalId);
                 setTimeoutWindow(true);
-                stop();
             } else {
                 setProgBarWidth(width => width + current.growthRate);
             }
@@ -95,9 +94,6 @@ function SideBar({
             end: getTimeNow(), date: getToday(), hasDescription: false};
         event.name = current.hasOwnProperty('name') ? current.name : `${current.category} activity`;
         
-        if (!current.isIncreasing)
-            clearInterval(intervalId);
-
         setCurrent({isRunning: false});
         await setDoc(doc(db, 'info/current'), {isRunning: false});
         
@@ -149,6 +145,7 @@ function SideBar({
 
             <Timeout
                 visibility={timeoutWindow} setVisibility={setTimeoutWindow}
+                current={current} stop={stop} startEvent={startEvent}
             />
         </div>
     );
