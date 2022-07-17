@@ -59,21 +59,24 @@ function SelectTime({
                 <Modal.Title>Countdown Timer</Modal.Title>
             </Modal.Header>
 
-        <div className="form">
-            <label>Activity name: </label>
-            <input type="text" id="name" value={name}
-                onChange={(e) => setName(e.target.value)} 
-            />
-            <div className="my-heading">Select duration:</div>
+        <div className="modal-body">
+            <div className="modal-row">
+                <label>Activity name: </label>
+                <input type="text" id="name" value={name}
+                    onChange={(e) => setName(e.target.value)} 
+                />
+            </div>
+            <label>Select duration:</label>
             <div className="presets">
                 {presets.map(([seconds, label]) => (
-                    <div key={seconds}
+                    <div key={seconds} className="preset"
+                        id={presetTime===seconds && usingPreset ? "selected-preset" : ""}
                         style={{background: '#' + (presetTime === seconds && usingPreset ? "8282b9" : "9ed9d9")}}
                         onClick={() => {setPresetTime(seconds); setUsingPreset(true);}}
                     >{label}</div>
                 ))}
             </div>
-            <div className="my-heading">Custom duration:</div>
+            <div className="modal-row"><label>Custom duration:</label></div>
             <div className="custom">
                 <select key="hour"
                     onChange={(e) => {setHour(+e.target.value); setUsingPreset(false);}}
@@ -104,7 +107,7 @@ function SelectTime({
             </div>
             <Button 
                 variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                onClick={submit} id="start-timer"
+                onClick={submit} className="modal-submit"
             >
                 Start
             </Button>

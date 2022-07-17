@@ -95,7 +95,7 @@ function Info({visibility, setVisibility, info, updateEvent}) {
                 </Modal.Title>
             </Modal.Header>
 
-            <div className="info-body">
+            <div className="modal-body">
                 <div>
                     <label>Category: </label>
                     <span className="info-category" 
@@ -138,7 +138,7 @@ function Info({visibility, setVisibility, info, updateEvent}) {
 
                 <Button 
                     variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                    onClick={save} id="save"
+                    onClick={save} className="modal-submit"
                 >
                     Save
                 </Button>

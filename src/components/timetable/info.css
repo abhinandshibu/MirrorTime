@@ -1,16 +1,7 @@
-.info-body {
-    padding: 30px;
-    font-size: 1.25rem;
-}
-
-.info-body label {
-    font-weight: 700;
-    margin-top: 10px;
-}
-
 .info-category {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 5px;
+    font-size: 1.25rem;
 }
 
 .info-time {
@@ -41,9 +32,4 @@
 .info-description {
     font-size: 1rem;
     font-weight: 300;
-}
-
-#save {
-    font-size: 1.5rem;
-    margin-top: 20px;
 }

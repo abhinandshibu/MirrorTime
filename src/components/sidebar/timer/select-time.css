@@ -1,24 +1,26 @@
 .presets {
-    margin: 0 50px;
+    margin: 20px 50px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
     justify-items: stretch;
     align-items: center;
+    color: black;
 }
 
-.presets * {
+.preset {
     border-radius: 5px;
     padding: 10px 0;
     text-align: center;
     cursor: pointer;
+    background: #9ed9d9;
+}
+.preset:hover {
+    background: #8fadcc;
 }
 
-.my-heading {
-    font-weight: 700;
-    font-size: 1.25em;
-    margin-top: 20px;
-    margin-bottom: 5px;
+#selected-preset {
+    background-color: #8282b9;
 }
 
 #start-timer {
@@ -27,8 +29,4 @@
     margin: 20px 50px;
     padding: 0 20px;
     float: right;
-}
-
-select {
-    margin: 5px;
 }

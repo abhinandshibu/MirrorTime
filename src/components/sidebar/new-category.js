@@ -13,19 +13,15 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
     const colours = ["f4d1d1", "fc9f9f", "e27d60", "e8c07c", "bee09d", "41b3a3", "9ed9d8", "8282b9", "c38d9e"];
     const [categoryColour, setCategoryColour] = useState(colours[0]);
 
-    const addNewCategory = () => {
+    const addNewCategory = async () => {
         if (categoryName !== "") {
+            setVisibility(false);
+
             setCategories(map => new Map(map.set(categoryName, categoryColour)));
-            // write to database
-            let ref = doc(db, `categories/${categoryName}`);
-            const write = async () => {
-                setDoc(ref, {colour: categoryColour});
-            }
-            write().catch(console.error);
+            setDoc(doc(db, `categories/${categoryName}`), {colour: categoryColour});
+
             setCategoryName("");
             setCategoryColour(colours[0]);
-
-            setVisibility(false);
         }
     }
 
@@ -40,11 +36,11 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
                     <Modal.Title>New Category</Modal.Title>
                 </Modal.Header>
                 
-                <div className="form">
-                    <div className="my-row colours">
+                <div className="modal-body">
+                    <div className="modal-row colours">
                         <label>Colour: </label>
                         {colours.map(col => (
-                            <div className={`colour ${categoryColour === col ? "selected" : ""}`} 
+                            <div className={`colour ${categoryColour === col ? "selected-colour" : ""}`} 
                                 style={{background: '#' + col}}
                                 onClick={() => setCategoryColour(col)}
                                 key={col}>
@@ -52,7 +48,7 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
                         ))}
                     </div>
                     
-                    <div className="my-row">
+                    <div className="modal-row">
                         <label>Name: </label>
                         <input type="text" value={categoryName}
                             onChange={(e) => setCategoryName(e.target.value) } 
@@ -61,7 +57,7 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
                     
                     <Button 
                         variant={theme === "light" ? "outline-dark" : "outline-light"}
-                        onClick={addNewCategory}
+                        onClick={addNewCategory} className="modal-submit"
                     >  
                         Add Category
                     </Button>

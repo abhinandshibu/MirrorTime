@@ -1,0 +1,37 @@
+.modal-dark {
+    background: #302f41;
+    color: white;
+    --highlight: white;
+}
+
+.modal-light {
+    background: white;
+    color: black;
+    --highlight: black;
+}
+
+.modal-body {
+    padding: 20px 40px;
+}
+
+.modal-submit {
+    margin: 20px 0;
+    padding: 6px 20px;
+    font-size: 1.25em;
+    background-color: #bee09d;
+    color: black;
+}
+.modal-submit:hover {
+    background-color: #41b3a3;
+    color: white;
+}
+
+.modal-row {
+    margin: 10px 0;
+}
+
+label {
+    margin-right: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}

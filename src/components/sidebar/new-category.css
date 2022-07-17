@@ -1,16 +1,4 @@
-.modal-dark {
-    background: #302f41;
-    color: white;
-    --highlight: white;
-}
-
-.modal-light {
-    background: white;
-    color: black;
-    --highlight: black;
-}
-
-.selected {
+.selected-colour {
     border: 2px solid var(--highlight);
 }
 
@@ -21,11 +9,10 @@
 
 .colours {
     display: flex;
-
 }
 
 .colour {
-    height: 20px;
-    width: 20px;
+    height: 25px;
+    width: 25px;
     margin: 0 5px;
 }

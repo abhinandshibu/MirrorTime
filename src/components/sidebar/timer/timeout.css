@@ -1,7 +1,7 @@
 #timeout-options {
     display: flex;
     justify-content: space-evenly;
-    padding: 20px 0;
+    padding: 40px 0;
 }
 
 #timeout-options * {
@@ -10,8 +10,16 @@
 
 #timeout-continue {
     background-color: #e8c07c;
+    color: black;
+}
+#timeout-continue:hover {
+    background-color: #eea572;
 }
 
 #timeout-finish {
     background-color: #bee09d;
+    color: black;
+}
+#timeout-finish:hover {
+    background-color: #5cc882;
 }

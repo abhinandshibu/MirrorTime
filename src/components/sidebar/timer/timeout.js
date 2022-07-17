@@ -16,22 +16,24 @@ function Timeout({visibility, setVisibility, current, stop, startEvent}) {
     const cont = () => {
         setVisibility(false);
         startEvent({isRunning: true, isIncreasing: true, 
-            category: current.category, start: current.start});
+            name: current.name, category: current.category, start: current.start});
     }
 
     return (
-        <Modal show={visibility} onHide={() => setVisibility(false)}>
-            <Modal.Header closeButton>
+        <Modal show={visibility} onHide={() => setVisibility(false)}
+            contentClassName={"modal-" + theme}
+        >
+            <Modal.Header>
                 <Modal.Title>Time's up!</Modal.Title>
             </Modal.Header>
             <div id="timeout-options">
                 <Button
-                    variant={theme === "light" ? "outline-dark" : "outline-light"} 
+                    variant="light"
                     onClick={cont} id="timeout-continue"
                 >Continue</Button>
                 <Button
-                    variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                    onClick={finish} id="timeout-finish"
+                    variant="light"
+                    onClick={finish} className="modal-submit"
                 >Finish</Button>
             </div>
         </Modal>

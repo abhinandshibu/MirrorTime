@@ -1,5 +1,5 @@
-import './create.css';
 import { Modal } from 'react-bootstrap';
+import "../../modal.css"
 import { ColourTheme } from '../../App';
 import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
@@ -47,15 +47,15 @@ function Create({
                 </Modal.Title>
             </Modal.Header>
 
-            <div className="form">
-                <div className="my-row">
+            <div className="modal-body">
+                <div className="modal-row">
                     <label>Name: </label>
                     <input type="text" id="name" value={event.name}
                         onChange={(e) => setEvent({...event, name: e.target.value}) } 
                     />
                 </div>
 
-                <div className="my-row">
+                <div className="modal-row">
                     <label>Category: </label>
                     <select id="category"
                         onChange={(e) => setEvent({...event, category: e.target.value})}
@@ -68,7 +68,7 @@ function Create({
                     </select>
                 </div>
 
-                <div className="my-row">
+                <div className="modal-row">
                     <label>Start: </label>
                     <select id="start-hour"
                         onChange={(e) => setEvent({...event, startHour: +e.target.value})}
@@ -89,7 +89,7 @@ function Create({
                     </select>
                 </div>
 
-                <div className="my-row">
+                <div className="modal-row">
                     <label>End: </label>
                     <select id="end-hour"
                         onChange={(e) => {setEvent({...event, endHour: +e.target.value})}}
@@ -114,7 +114,7 @@ function Create({
                 </div>
                 
                 <Button variant={theme === "light" ? "outline-dark" : "outline-light"} 
-                    onClick={create} id="add-event"
+                    onClick={create} className="modal-submit"
                 >
                     Add Event
                 </Button>
