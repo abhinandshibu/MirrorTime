@@ -1,7 +1,4 @@
 .category {
-    height: 6vh;
-    width: 100%;
-    margin-bottom: 10px;
     border-radius: 5px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -11,7 +8,19 @@
     z-index: 0;
 }
 
-.category * {
+.main- {
+    height: 6vh;
+    width: 100%;
+}
+
+.sub- {
+    height: 4vh;
+    width: 80%;
+    background: blue;
+    align-self: flex-end;
+}
+
+.main-category * {
     z-index: 2;
 }
 
@@ -60,4 +69,8 @@
 
 .play:hover, .stop:hover, .countdown:hover {
     opacity: 1;
+}
+
+.elbow-connector {
+
 }

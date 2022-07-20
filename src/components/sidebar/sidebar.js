@@ -8,7 +8,7 @@ import { toYmd, getTimeNow, db, ColourTheme, getToday } from '../../App';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
 import NewCategory from './new-category';
-import { DisabledCategory, IdleCategory, ActiveCategory } from './category';
+import { DisabledGroup, IdleGroup, ActiveGroup } from './category-group';
 
 function SideBar({
     categories, setCategories, date, setDate, 
@@ -121,12 +121,12 @@ function SideBar({
                     {current.isRunning
                         ? Array.from(categories).map(([name, colour]) => (
                             current.category===name
-                                ? <ActiveCategory name={name} colour={colour} width={progBarWidth} 
+                                ? <ActiveGroup name={name} colour={colour} width={progBarWidth} 
                                     stop={stop} time={time} showBar={!current.isIncreasing} key={name}/>
-                                : <DisabledCategory name={name} colour={colour} key={name}/>
+                                : <DisabledGroup name={name} colour={colour} key={name}/>
                         ))
                         : Array.from(categories).map(([name, colour]) => (
-                            <IdleCategory name={name} colour={colour} 
+                            <IdleGroup name={name} colour={colour} 
                                 play={play} countdown={countdown} key={name}/>
                         ))
                     }

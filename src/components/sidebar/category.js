@@ -2,7 +2,7 @@ import './category.css';
 
 export function DisabledCategory({name, colour}) {
     return (
-        <div className="disabled category" style={{background: '#' + colour}}>
+        <div className="main- category" style={{background: '#' + colour}}>
             <span className="category-name">{name}</span>
         </div>
     )
@@ -10,7 +10,7 @@ export function DisabledCategory({name, colour}) {
 
 export function IdleCategory({name, colour, play, countdown}) {
     return (
-        <div className="idle category" style={{background: '#' + colour}}>
+        <div className="main- category" style={{background: '#' + colour}}>
             <span className="category-name">{name}</span>
             <img className="play" src={require("./play.png")} 
                 title="Play"
@@ -28,7 +28,7 @@ export function IdleCategory({name, colour, play, countdown}) {
 
 export function ActiveCategory({name, colour, width, stop, time, showBar}) {
     return (
-        <div className="active category"
+        <div className="main- category"
             style={{background: '#' + colour, border: "3px dashed black"}}
         >
             <span className="category-name">{name}</span>
