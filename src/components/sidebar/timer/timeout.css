@@ -9,6 +9,7 @@
 }
 
 #timeout-continue {
+    padding: 5px 20px;
     background-color: #e8c07c;
     color: black;
 }
@@ -17,6 +18,7 @@
 }
 
 #timeout-finish {
+    padding: 5px 20px;
     background-color: #bee09d;
     color: black;
 }

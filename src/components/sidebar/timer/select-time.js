@@ -2,13 +2,15 @@ import './select-time.css';
 import { Modal } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
 import { ColourTheme, getTimeNow } from '../../../App';
+import { Current } from '../../../pages/home/home';
 import { Button } from 'react-bootstrap';
 
 function SelectTime({
-    visibility, setVisibility, current, startEvent
+    visibility, setVisibility, category
 }) {
 
     const theme = useContext(ColourTheme);
+    const [_, writeCurrent] = useContext(Current);
     
     const presets = [[60, "1 min"], [180, "3 min"], [300, "5 min"], [600, "10 min"], [900, "15 min"], 
         [1800, "30 min"], [2700, "45 min"], [3600, "1 hr"], [7200, "2 hr"]];
@@ -43,10 +45,9 @@ function SelectTime({
                 return;
             end = timeNow + hour * 3600 + minute * 60 + second;
         }
-        const newCurrent = {...current, isRunning: true, isIncreasing: false, name: name,
-            start: timeNow, end: end, growthRate: 100 / (end - timeNow)};
-        
-        startEvent(newCurrent);
+
+        writeCurrent({isRunning: true, isIncreasing: false, name: name, category: category,
+            start: timeNow, end: end, growthRate: 100 / (end - timeNow)});
     }
 
     return (

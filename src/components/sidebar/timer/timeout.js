@@ -3,19 +3,21 @@ import { Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { useContext } from 'react';
 import { ColourTheme } from '../../../App';
+import { Current } from '../../../pages/home/home';
 
-function Timeout({visibility, setVisibility, current, stop, startEvent}) {
+function Timeout({visibility, setVisibility, stopAndSave}) {
 
     const theme = useContext(ColourTheme);
+    const [current, writeCurrent] = useContext(Current);
 
     const finish = () => {
         setVisibility(false);
-        stop();
+        stopAndSave();
     }
 
     const cont = () => {
         setVisibility(false);
-        startEvent({isRunning: true, isIncreasing: true, 
+        writeCurrent({isRunning: true, isIncreasing: true, 
             name: current.name, category: current.category, start: current.start});
     }
 
@@ -33,7 +35,7 @@ function Timeout({visibility, setVisibility, current, stop, startEvent}) {
                 >Continue</Button>
                 <Button
                     variant="light"
-                    onClick={finish} className="modal-submit"
+                    onClick={finish} id="timeout-finish"
                 >Finish</Button>
             </div>
         </Modal>

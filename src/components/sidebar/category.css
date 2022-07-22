@@ -20,7 +20,11 @@
     align-self: flex-end;
 }
 
-.main-category * {
+.active- {
+    border: 3px dashed var(--font);
+}
+
+.category * {
     z-index: 2;
 }
 
@@ -29,7 +33,7 @@
     right: 0;
     height: 100%;
     background: var(--background);
-    opacity: 0.5;
+    opacity: 0.4;
     border-radius: 0 5px 5px 0;
     z-index: 1;
 }
@@ -69,8 +73,4 @@
 
 .play:hover, .stop:hover, .countdown:hover {
     opacity: 1;
-}
-
-.elbow-connector {
-
 }
