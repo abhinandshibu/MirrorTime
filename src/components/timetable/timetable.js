@@ -87,7 +87,7 @@ function Timetable({
                 break;
             case "open":
                 const event = type==="plan" ? planEvents.get(index) : lifeEvents.get(index);
-                const colour = categories.get(event.category);
+                const colour = categories.get(event.category).colour;
                 setInfo({index: index, event: event, type: type, colour: colour});
                 setInfoWindow(true);
                 break;
@@ -163,14 +163,14 @@ function Timetable({
                 
                 {Array.from(lifeEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="life"
-                        colour={categories.get(event.category)} timeNow={timeNow}
+                        colour={categories.get(event.category).colour} timeNow={timeNow}
                         handle={handle} key={index}
                     />
                 ))}
 
                 {Array.from(planEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="plan"
-                        colour={categories.get(event.category)} timeNow={timeNow}
+                        colour={categories.get(event.category).colour} timeNow={timeNow}
                         handle={handle} key={index}
                     />
                 ))}
@@ -178,8 +178,8 @@ function Timetable({
                 {current.isRunning && isToday(date)
                     ? current.isIncreasing
                         ? <MovingCurrent current={current} timeNow={timeNow} editName={editName}
-                            colour={categories.get(current.category)} />
-                        : <StaticCurrent current={current} colour={categories.get(current.category)} />
+                            colour={categories.get(current.category).colour} />
+                        : <StaticCurrent current={current} colour={categories.get(current.category).colour} />
                     : ""
                 }
 

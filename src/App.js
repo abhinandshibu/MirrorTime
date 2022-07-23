@@ -97,7 +97,8 @@ function App() {
         const categorySnapshot = await getDocs(collection(db, 'categories'));
         const temp = new Map();
         categorySnapshot.forEach((doc) => {
-          temp.set( doc.id, doc.data().colour );
+          const subCategories = new Map(Object.entries(doc.data().subs));
+          temp.set( doc.id, {colour: doc.data().colour, subs: subCategories} );
         })
         setCategories(new Map(temp));
       }

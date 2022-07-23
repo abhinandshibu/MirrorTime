@@ -10,6 +10,7 @@
     --timetable-lines: #d9e0e9;
     --purple1: #af89f8;
     --purple2: #7f95f8;
+    --hover-brightness: 0.5;
 }
 
 .dark-theme {
@@ -24,4 +25,5 @@
     --soft-lines: #444;
     --purple1: #3e2967;
     --purple2: #414f8c;
+    --hover-brightness: 2;
 }

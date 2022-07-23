@@ -14,10 +14,10 @@
 }
 
 .sub- {
-    height: 4vh;
-    width: 80%;
-    background: blue;
+    height: 5vh;
+    width: 85%;
     align-self: flex-end;
+    font-size: 0.875em;
 }
 
 .active- {
@@ -65,11 +65,15 @@
 
 
 .play, .stop, .countdown {
-    width: 25px;
-    height: 25px;
+    height: 60%;
     opacity: 0.3;
     cursor: pointer;
 } 
+
+.sub .play, .sub .stop, .sub .countdown {
+    width: 20px;
+    height: 20px;
+}
 
 .play:hover, .stop:hover, .countdown:hover {
     opacity: 1;

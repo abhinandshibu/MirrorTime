@@ -6,36 +6,34 @@ import { Current } from '../../pages/home/home';
 import { useContext, useState, useEffect } from 'react';
 
 
-export function DisabledCategory({name, colour}) {
+export function DisabledCategory({name, colour, type}) {
     return (
-        <div className="main- category" style={{background: '#' + colour}}>
+        <div className={`${type}- category`} style={{background: '#' + colour}}>
             <span className="category-name">{name}</span>
         </div>
     )
 }
 
 
-export function IdleCategory({name, colour}) {
+export function IdleCategory({name, colour, type}) {
     const [_, writeCurrent] = useContext(Current);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
 
     return (
-        <div className="idle-category">
-            <div className="main- category" style={{background: '#' + colour}}>
-                <span className="category-name">{name}</span>
+        <div className={`${type}- category`} style={{background: '#' + colour}}>
+            <span className="category-name">{name}</span>
 
-                <img className="play" src={require("./play.png")} 
-                    title="Stopwatch" alt="Stopwatch"
-                    onClick={() => 
-                        writeCurrent({isRunning: true, isIncreasing: true, category: name, start: getTimeNow()})
-                    } 
-                /> 
+            <img className="play" src={require("./play.png")} 
+                title="Stopwatch" alt="Stopwatch"
+                onClick={() => 
+                    writeCurrent({isRunning: true, isIncreasing: true, category: name, start: getTimeNow()})
+                } 
+            /> 
 
-                <img className="countdown" src={require("./timer.png")} 
-                    title="Countdown Timer" alt="Countdown Timer"
-                    onClick={() => setSelectTimeWindow(true)} 
-                />
-            </div>
+            <img className="countdown" src={require("./timer.png")} 
+                title="Countdown Timer" alt="Countdown Timer"
+                onClick={() => setSelectTimeWindow(true)} 
+            />
             <SelectTime
                 visibility={selectTimeWindow} setVisibility={setSelectTimeWindow}
                 category={name}
@@ -45,7 +43,7 @@ export function IdleCategory({name, colour}) {
 }
 
 
-export function StopwatchCategory({name, colour, stopAndSave}) {
+export function StopwatchCategory({name, colour, type, stopAndSave}) {
     const [current, _] = useContext(Current);
 
     const [time, setTime] = useState([0, 0]);
@@ -62,7 +60,7 @@ export function StopwatchCategory({name, colour, stopAndSave}) {
     }, []);
 
     return (
-        <div className="main- category active-"
+        <div className={`${type}- active- category`}
             style={{background: '#' + colour}}
         >
             <span className="category-name">{name}</span>
@@ -79,7 +77,7 @@ export function StopwatchCategory({name, colour, stopAndSave}) {
 }
 
 
-export function TimerCategory({name, colour, stopAndSave}) {
+export function TimerCategory({name, colour, type, stopAndSave}) {
     const [current, _] = useContext(Current);
     const [timeoutWindow, setTimeoutWindow] = useState(false);
 
@@ -115,7 +113,7 @@ export function TimerCategory({name, colour, stopAndSave}) {
 
     return (
         <div className="timer-category">
-            <div className="main- category active-"
+            <div className={`${type}- active- category`}
                 style={{background: '#' + colour}}
             >
                 <span className="category-name">{name}</span>

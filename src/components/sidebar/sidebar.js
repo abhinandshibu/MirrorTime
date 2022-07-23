@@ -31,9 +31,9 @@ function SideBar({
                     New Category
                 </Button>
                 <div className="category-list">
-                    {Array.from(categories).map(([name, colour]) => (
-                        <CategoryGroup name={name} colour={colour} 
-                            stopAndSave={stopAndSave} categories={categories} key={name} />
+                    {Array.from(categories).map(([key, value]) => (
+                        <CategoryGroup name={key} colour={value.colour} subs={value.subs}
+                            stopAndSave={stopAndSave} setCategories={setCategories} key={key} />
                     ))}
                 </div>
             </div>
