@@ -45,7 +45,7 @@ function Home({
 
     const event = {category: current.category, start: current.start, 
       end: getTimeNow(), date: getToday(), hasDescription: false};
-    event.name = current.hasOwnProperty('name') ? current.name : `${current.category} activity`;
+    event.name = current.hasOwnProperty('name') ? current.name : current.category[1];
 
     setLifeEvents(map => new Map(map.set(count, event)));
     await setDoc(doc(db, `life/${count}`), event);

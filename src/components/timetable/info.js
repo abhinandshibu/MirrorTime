@@ -78,7 +78,12 @@ function Info({visibility, setVisibility, info, updateEvent}) {
         }
     }
 
-    const print = (number) => (number < 10 ? '0' : '') + number;
+    const printNum = (number) => (number < 10 ? '0' : '') + number;
+
+    const printCategory = () => {
+        const [main, sub] = info.event.category;
+        return sub===undefined ? main : `${main} (${sub})`;
+    }
 
     return (
         <Modal 
@@ -100,14 +105,14 @@ function Info({visibility, setVisibility, info, updateEvent}) {
                     <label>Category: </label>
                     <span className="info-category" 
                         style={{background: '#' + info.colour}}
-                    >{info.event.category}</span>
+                    >{printCategory()}</span>
                 </div>
                 
                 <label>Time: </label>
                 <div className="info-time">
-                    <span style={{gridArea: "start"}}>{print(startHour)} : {print(startMin)}</span>
+                    <span style={{gridArea: "start"}}>{printNum(startHour)} : {printNum(startMin)}</span>
                     <span style={{gridArea: "to"}}>to</span>
-                    <span style={{gridArea: "end"}}>{print(endHour)} : {print(endMin)}</span>
+                    <span style={{gridArea: "end"}}>{printNum(endHour)} : {printNum(endMin)}</span>
                     
                     <div style={{gridArea: "start-earlier"}} className="buttons">
                         <span onClick={() => earlier(1, true)}>&lt;</span>

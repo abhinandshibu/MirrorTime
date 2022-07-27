@@ -98,7 +98,7 @@ function App() {
         const temp = new Map();
         categorySnapshot.forEach((doc) => {
           const subCategories = new Map(Object.entries(doc.data().subs));
-          temp.set( doc.id, {colour: doc.data().colour, subs: subCategories} );
+          temp.set( doc.id, {colour: doc.data().colour, subs: subCategories, expanded: doc.data().expanded} );
         })
         setCategories(new Map(temp));
       }

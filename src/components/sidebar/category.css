@@ -11,6 +11,7 @@
 .main- {
     height: 6vh;
     width: 100%;
+    cursor: pointer;
 }
 
 .sub- {

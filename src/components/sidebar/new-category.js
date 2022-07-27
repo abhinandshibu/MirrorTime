@@ -17,8 +17,10 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
         if (categoryName !== "") {
             setVisibility(false);
 
-            setCategories(map => new Map(map.set(categoryName, categoryColour)));
-            setDoc(doc(db, `categories/${categoryName}`), {colour: categoryColour});
+            const newEntry = {colour: categoryColour, subs: new Map(), expanded: true};
+
+            setCategories(map => new Map(map.set(categoryName, newEntry)));
+            setDoc(doc(db, `categories/${categoryName}`), newEntry);
 
             setCategoryName("");
             setCategoryColour(colours[0]);

@@ -1,5 +1,5 @@
 import './category-group.css';
-import { DisabledCategory, IdleCategory, StopwatchCategory, TimerCategory } from './category';
+import { Category, IdleCategory, StopwatchCategory, TimerCategory } from './category';
 import { db } from '../../App';
 import { Current } from '../../pages/home/home';
 import { EditText } from 'react-edit-text';
@@ -7,64 +7,92 @@ import 'react-edit-text/dist/index.css';
 import { useContext, useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 
-export function CategoryGroup({name, colour, subs, stopAndSave, setCategories}) {
+export function CategoryGroup({group, subs, colour, isExpanded, stopAndSave, setCategories}) {
     const [current, _] = useContext(Current);
+    const [expanded, setExpanded] = useState(isExpanded);
     const status = current.isRunning
-        ? current.category[0] === name
+        ? current.category[0] === group
             ? current.isIncreasing
-                ? current.category[1] === undefined ? "stopwatch-main" : "stopwatch-sub"
-                : current.category[1] === undefined ? "timer-main" : "timer-sub"
+                ? current.category[1] === null ? "stopwatch-main" : "stopwatch-sub"
+                : current.category[1] === null ? "timer-main" : "timer-sub"
             : "disabled"
         : "idle";
 
-    const renderCategory = (name, colour, type) => {
+    const renderMain = () => {
+        const info = {group: group, name: null, colour: colour, level: "main", toggle: toggle};
         switch (status) {
-            case `stopwatch-${type}`:
-                return type==="main" || current.category[1]===name
-                    ? <StopwatchCategory name={name} colour={colour} type={type} stopAndSave={stopAndSave} />
-                    : <DisabledCategory name={name} colour={colour} type={type} key={name} />;
+            case "stopwatch-main":
+                return <StopwatchCategory info={info} stopAndSave={stopAndSave} />;
+            case "timer-main":
+                return <TimerCategory info={info} stopAndSave={stopAndSave} />;
+            case "idle":
+                return <IdleCategory info={info} key={group} />;
+            default:
+                return <Category info={info} key={group} />;
+        }
+    }
 
-            case `timer-${type}`:
-                return type==="main" || current.category[1]===name
-                    ? <TimerCategory name={name} colour={colour} type={type} stopAndSave={stopAndSave} />
-                    : <DisabledCategory name={name} colour={colour} type={type} key={name} />;
+    const renderSubs = (name, colour) => {
+        const info = {group: group, name: name, colour: colour, level: "sub"};
+        switch (status) {
+            case "stopwatch-sub":
+                return current.category[1]===name
+                    ? <StopwatchCategory info={info} stopAndSave={stopAndSave} />
+                    : <Category info={info} key={name} />;
+
+            case "timer-sub":
+                return current.category[1]===name
+                    ? <TimerCategory info={info} stopAndSave={stopAndSave} />
+                    : <Category info={info} key={name} />;
 
             case "idle":
-                return <IdleCategory name={name} colour={colour} type={type} key={name} />;
+                return <IdleCategory info={info} key={name} />;
 
             default:
-                return <DisabledCategory name={name} colour={colour} type={type} key={name} />;
+                return <Category info={info} key={name} />;
         }
+    }
+
+    const toggle = () => {
+        setExpanded(!expanded);
+        updateDoc(doc(db, `categories/${group}`), {expanded: !expanded});
     }
     
     return (
         <div className="category-group">
-            {renderCategory(name, colour, "main")}
-            {Array.from(subs).map(([name, colour]) => 
-                <div className="subcategory-container" key={name}>
-                    <div className="t-connector"></div>
-                    {renderCategory(name, colour, "sub")}
-                </div>
-            )}
-            <NewSubcategory parentName={name} colour={colour} subs={subs} setCategories={setCategories} />
+            {renderMain()}
+            {expanded 
+                ? Array.from(subs).map(([name, colour]) => (
+                    <div className="subcategory-container" key={name}>
+                        <div className="t-connector"></div>
+                        {renderSubs(name, colour)}
+                    </div>
+                ))
+                : ""
+            }
+            {expanded
+                ? <NewSubcategory group={group} subs={subs} colour={colour} 
+                    setCategories={setCategories} />
+                : ""
+            }
         </div>
     );
 }
 
-function NewSubcategory({parentName, colour, subs, setCategories}) {
-    const [subName, setSubName] = useState("");
+function NewSubcategory({group, subs, colour, setCategories}) {
+    const [name, setName] = useState("");
 
     const addSubcategory = async () => {
-        if (subName === "" || subName in Array.from(subs.keys()))
+        if (name === "" || subs.has(name))
             return;
-        console.log("got here"); console.log("new name:", subName);
+
         // for now, give it the same colour as parent
         setCategories(old => {
-            const newSubs = new Map( subs.set(subName, colour) );
-            return new Map( old.set(parentName, {colour: colour, subs: newSubs}) );
+            const newSubs = new Map( subs.set(name, colour) );
+            return new Map( old.set(group, {colour: colour, subs: newSubs}) );
         });
-        updateDoc(doc(db, `categories/${parentName}`), {[`subs.${subName}`]: colour});
-        setSubName("");
+        updateDoc(doc(db, `categories/${group}`), {[`subs.${name}`]: colour});
+        setName("");
     }
 
     return (
@@ -72,8 +100,8 @@ function NewSubcategory({parentName, colour, subs, setCategories}) {
             <div className="elbow-connector" key="elbow"></div>
             <div className="edittext-container" key="edittext">
                 <EditText inputClassName="subcategory-edit-text"
-                    placeholder="New subcategory" value={subName}
-                    onBlur={addSubcategory} onChange={(e) => setSubName(e.target.value)} />
+                    placeholder="New subcategory" value={name}
+                    onBlur={addSubcategory} onChange={(e) => setName(e.target.value)} />
             </div>
         </div>
     );

@@ -75,6 +75,21 @@ function Timetable({
         return array;
     }
 
+    const getColour = (id) => {
+        // For backwards compatability
+        if (typeof id === "string") {
+            return categories.has(id) ? categories.get(id).colour : "fff";
+        }
+
+        // For categories of type [group, subcategory]
+        const group = categories.get(id[0]);
+        return group === undefined
+            ? "fff"
+            : id[1] === null
+                ? group.colour
+                : group.subs.get(id[1]);
+    }
+
     // Function passed to Event component
     const handle = async (action, type, index) => {
         switch (action) {
@@ -87,8 +102,7 @@ function Timetable({
                 break;
             case "open":
                 const event = type==="plan" ? planEvents.get(index) : lifeEvents.get(index);
-                const colour = categories.get(event.category).colour;
-                setInfo({index: index, event: event, type: type, colour: colour});
+                setInfo({index: index, event: event, type: type, colour: getColour(event.category)});
                 setInfoWindow(true);
                 break;
             case "copy":
@@ -163,14 +177,14 @@ function Timetable({
                 
                 {Array.from(lifeEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="life"
-                        colour={categories.get(event.category).colour} timeNow={timeNow}
+                        colour={getColour(event.category)} timeNow={timeNow}
                         handle={handle} key={index}
                     />
                 ))}
 
                 {Array.from(planEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="plan"
-                        colour={categories.get(event.category).colour} timeNow={timeNow}
+                        colour={getColour(event.category)} timeNow={timeNow}
                         handle={handle} key={index}
                     />
                 ))}
@@ -178,8 +192,8 @@ function Timetable({
                 {current.isRunning && isToday(date)
                     ? current.isIncreasing
                         ? <MovingCurrent current={current} timeNow={timeNow} editName={editName}
-                            colour={categories.get(current.category).colour} />
-                        : <StaticCurrent current={current} colour={categories.get(current.category).colour} />
+                            colour={getColour(current.category)} />
+                        : <StaticCurrent current={current} colour={getColour(current.category)} />
                     : ""
                 }
 
