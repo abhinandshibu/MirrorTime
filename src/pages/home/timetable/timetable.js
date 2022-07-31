@@ -1,12 +1,13 @@
 import './timetable.css';
-import { ColourTheme, db, getTimeNow, isToday } from '../../App';
-import { Current } from '../../pages/home/home';
-import Event from './event';
-import { MovingCurrent, StaticCurrent } from './current';
-import Info from './info';
+import { ColourTheme, db, getTimeNow, isToday, getCategoryColour } from '../../../App';
+import { Current } from '../home';
 import Create from './create';
+import { MovingCurrent, StaticCurrent } from './current';
+import Event from './event';
+import Info from './info';
+
 import { doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { React, useEffect, useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 
 const TIMETABLE_HEIGHT = 288 * 8 + 287 * 1;
@@ -75,15 +76,6 @@ function Timetable({
             );
         }
         return array;
-    }
-
-    const getColour = (id) => {
-        const group = categories.get(id[0]);
-        return group === undefined
-            ? "fff"
-            : id[1] === 0
-                ? group.colour
-                : group.subs.get(id[1]);
     }
 
     // Function passed to Event component
@@ -167,22 +159,23 @@ function Timetable({
                 
                 {Array.from(lifeEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="life"
-                        colour={getColour(event.category)} timeNow={timeNow}
-                        handle={handle} key={index}
+                        colour={getCategoryColour(categories, event.category)} 
+                        timeNow={timeNow} handle={handle} key={index}
                     />
                 ))}
 
                 {Array.from(planEvents).map(([index, event]) => (
                     <Event index={index} event={event} type="plan"
-                        colour={getColour(event.category)} timeNow={timeNow}
-                        handle={handle} key={index}
+                        colour={getCategoryColour(categories, event.category)} 
+                        timeNow={timeNow} handle={handle} key={index}
                     />
                 ))}
 
                 {current.isRunning && isToday(date)
                     ? current.isIncreasing
-                        ? <MovingCurrent timeNow={timeNow} getColour={getColour} />
-                        : <StaticCurrent getColour={getColour} />
+                        ? <MovingCurrent timeNow={timeNow} 
+                            colour={getCategoryColour(categories, current.category)} />
+                        : <StaticCurrent colour={getCategoryColour(categories, current.category)} />
                     : ""
                 }
 
@@ -195,7 +188,6 @@ function Timetable({
                 visibility={infoWindow} setVisibility={setInfoWindow}
                 info={info} 
                 categories={categories}
-                getColour={getColour}
                 updateEvent={updateEvent}
             />
 

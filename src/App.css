@@ -6,7 +6,7 @@
     --light-slot-2: white;
     --dark-slot-2: #f0ffff;
     --lines: gray;
-    --soft-lines: #aeaeae;
+    --contrast-lines: #aeaeae;
     --timetable-lines: #d9e0e9;
     --purple1: #af89f8;
     --purple2: #7f95f8;
@@ -22,7 +22,7 @@
     --light-slot-2: #2d2c48;
     --dark-slot-2: #282641;
     --lines: black;
-    --soft-lines: #444;
+    --contrast-lines: #888;
     --purple1: #3e2967;
     --purple2: #414f8c;
     --hover-brightness: 2;

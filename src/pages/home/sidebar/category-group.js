@@ -1,17 +1,14 @@
 import './category-group.css';
+import { db } from '../../../App';
+import { Current } from '../home';
 import { Category, IdleCategory, StopwatchCategory, TimerCategory } from './category';
-import { db } from '../../App';
-import { Current } from '../../pages/home/home';
+
+import { doc, updateDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
-import { useContext, useState } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
 
 export function CategoryGroup({mainID, mainCategory, stopAndSave, setCategories}) {
-    const mainColour = mainCategory.colour;
-    const mainName = mainCategory.name;
-    const subs = mainCategory.subs;
-
     const [current, _] = useContext(Current);
     const [expanded, setExpanded] = useState(true);
     const status = current.isRunning
@@ -23,21 +20,21 @@ export function CategoryGroup({mainID, mainCategory, stopAndSave, setCategories}
         : "idle";
 
     const renderMain = () => {
-        const info = {id: [mainID, 0], name: mainName, colour: mainColour, level: "main", toggle: toggle};
+        const info = {name: mainCategory.name, colour: mainCategory.colour, level: "main"};
         switch (status) {
             case "stopwatch-main":
                 return <StopwatchCategory info={info} stopAndSave={stopAndSave} />;
             case "timer-main":
                 return <TimerCategory info={info} stopAndSave={stopAndSave} />;
             case "idle":
-                return <IdleCategory info={info} key={mainID} />;
+                return <IdleCategory info={info} id={[mainID, 0]} />;
             default:
-                return <Category info={info} key={mainID} />;
+                return <Category info={info} />;
         }
     }
 
     const renderSubs = (subID, subcategory) => {
-        const info = {id: [mainID, subID], name: subcategory.name, colour: subcategory.colour, level: "sub"};
+        const info = {name: subcategory.name, colour: subcategory.colour, level: "sub"};
         switch (status) {
             case "stopwatch-sub":
                 return current.category[1]===subID
@@ -50,22 +47,26 @@ export function CategoryGroup({mainID, mainCategory, stopAndSave, setCategories}
                     : <Category info={info} />;
 
             case "idle":
-                return <IdleCategory info={info} />;
+                return <IdleCategory info={info} id={[mainID, subID]} />;
 
             default:
                 return <Category info={info} />;
         }
     }
-
-    const toggle = () => {
-        setExpanded(!expanded);
-    }
     
     return (
         <div className="category-group">
             {renderMain()}
+            {expanded
+                ? <img className="toggle-category" src={require("./assets/show-less.png")}
+                    title="Collapse category" alt="Collapse category"
+                    onClick={() => setExpanded(false)} />
+                : <img className="toggle-category" src={require("./assets/show-more.png")}
+                    title="Expand category" alt="Expand category"
+                    onClick={() => setExpanded(true)} />
+            }
             {expanded 
-                ? Array.from(subs).map(([subID, subcategory]) => (
+                ? Array.from(mainCategory.subs).map(([subID, subcategory]) => (
                     <div className="subcategory-container" key={subID}>
                         <div className="t-connector"></div>
                         {renderSubs(subID, subcategory)}

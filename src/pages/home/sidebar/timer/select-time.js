@@ -1,9 +1,9 @@
 import './select-time.css';
-import { Modal } from 'react-bootstrap';
+import { ColourTheme, getTimeNow } from '../../../../App';
+import { Current } from '../../home';
+
 import { useState, useEffect, useContext } from 'react';
-import { ColourTheme, getTimeNow } from '../../../App';
-import { Current } from '../../../pages/home/home';
-import { Button } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 function SelectTime({
     visibility, setVisibility, category

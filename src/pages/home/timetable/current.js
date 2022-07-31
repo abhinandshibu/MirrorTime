@@ -1,11 +1,12 @@
 import './current.css';
+import { Current } from '../home';
 import { timeToHeight } from './timetable';
-import { Current } from '../../pages/home/home';
+
 import { useContext } from 'react';
 import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
 
-export function MovingCurrent({timeNow, getColour}) {
+export function MovingCurrent({timeNow, colour}) {
 
     const [current, writeCurrent] = useContext(Current);
     
@@ -22,7 +23,7 @@ export function MovingCurrent({timeNow, getColour}) {
             style={{gridRowStart: nearestSlot + 1,
                 top: timeToHeight(error),
                 height: Math.max(timeToHeight(duration), 0),
-                background: '#' + getColour(current.category)
+                background: '#' + colour
             }}
         >
             <div className="event-highlighter"></div>
@@ -37,14 +38,14 @@ export function MovingCurrent({timeNow, getColour}) {
     )
 }
 
-export function StaticCurrent({getColour}) {
+export function StaticCurrent({colour}) {
 
     const [current, _] = useContext(Current);
 
     return (
         <div id="current"
             style={{gridRow: `${Math.round(current.start/300) + 1} / ${Math.round(current.end/300) + 1}`,
-                background: '#' + getColour(current.category)}}
+                background: '#' + colour}}
         >
             <div className="event-highlighter"></div>
         </div>

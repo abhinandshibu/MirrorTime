@@ -1,6 +1,7 @@
 import { Modal } from 'react-bootstrap';
-import "../../modal.css"
-import { ColourTheme } from '../../App';
+import { ColourTheme } from '../../../App';
+import "../../../style/modal.css"
+
 import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 

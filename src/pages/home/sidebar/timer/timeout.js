@@ -1,9 +1,9 @@
 import './timeout.css';
-import { Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import { ColourTheme } from '../../../../App';
+import { Current } from '../../home';
+
 import { useContext } from 'react';
-import { ColourTheme } from '../../../App';
-import { Current } from '../../../pages/home/home';
+import { Button, Modal } from 'react-bootstrap';
 
 function Timeout({visibility, setVisibility, stopAndSave}) {
 

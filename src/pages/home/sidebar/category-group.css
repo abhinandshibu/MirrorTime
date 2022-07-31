@@ -1,6 +1,19 @@
 .category-group {
     width: 100%;
     margin-bottom: 10px;
+    position: relative;
+}
+
+.toggle-category {
+    width: 7%;
+    height: 2vh;
+    position: absolute;
+    top: 2vh;
+    right: 0;
+    cursor: pointer;
+}
+.toggle-category:hover {
+    filter: brightness(var(--hover-brightness));
 }
 
 .subcategory-container {
@@ -13,8 +26,8 @@
 .t-connector, .elbow-connector {
     height: 3.5vh;
     width: 10%;
-    border-bottom: 2px solid var(--soft-lines);
-    border-left: 2px solid var(--soft-lines);
+    border-bottom: 2px solid var(--contrast-lines);
+    border-left: 2px solid var(--contrast-lines);
     margin-left: 5%;
     position: relative;
 }
@@ -23,19 +36,8 @@
     top: 3.5vh;
     left: -2px;
     height: 2.5vh;
-    border-left: 2px solid var(--soft-lines);
+    border-left: 2px solid var(--contrast-lines);
     content: "";
-}
-
-.plus {
-    height: 2vh;
-    margin-left: 5%;
-    position: relative;
-    top: 2vh;
-    cursor: pointer;
-}
-.plus:hover {
-    filter: brightness(var(--hover-brightness));
 }
 
 .subcategory-edit-text {

@@ -1,11 +1,12 @@
 import './sidebar.css'
+import { toYmd, ColourTheme } from '../../../App';
+import NewCategory from './new-category';
+import { CategoryGroup } from './category-group';
+
+import { useState, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { useState, useContext } from 'react';
-import { toYmd, ColourTheme } from '../../App';
-import NewCategory from './new-category';
-import { CategoryGroup } from './category-group';
 
 function SideBar({
     categories, setCategories, date, setDate, stopAndSave

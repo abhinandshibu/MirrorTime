@@ -1,8 +1,9 @@
+import './navbar.css';
+import { auth } from '../../../App'
+
 import Navbar from 'react-bootstrap/Navbar'
 import { Nav, Container } from 'react-bootstrap';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
-import { auth } from '../../App'
-import './navbar.css'
 
 function NavBar(props) {
 

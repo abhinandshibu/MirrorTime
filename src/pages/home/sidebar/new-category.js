@@ -1,9 +1,9 @@
 import './new-category.css';
-import { Modal } from 'react-bootstrap';
+import { db, ColourTheme } from '../../../App';
+
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
-import { db, ColourTheme } from '../../App';
 import { useState, useContext } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 function NewCategory ({visibility, setVisibility, setCategories}) {
 

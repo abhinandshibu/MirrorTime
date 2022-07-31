@@ -1,12 +1,12 @@
 import './info.css';
-import { ColourTheme } from '../../App';
-import { Modal } from 'react-bootstrap';
+import { ColourTheme, getCategoryColour } from '../../../App';
+
 import { useState, useEffect, useContext } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import { EditTextarea, EditText } from 'react-edit-text';
-import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
-function Info({visibility, setVisibility, info, categories, getColour, updateEvent}) {
+function Info({visibility, setVisibility, info, categories, updateEvent}) {
 
     const theme = useContext(ColourTheme);
 
@@ -110,7 +110,7 @@ function Info({visibility, setVisibility, info, categories, getColour, updateEve
                 <div>
                     <label>Category: </label>
                     <span className="info-category" 
-                        style={{background: '#' + getColour(category)}}
+                        style={{background: '#' + getCategoryColour(categories, category)}}
                     >{printCategory()}</span>
                 </div>
                 

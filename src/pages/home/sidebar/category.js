@@ -1,8 +1,9 @@
 import './category.css';
+import { getTimeNow } from '../../../App';
+import { Current } from '../home';
 import Timeout from './timer/timeout';
 import SelectTime from './timer/select-time';
-import { db, getTimeNow } from '../../App';
-import { Current } from '../../pages/home/home';
+
 import { useContext, useState, useEffect } from 'react';
 
 
@@ -12,9 +13,6 @@ export function Category({info, children}) {
     return (
         <div className={`${level}- category`} 
             style={{background: '#' + colour}}
-            onClick={() => {
-                if (level==="main") info.toggle();
-            }}
         >
             <span className="category-name">{name}</span>
             {children}
@@ -23,7 +21,7 @@ export function Category({info, children}) {
 }
 
 
-export function IdleCategory({info}) {
+export function IdleCategory({info, id}) {
     const [_, writeCurrent] = useContext(Current);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
 
@@ -33,7 +31,7 @@ export function IdleCategory({info}) {
                 title="Stopwatch" alt="Stopwatch"
                 onClick={(e) => {
                     e.stopPropagation();
-                    writeCurrent({isRunning: true, isIncreasing: true, category: info.id, start: getTimeNow()})
+                    writeCurrent({isRunning: true, isIncreasing: true, category: id, start: getTimeNow()})
                 }} 
             /> 
 
@@ -44,7 +42,7 @@ export function IdleCategory({info}) {
 
             <SelectTime
                 visibility={selectTimeWindow} setVisibility={setSelectTimeWindow}
-                category={info.id}
+                category={id}
             />
         </Category>
     )
