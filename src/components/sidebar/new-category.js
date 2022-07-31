@@ -1,6 +1,6 @@
 import './new-category.css';
 import { Modal } from 'react-bootstrap';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db, ColourTheme } from '../../App';
 import { useState, useContext } from 'react';
 import { Button } from 'react-bootstrap';
@@ -17,10 +17,12 @@ function NewCategory ({visibility, setVisibility, setCategories}) {
         if (categoryName !== "") {
             setVisibility(false);
 
-            const newEntry = {colour: categoryColour, subs: new Map(), expanded: true};
+            const count = (await getDoc(doc(db, 'info', 'count'))).data().categories;
+            const newEntry = {name: categoryName, colour: categoryColour, subs: new Map(), count: 1};
 
-            setCategories(map => new Map(map.set(categoryName, newEntry)));
-            setDoc(doc(db, `categories/${categoryName}`), newEntry);
+            setCategories(map => new Map(map.set(count, newEntry)));
+            setDoc(doc(db, `categories/${count}`), newEntry);
+            updateDoc(doc(db, 'info', 'count'), {categories: count + 1});
 
             setCategoryName("");
             setCategoryColour(colours[0]);

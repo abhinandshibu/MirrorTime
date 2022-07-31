@@ -7,71 +7,74 @@ import 'react-edit-text/dist/index.css';
 import { useContext, useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 
-export function CategoryGroup({group, subs, colour, isExpanded, stopAndSave, setCategories}) {
+export function CategoryGroup({mainID, mainCategory, stopAndSave, setCategories}) {
+    const mainColour = mainCategory.colour;
+    const mainName = mainCategory.name;
+    const subs = mainCategory.subs;
+
     const [current, _] = useContext(Current);
-    const [expanded, setExpanded] = useState(isExpanded);
+    const [expanded, setExpanded] = useState(true);
     const status = current.isRunning
-        ? current.category[0] === group
+        ? current.category[0] === mainID
             ? current.isIncreasing
-                ? current.category[1] === null ? "stopwatch-main" : "stopwatch-sub"
-                : current.category[1] === null ? "timer-main" : "timer-sub"
+                ? current.category[1] === 0 ? "stopwatch-main" : "stopwatch-sub"
+                : current.category[1] === 0 ? "timer-main" : "timer-sub"
             : "disabled"
         : "idle";
 
     const renderMain = () => {
-        const info = {group: group, name: null, colour: colour, level: "main", toggle: toggle};
+        const info = {id: [mainID, 0], name: mainName, colour: mainColour, level: "main", toggle: toggle};
         switch (status) {
             case "stopwatch-main":
                 return <StopwatchCategory info={info} stopAndSave={stopAndSave} />;
             case "timer-main":
                 return <TimerCategory info={info} stopAndSave={stopAndSave} />;
             case "idle":
-                return <IdleCategory info={info} key={group} />;
+                return <IdleCategory info={info} key={mainID} />;
             default:
-                return <Category info={info} key={group} />;
+                return <Category info={info} key={mainID} />;
         }
     }
 
-    const renderSubs = (name, colour) => {
-        const info = {group: group, name: name, colour: colour, level: "sub"};
+    const renderSubs = (subID, subcategory) => {
+        const info = {id: [mainID, subID], name: subcategory.name, colour: subcategory.colour, level: "sub"};
         switch (status) {
             case "stopwatch-sub":
-                return current.category[1]===name
+                return current.category[1]===subID
                     ? <StopwatchCategory info={info} stopAndSave={stopAndSave} />
-                    : <Category info={info} key={name} />;
+                    : <Category info={info} />;
 
             case "timer-sub":
-                return current.category[1]===name
+                return current.category[1]===subID
                     ? <TimerCategory info={info} stopAndSave={stopAndSave} />
-                    : <Category info={info} key={name} />;
+                    : <Category info={info} />;
 
             case "idle":
-                return <IdleCategory info={info} key={name} />;
+                return <IdleCategory info={info} />;
 
             default:
-                return <Category info={info} key={name} />;
+                return <Category info={info} />;
         }
     }
 
     const toggle = () => {
         setExpanded(!expanded);
-        updateDoc(doc(db, `categories/${group}`), {expanded: !expanded});
     }
     
     return (
         <div className="category-group">
             {renderMain()}
             {expanded 
-                ? Array.from(subs).map(([name, colour]) => (
-                    <div className="subcategory-container" key={name}>
+                ? Array.from(subs).map(([subID, subcategory]) => (
+                    <div className="subcategory-container" key={subID}>
                         <div className="t-connector"></div>
-                        {renderSubs(name, colour)}
+                        {renderSubs(subID, subcategory)}
                     </div>
                 ))
                 : ""
             }
             {expanded
-                ? <NewSubcategory group={group} subs={subs} colour={colour} 
+                ? <NewSubcategory mainID={mainID} mainCategory={mainCategory} 
                     setCategories={setCategories} />
                 : ""
             }
@@ -79,19 +82,21 @@ export function CategoryGroup({group, subs, colour, isExpanded, stopAndSave, set
     );
 }
 
-function NewSubcategory({group, subs, colour, setCategories}) {
+function NewSubcategory({mainID, mainCategory, setCategories}) {
     const [name, setName] = useState("");
 
     const addSubcategory = async () => {
-        if (name === "" || subs.has(name))
+        if (name === "")
             return;
 
+        const {colour, subs, count} = mainCategory;
         // for now, give it the same colour as parent
-        setCategories(old => {
-            const newSubs = new Map( subs.set(name, colour) );
-            return new Map( old.set(group, {colour: colour, subs: newSubs}) );
-        });
-        updateDoc(doc(db, `categories/${group}`), {[`subs.${name}`]: colour});
+        const newSub = {name: name, colour: colour}
+        const updatedSubs = new Map( subs.set(count, newSub) );
+        const updatedMain = {...mainCategory, count: count+1, subs: updatedSubs};
+        setCategories(old => new Map( old.set(mainID, updatedMain) ));
+
+        updateDoc(doc(db, `categories/${mainID}`), {[`subs.${count}`]: newSub, count: count+1});
         setName("");
     }
 

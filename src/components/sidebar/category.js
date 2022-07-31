@@ -7,14 +7,16 @@ import { useContext, useState, useEffect } from 'react';
 
 
 export function Category({info, children}) {
+    const {name, colour, level} = info;
+
     return (
-        <div className={`${info.level}- category`} 
-            style={{background: '#' + info.colour}}
+        <div className={`${level}- category`} 
+            style={{background: '#' + colour}}
             onClick={() => {
-                if (info.level==="main") info.toggle();
+                if (level==="main") info.toggle();
             }}
         >
-            <span className="category-name">{info.level==="main" ? info.group : info.name}</span>
+            <span className="category-name">{name}</span>
             {children}
         </div>
     )
@@ -24,26 +26,25 @@ export function Category({info, children}) {
 export function IdleCategory({info}) {
     const [_, writeCurrent] = useContext(Current);
     const [selectTimeWindow, setSelectTimeWindow] = useState(false);
-    const id = [info.group, info.name];
 
     return (
         <Category info={info}>
-            <img className="play" src={require("./play.png")} 
+            <img className="play" src={require("./assets/play.png")} 
                 title="Stopwatch" alt="Stopwatch"
                 onClick={(e) => {
                     e.stopPropagation();
-                    writeCurrent({isRunning: true, isIncreasing: true, category: id, start: getTimeNow()})
+                    writeCurrent({isRunning: true, isIncreasing: true, category: info.id, start: getTimeNow()})
                 }} 
             /> 
 
-            <img className="countdown" src={require("./timer.png")} 
+            <img className="countdown" src={require("./assets/timer.png")} 
                 title="Countdown Timer" alt="Countdown Timer"
                 onClick={(e) => {e.stopPropagation(); setSelectTimeWindow(true)} }
             />
 
             <SelectTime
                 visibility={selectTimeWindow} setVisibility={setSelectTimeWindow}
-                category={id}
+                category={info.id}
             />
         </Category>
     )
@@ -67,7 +68,7 @@ export function StopwatchCategory({info, stopAndSave}) {
 
     return (
         <Category info={info}>
-            <img className="stop" src={require("./stop.png")} 
+            <img className="stop" src={require("./assets/stop.png")} 
                 title="Stop" alt="Stop"
                 onClick={(e) => {e.stopPropagation(); stopAndSave()}} 
             />
@@ -118,7 +119,7 @@ export function TimerCategory({info, stopAndSave}) {
         <Category info={info}>
             <div id="reverse-progress-bar" style={{width: progBarWidth + '%'}}></div>
 
-            <img className="stop" src={require("./stop.png")} 
+            <img className="stop" src={require("./assets/stop.png")} 
                 title="Stop" alt="Stop"
                 onClick={(e) => {e.stopPropagation(); stopAndSave()}} 
             />

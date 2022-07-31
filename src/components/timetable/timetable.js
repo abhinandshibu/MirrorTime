@@ -1,5 +1,6 @@
 import './timetable.css';
 import { ColourTheme, db, getTimeNow, isToday } from '../../App';
+import { Current } from '../../pages/home/home';
 import Event from './event';
 import { MovingCurrent, StaticCurrent } from './current';
 import Info from './info';
@@ -15,14 +16,15 @@ export const timeToHeight = (time) => time / SECS_PER_DAY * TIMETABLE_HEIGHT;
 
 function Timetable({
     planEvents, setPlanEvents, lifeEvents, setLifeEvents, 
-    count, setCount, categories, date, current, setCurrent
+    count, setCount, categories, date
 }) {
 
     const theme = useContext(ColourTheme);
+    const [current, _] = useContext(Current);
 
     const [infoWindow, setInfoWindow] = useState(false);
-    // Info has the form {index, event, type, colour}
-    const [info, setInfo] = useState({colour: "fff", event: {category: ""}});
+    // Info has the form {index, event, type}
+    const [info, setInfo] = useState();
 
     const [newEventWindow, setNewEventWindow] = useState(false);
     const [newEventType, setNewEventType] = useState("plan");
@@ -76,16 +78,10 @@ function Timetable({
     }
 
     const getColour = (id) => {
-        // For backwards compatability
-        if (typeof id === "string") {
-            return categories.has(id) ? categories.get(id).colour : "fff";
-        }
-
-        // For categories of type [group, subcategory]
         const group = categories.get(id[0]);
         return group === undefined
             ? "fff"
-            : id[1] === null
+            : id[1] === 0
                 ? group.colour
                 : group.subs.get(id[1]);
     }
@@ -102,7 +98,7 @@ function Timetable({
                 break;
             case "open":
                 const event = type==="plan" ? planEvents.get(index) : lifeEvents.get(index);
-                setInfo({index: index, event: event, type: type, colour: getColour(event.category)});
+                setInfo({index: index, event: event, type: type});
                 setInfoWindow(true);
                 break;
             case "copy":
@@ -116,12 +112,6 @@ function Timetable({
         }
     }
 
-    // Only used by current event
-    const editName = async ({name, value, previousValue}) => {
-        setCurrent({...current, name: value});
-        await updateDoc(doc(db, "info", "current"), {name: value});
-    }
-
     // Functions to edit event maps and database
     const addEvent = async (event, type) => {
         event.date = date;
@@ -131,7 +121,7 @@ function Timetable({
         await setDoc(doc(db, type, count.toString()), event);
 
         setCount(count => count+1);
-        await updateDoc(doc(db, "info/count"), {count: count+1});
+        await updateDoc(doc(db, "info/count"), {events: count+1});
     }
 
     const updateEvent = async (index, properties, type) => {
@@ -191,9 +181,8 @@ function Timetable({
 
                 {current.isRunning && isToday(date)
                     ? current.isIncreasing
-                        ? <MovingCurrent current={current} timeNow={timeNow} editName={editName}
-                            colour={getColour(current.category)} />
-                        : <StaticCurrent current={current} colour={getColour(current.category)} />
+                        ? <MovingCurrent timeNow={timeNow} getColour={getColour} />
+                        : <StaticCurrent getColour={getColour} />
                     : ""
                 }
 
@@ -205,6 +194,8 @@ function Timetable({
             <Info 
                 visibility={infoWindow} setVisibility={setInfoWindow}
                 info={info} 
+                categories={categories}
+                getColour={getColour}
                 updateEvent={updateEvent}
             />
 

@@ -6,7 +6,7 @@ import { EditTextarea, EditText } from 'react-edit-text';
 import { Button } from 'react-bootstrap';
 import 'react-edit-text/dist/index.css';
 
-function Info({visibility, setVisibility, info, updateEvent}) {
+function Info({visibility, setVisibility, info, categories, getColour, updateEvent}) {
 
     const theme = useContext(ColourTheme);
 
@@ -16,6 +16,7 @@ function Info({visibility, setVisibility, info, updateEvent}) {
     const [endMin, setEndMin] = useState();
     const [description, setDescription] = useState("");
     const [name, setName] = useState("");
+    const [category, setCategory] = useState([0, 0]);
 
     useEffect(() => {
         if (visibility) {
@@ -28,6 +29,7 @@ function Info({visibility, setVisibility, info, updateEvent}) {
 
             setDescription(info.event.hasDescription ? info.event.description : "");
             setName(info.event.name);
+            setCategory(info.event.category);
         }
     }, [visibility])
 
@@ -81,8 +83,12 @@ function Info({visibility, setVisibility, info, updateEvent}) {
     const printNum = (number) => (number < 10 ? '0' : '') + number;
 
     const printCategory = () => {
-        const [main, sub] = info.event.category;
-        return sub===undefined ? main : `${main} (${sub})`;
+        const group = categories.get(category[0]);
+        return group === undefined
+            ? ""
+            : category[1] === 0
+                ? group.name
+                : `${group.name} (${group.subs.get(category[1]).name})`;
     }
 
     return (
@@ -104,7 +110,7 @@ function Info({visibility, setVisibility, info, updateEvent}) {
                 <div>
                     <label>Category: </label>
                     <span className="info-category" 
-                        style={{background: '#' + info.colour}}
+                        style={{background: '#' + getColour(category)}}
                     >{printCategory()}</span>
                 </div>
                 

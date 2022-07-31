@@ -51,17 +51,16 @@ function Home({
     await setDoc(doc(db, `life/${count}`), event);
 
     setCount(count => count+1);
-    await updateDoc(doc(db, "info/count"), {count: count+1});
+    await updateDoc(doc(db, "info/count"), {events: count+1});
   }
 
   return (
     <Current.Provider value={[current, writeCurrent]}>
       <div className="home"> 
-  
+        
         <SideBar 
           categories={categories} setCategories={setCategories}
           date={date} setDate={setDate}
-          current={current} setCurrent={setCurrent}
           stopAndSave={stopAndSaveCurrent}
         />
 
@@ -71,9 +70,8 @@ function Home({
           count={count} setCount={setCount}
           categories={categories}
           date={date}
-          current={current} setCurrent={setCurrent}
         />
-        
+        <button onClick={() => console.log(current)}>click for current</button>
       </div>
     </Current.Provider>
   );
